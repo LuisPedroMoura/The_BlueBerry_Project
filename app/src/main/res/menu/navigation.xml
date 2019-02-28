@@ -7,23 +7,18 @@
         android:title="@string/title_home" />
 
     <item
-        android:id="@+id/navigation_dashboard"
-        android:icon="@drawable/ic_dashboard_black_24dp"
+        android:id="@+id/navigation_transactions"
+        android:icon="@drawable/baseline_credit_card_black_18dp"
         android:title="@string/title_transactions" />
 
     <item
-        android:id="@+id/navigation_notifications"
-        android:icon="@drawable/ic_notifications_black_24dp"
+        android:id="@+id/navigation_budget"
+        android:icon="@drawable/baseline_euro_symbol_black_18dp"
         android:title="@string/title_budget" />
 
     <item
         android:id="@+id/navigation_stats"
-        android:icon="@drawable/ic_notifications_black_24dp"
+        android:icon="@drawable/baseline_assessment_black_18dp"
         android:title="@string/title_stats" />
-
-    <item
-        android:id="@+id/navigation_settings"
-        android:icon="@drawable/ic_notifications_black_24dp"
-        android:title="@string/title_settings" />
 
 </menu>

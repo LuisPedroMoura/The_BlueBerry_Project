@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.MenuItem;
 import android.widget.TextView;
 
@@ -18,16 +19,20 @@ public class Home extends AppCompatActivity {
         public boolean onNavigationItemSelected(@NonNull MenuItem item) {
             switch (item.getItemId()) {
                 case R.id.navigation_home:
-                    mTextMessage.setText(R.string.title_home);
+                    Log.i("bottom bar", "home clicked");
+                    //mTextMessage.setText(R.string.title_home);
                     return true;
-                case R.id.navigation_dashboard:
-                    mTextMessage.setText(R.string.title_transactions);
+                case R.id.navigation_transactions:
+                    Log.i("bottom bar", "transactions clicked");
+                    //mTextMessage.setText(R.string.title_transactions);
                     return true;
-                case R.id.navigation_notifications:
-                    mTextMessage.setText(R.string.title_budget);
+                case R.id.navigation_budget:
+                    Log.i("bottom bar", "budget clicked");
+                    //mTextMessage.setText(R.string.title_budget);
                     return true;
-                case R.id.navigation_settings:
-                    mTextMessage.setText("Settings");
+                case R.id.navigation_stats:
+                    Log.i("bottom bar", "stats clicked");
+                    //mTextMessage.setText(R.string.title_stats);
                     return true;
             }
             return false;
