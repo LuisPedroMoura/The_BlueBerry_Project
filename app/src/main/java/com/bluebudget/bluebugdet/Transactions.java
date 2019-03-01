@@ -1,42 +1,40 @@
 package com.bluebudget.bluebugdet;
 
 import android.content.Intent;
-import android.nfc.Tag;
-import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v7.app.AppCompatActivity;
+import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
 
-public class Home extends AppCompatActivity {
+public class Transactions extends AppCompatActivity {
 
-
+    //private TextView mTextMessage;
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
 
         @Override
         public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-
             switch (item.getItemId()) {
                 case R.id.navigation_home:
-                    Log.d("HOME", "home clicked");
+                    Log.d("TRANSACTIONS", "home clicked");
+                    Intent home = new Intent(Transactions.this, Home.class);
+                    startActivity(home);
                     return true;
                 case R.id.navigation_transactions:
-                    Log.d("HOME", "transactions clicked");
-                    Intent transactions = new Intent(Home.this, Transactions.class);
-                    startActivity(transactions);
+                    Log.d("TRANSACTIONS", "transactions clicked");
                     return true;
                 case R.id.navigation_budget:
-                    Log.d("HOME", "budget clicked");
-                    Intent budget = new Intent(Home.this, Budget.class);
+                    Log.d("TRANSACTIONS", "budget clicked");
+                    Intent budget = new Intent(Transactions.this, Budget.class);
                     startActivity(budget);
                     return true;
                 case R.id.navigation_stats:
-                    Log.d("HOME", "stats clicked");
-                    Intent stats = new Intent(Home.this, Stats.class);
+                    Log.d("TRANSACTIONS", "stats clicked");
+                    Intent stats = new Intent(Transactions.this, Stats.class);
                     startActivity(stats);
                     return true;
             }
@@ -47,7 +45,7 @@ public class Home extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_home);
+        setContentView(R.layout.activity_transactions);
 
         //get the icon selected and go to the respective activity
         BottomNavigationView navigation = findViewById(R.id.navigation);
@@ -55,8 +53,7 @@ public class Home extends AppCompatActivity {
 
         //highlight the selected icon
         Menu menu = navigation.getMenu();
-        MenuItem menuItem = menu.getItem(0);
+        MenuItem menuItem = menu.getItem(1);
         menuItem.setChecked(true);
     }
-
 }
