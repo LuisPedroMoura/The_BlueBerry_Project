@@ -3,16 +3,16 @@ package com.bluebudget.bluebugdet;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.TextView;
+import android.view.View;
 
 public class Transactions extends AppCompatActivity {
 
-    //private TextView mTextMessage;
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
 
@@ -55,5 +55,15 @@ public class Transactions extends AppCompatActivity {
         Menu menu = navigation.getMenu();
         MenuItem menuItem = menu.getItem(1);
         menuItem.setChecked(true);
+
+        //
+        FloatingActionButton fab = findViewById(R.id.addFab);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+            }
+        });
+
     }
 }

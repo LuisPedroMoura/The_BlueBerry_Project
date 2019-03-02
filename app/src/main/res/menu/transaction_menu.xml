@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/incomeBtn"
+        android:icon="@drawable/ic_income"
+        android:title="income" />
+
+    <item
+        android:id="@+id/expenseBtn"
+        android:icon="@drawable/ic_expense"
+        android:title="expense" />
+
+    <item
+        android:id="@+id/transactionBtn"
+        android:icon="@drawable/ic_transaction"
+        android:title="transaction" />
+
+</menu>
