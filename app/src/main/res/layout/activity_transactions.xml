@@ -6,54 +6,72 @@
     android:layout_height="match_parent"
     tools:context=".Transactions">
 
-
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/addFab"
+    <android.support.v7.widget.LinearLayoutCompat
+        android:id="@+id/fabLinerLayout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="bottom|end"
-        android:layout_margin="@dimen/fab_margin"
-        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="60dp"
         android:layout_marginRight="16dp"
-        android:layout_marginBottom="16dp"
-        app:layout_constraintBottom_toTopOf="@+id/navigation"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:srcCompat="@drawable/ic_add" />
-    <!--app:menu="@menu/transaction_menu"-->
+        android:orientation="vertical"
+        android:gravity="center_horizontal"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
 
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/incomeFab"
-        android:layout_width="40dp"
-        android:layout_height="0dp"
-        android:layout_gravity="bottom|end"
-        android:layout_margin="@dimen/fab_margin"
-        android:layout_marginBottom="24dp"
-        app:layout_constraintBottom_toTopOf="@+id/expenseFab"
-        app:srcCompat="@drawable/ic_income"
-        tools:layout_editor_absoluteX="272dp" />
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/transferFab"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="4dp"
+            android:tint="@android:color/white"
+            app:fabSize="mini"
+            app:srcCompat="@drawable/ic_compare_arrows_black_24dp" />
 
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/expenseFab"
-        android:layout_width="wrap_content"
-        android:layout_height="0dp"
-        android:layout_gravity="bottom|end"
-        android:layout_margin="@dimen/fab_margin"
-        android:layout_marginBottom="16dp"
-        app:layout_constraintBottom_toTopOf="@+id/navigation"
-        app:srcCompat="@drawable/ic_expense"
-        tools:layout_editor_absoluteX="248dp" />
+        <TextView
+            android:id="@+id/transferTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="transfer" />
 
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/transactionFab"
-        android:layout_width="wrap_content"
-        android:layout_height="0dp"
-        android:layout_gravity="bottom|end"
-        android:layout_margin="@dimen/fab_margin"
-        android:layout_marginEnd="16dp"
-        android:layout_marginRight="16dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:srcCompat="@drawable/ic_transaction"
-        tools:layout_editor_absoluteY="310dp" />
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/expenseFab"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="4dp"
+            android:tint="@android:color/white"
+            app:fabSize="mini"
+            app:srcCompat="@drawable/ic_trending_down_black_24dp" />
+
+        <TextView
+            android:id="@+id/expenseTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="expense" />
+
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/incomeFab"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="4dp"
+            android:tint="@android:color/white"
+            app:fabSize="mini"
+            app:srcCompat="@drawable/ic_trending_up_black_24dp" />
+
+        <TextView
+            android:id="@+id/incomeTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="income" />
+
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/addFab"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="4dp"
+            android:tint="@android:color/white"
+            app:fabSize="normal"
+            app:srcCompat="@drawable/ic_add_black_24dp" />
+
+    </android.support.v7.widget.LinearLayoutCompat>
 
 
 
