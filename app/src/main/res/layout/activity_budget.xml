@@ -13,6 +13,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:background="?android:attr/windowBackground"
+        app:labelVisibilityMode="labeled"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
@@ -21,7 +22,7 @@
 
     </android.support.design.widget.BottomNavigationView>
 
-   <!--
+    <!--
    Calculator -> probably will not be needed
    <android.support.v7.widget.GridLayout
         android:id="@+id/calculatorGridLayout"
