@@ -46,14 +46,48 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="back_office.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="back_office.Designer.cs">
+      <DependentUpon>back_office.cs</DependentUpon>
+    </Compile>
+    <Compile Include="budget.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="budget.Designer.cs">
+      <DependentUpon>budget.cs</DependentUpon>
+    </Compile>
+    <Compile Include="DB_API.cs" />
     <Compile Include="MainForm.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="MainForm.Designer.cs">
       <DependentUpon>MainForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="PlaceholderTextBox.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="user_menu.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="user_menu.Designer.cs">
+      <DependentUpon>user_menu.cs</DependentUpon>
+    </Compile>
+    <Compile Include="user_login.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="user_login.Designer.cs">
+      <DependentUpon>user_login.cs</DependentUpon>
+    </Compile>
+    <EmbeddedResource Include="back_office.resx">
+      <DependentUpon>back_office.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="budget.resx">
+      <DependentUpon>budget.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>
     </EmbeddedResource>
@@ -66,6 +100,12 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <EmbeddedResource Include="user_login.resx">
+      <DependentUpon>user_login.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="user_menu.resx">
+      <DependentUpon>user_menu.cs</DependentUpon>
+    </EmbeddedResource>
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
