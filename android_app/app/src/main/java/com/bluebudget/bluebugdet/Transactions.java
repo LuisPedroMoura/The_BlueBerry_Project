@@ -140,10 +140,8 @@ public class Transactions extends AppCompatActivity {
         public void onClick(View view) {
             Log.i(TAG, "onClick: income fab");
             if (isMenuOpen) {
-                //TODO: change new transaction title
-                Intent newTransactions = new Intent(Transactions.this, NewTransaction.class);
-                startActivity(newTransactions);
-
+                Intent newIncome = new Intent(Transactions.this, NewIncome.class);
+                startActivity(newIncome);
                 closeMenu();
             } else {
                 openMenu();
@@ -155,10 +153,8 @@ public class Transactions extends AppCompatActivity {
         public void onClick(View view) {
             Log.i(TAG, "onClick: expense fab");
             if (isMenuOpen) {
-                //TODO: change new transaction title
-                //TODO: add recipient wallet
-                Intent newTransactions = new Intent(Transactions.this, NewTransaction.class);
-                startActivity(newTransactions);
+                Intent newExpense = new Intent(Transactions.this, NewExpense.class);
+                startActivity(newExpense);
 
                 closeMenu();
             } else {
@@ -171,9 +167,8 @@ public class Transactions extends AppCompatActivity {
         public void onClick(View view) {
             Log.i(TAG, "onClick: transfer fab");
             if (isMenuOpen) {
-                //TODO: change new transaction title
-                Intent newTransactions = new Intent(Transactions.this, NewTransaction.class);
-                startActivity(newTransactions);
+                Intent newTransfer = new Intent(Transactions.this, NewTransfer.class);
+                startActivity(newTransfer);
 
                 closeMenu();
             } else {

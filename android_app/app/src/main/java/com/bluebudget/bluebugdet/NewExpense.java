@@ -3,6 +3,7 @@ package com.bluebudget.bluebugdet;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -12,14 +13,14 @@ import android.widget.Spinner;
 
 import java.util.ArrayList;
 
-public class NewTransaction extends AppCompatActivity {
+public class NewExpense extends AppCompatActivity {
 
     private static final String TAG = "NewTransaction";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_new_transaction);
+        setContentView(R.layout.activity_new_expense);
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -91,10 +92,8 @@ public class NewTransaction extends AppCompatActivity {
         @Override
         public void onClick(View view) {
             Log.d(TAG, "check clicked");
-            Intent transactions = new Intent(NewTransaction.this, Transactions.class);
+            Intent transactions = new Intent(NewExpense.this, Transactions.class);
             startActivity(transactions);
         }
     };
-
-
 }

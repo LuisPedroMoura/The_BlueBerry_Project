@@ -10,9 +10,9 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 
-public class CategoryAdapter extends ArrayAdapter<CategoryItem> {
+public class SpinnerAdapter extends ArrayAdapter<SpinnerItem> {
 
-    public CategoryAdapter(Context context, ArrayList<CategoryItem> categoryList){
+    public SpinnerAdapter(Context context, ArrayList<SpinnerItem> categoryList){
         super(context, 0, categoryList);
     }
 
@@ -29,18 +29,18 @@ public class CategoryAdapter extends ArrayAdapter<CategoryItem> {
     private View initView(int position, View convertView, ViewGroup parent){
         if(convertView==null){
             convertView= LayoutInflater.from(getContext()).inflate(
-                    R.layout.category_spinner_row, parent, false
+                    R.layout.spinner_row, parent, false
             );
         }
 
-        ImageView categoryIcon = convertView.findViewById(R.id.categoryIconImageView);
-        TextView categoryName = convertView.findViewById(R.id.categoryNameTextView);
+        ImageView categoryIcon = convertView.findViewById(R.id.spinnerIconImageView);
+        TextView categoryName = convertView.findViewById(R.id.spinnerNameTextView);
 
-        CategoryItem currentItem = getItem(position);
+        SpinnerItem currentItem = getItem(position);
 
         if(currentItem!=null) {
             categoryIcon.setImageResource(currentItem.getIcon());
-            categoryName.setText(currentItem.getCategory());
+            categoryName.setText(currentItem.getName());
         }
 
         return convertView;

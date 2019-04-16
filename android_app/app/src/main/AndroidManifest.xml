@@ -10,6 +10,18 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
+            android:name=".NewTransfer"
+            android:label="New Transfer"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
+        <activity
+            android:name=".NewExpense"
+            android:label="New Expense"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".NewIncome"
+            android:label="New Income"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
             android:name=".NewTransaction"
             android:label="New transaction"
             android:theme="@style/AppTheme.NoActionBar" />

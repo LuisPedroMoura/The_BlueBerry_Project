@@ -8,23 +8,23 @@
     android:layout_height="match_parent">
 
     <TextView
-        android:id="@+id/categoryNameTextView"
+        android:id="@+id/spinnerNameTextView"
         android:layout_width="182dp"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_marginStart="13dp"
         android:layout_marginLeft="13dp"
         android:layout_marginTop="12dp"
-        android:layout_toEndOf="@+id/categoryIconImageView"
-        android:layout_toRightOf="@+id/categoryIconImageView"
+        android:layout_toEndOf="@+id/spinnerIconImageView"
+        android:layout_toRightOf="@+id/spinnerIconImageView"
         android:textSize="24sp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/categoryIconImageView"
+        app:layout_constraintStart_toEndOf="@+id/spinnerIconImageView"
         app:layout_constraintTop_toTopOf="parent"
         tools:text="Food" />
 
     <ImageView
-        android:id="@+id/categoryIconImageView"
+        android:id="@+id/spinnerIconImageView"
         android:layout_width="wrap_content"
         android:layout_height="36dp"
         android:layout_alignParentStart="true"
