@@ -23,6 +23,8 @@ public class Home extends AppCompatActivity {
             switch (item.getItemId()) {
                 case R.id.navigation_home:
                     Log.d("HOME", "home clicked");
+                    //Intent newTransactions = new Intent(Home.this, NewTransaction.class);
+                    //startActivity(newTransactions);
                     return true;
                 case R.id.navigation_transactions:
                     Log.d("HOME", "transactions clicked");

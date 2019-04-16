@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:clipToPadding="true"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context=".NewTransaction"
     tools:showIn="@layout/activity_new_transaction">
@@ -11,82 +12,89 @@
     <android.support.v7.widget.GridLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_margin="30dp"
-        android:minWidth="70dp"
-        android:minHeight="70dp"
-        app:columnCount="2">
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="40dp"
+        app:columnCount="2"
+        app:rowCount="4">
 
 
         <ImageView
-            android:id="@+id/imageView2"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            app:layout_column="0"
-            app:layout_row="0"
+            android:id="@+id/euroImageView"
+            app:layout_columnWeight="1"
+            app:layout_gravity="center"
+            app:layout_rowWeight="1"
             app:srcCompat="@drawable/ic_euro_symbol_black_24dp" />
 
         <EditText
-            android:id="@+id/editText2"
-            android:layout_width="match_parent"
-            android:layout_height="30dp"
-            android:layout_marginTop="10dp"
-            android:layout_marginBottom="10dp"
+            android:id="@+id/euroEditText"
+            android:layout_margin="10dp"
+            android:background="@android:color/transparent"
             android:ems="10"
+            android:hint="0,00"
             android:inputType="number"
-            app:layout_column="1"
-            app:layout_row="0" />
+            android:textSize="24sp"
+            app:layout_columnWeight="2"
+            app:layout_gravity="fill"
+            app:layout_rowWeight="1" />
 
         <ImageView
-            android:id="@+id/imageView3"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:layout_column="0"
-            app:layout_row="1"
+            android:id="@+id/calendarImageView"
+            app:layout_columnWeight="1"
+            app:layout_gravity="center"
+            app:layout_rowWeight="1"
             app:srcCompat="@drawable/ic_date_range_black_24dp" />
 
-        <TextView
-            android:id="@+id/textView"
-            android:layout_width="match_parent"
-            android:layout_height="30dp"
-            android:text="TextView"
-            app:layout_column="1"
-            app:layout_row="1" />
+        <EditText
+            android:id="@+id/dateEditText"
+            android:layout_margin="10dp"
+            android:background="@android:color/transparent"
+            android:ems="10"
+            android:hint="dd-mm-yy"
+            android:inputType="date"
+            android:singleLine="true"
+            android:textSize="24sp"
+            app:layout_columnWeight="2"
+            app:layout_gravity="fill"
+            app:layout_rowWeight="1"
+            tools:text="@tools:sample/date/ddmmyy" />
 
+      <!--  <ImageView
+            android:id="@+id/categoryImageView"
+            app:layout_columnWeight="1"
+            app:layout_gravity="center"
+            app:layout_rowWeight="1"
+            app:srcCompat="@drawable/ic_menu_black_24dp" />
+-->
+
+        <Spinner
+            android:id="@+id/categorySpinner"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            app:layout_columnSpan="2"
+            app:layout_gravity="fill_horizontal"
+            app:layout_rowWeight="1" />
 
         <ImageView
-            android:id="@+id/imageView4"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:layout_column="0"
-            app:layout_row="2"
-            app:srcCompat="@drawable/ic_shopping_cart_black_24dp" />
-
-        <TextView
-            android:id="@+id/textView2"
-            android:layout_width="match_parent"
-            android:layout_height="30dp"
-            android:text="TextView"
-            app:layout_column="1"
-            app:layout_row="2" />
-
-
-        <ImageView
-            android:id="@+id/imageView5"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:id="@+id/NotesImageView"
+            app:layout_columnWeight="1"
+            app:layout_gravity="center"
+            app:layout_rowWeight="1"
             app:layout_column="0"
             app:layout_row="3"
             app:srcCompat="@drawable/ic_edit_black_24dp" />
 
-
-        <TextView
-            android:id="@+id/textView3"
-            android:layout_width="match_parent"
-            android:layout_height="30dp"
-            android:text="TextView"
-            app:layout_column="1"
-            app:layout_row="3" />
-
+        <EditText
+            android:id="@+id/NotesEditText"
+            android:layout_margin="10dp"
+            android:background="@android:color/transparent"
+            android:hint="Notes"
+            android:inputType="text"
+            android:textSize="24sp"
+            app:layout_columnWeight="2"
+            app:layout_gravity="fill"
+            app:layout_rowWeight="1" />
 
     </android.support.v7.widget.GridLayout>
+
+
 </android.support.v4.widget.NestedScrollView>
