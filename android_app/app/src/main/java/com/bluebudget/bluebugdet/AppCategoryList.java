@@ -17,12 +17,12 @@ public class AppCategoryList {
         return categories.get(name);
     }
 
-    public void addCategory(String parent, String name, int icon, double def_budget, double def_recurrence) {
+    public void addCategory(String parent, String name, int icon, double def_budget, int def_recurrence) {
         AppCategory newCat = new AppCategory(parent, name, icon, def_budget, def_recurrence);
         categories.put(name, newCat);
     }
 
-    public void updateCategory(String name, double defBudget, double defRecurrence) {
+    public void updateCategory(String name, double defBudget, int defRecurrence) {
         categories.get(name).update(defBudget, defRecurrence);
     }
 

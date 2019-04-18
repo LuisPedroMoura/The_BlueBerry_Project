@@ -4,10 +4,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:clipToPadding="true"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context=".NewTransaction"
-    tools:showIn="@layout/activity_new_transaction">
+    tools:context=".NewTransfer"
+    tools:showIn="@layout/activity_new_transfer">
 
     <android.support.v7.widget.GridLayout
         android:layout_width="match_parent"
@@ -15,18 +14,18 @@
         android:layout_marginLeft="10dp"
         android:layout_marginTop="40dp"
         app:columnCount="2"
-        app:rowCount="4">
+        app:rowCount="6">
 
 
         <ImageView
-            android:id="@+id/euroImageView"
+            android:id="@+id/euroNewTransferIV"
             app:layout_columnWeight="1"
             app:layout_gravity="center"
             app:layout_rowWeight="1"
             app:srcCompat="@drawable/ic_euro_symbol_black_24dp" />
 
         <EditText
-            android:id="@+id/euroEditText"
+            android:id="@+id/euroNewTransferET"
             android:layout_margin="10dp"
             android:background="@android:color/transparent"
             android:ems="10"
@@ -38,28 +37,23 @@
             app:layout_rowWeight="1" />
 
         <ImageView
-            android:id="@+id/calendarImageView"
+            android:id="@+id/calendarNewTransferIV"
             app:layout_columnWeight="1"
             app:layout_gravity="center"
             app:layout_rowWeight="1"
             app:srcCompat="@drawable/ic_date_range_black_24dp" />
 
-        <EditText
-            android:id="@+id/dateEditText"
+        <TextView
+            android:id="@+id/dateNewTransferTV"
             android:layout_margin="10dp"
-            android:background="@android:color/transparent"
-            android:ems="10"
-            android:hint="dd-mm-yy"
-            android:inputType="date"
-            android:singleLine="true"
+            android:inputType="text"
             android:textSize="24sp"
-            app:layout_columnWeight="2"
+            app:layout_columnWeight="1"
             app:layout_gravity="fill"
-            app:layout_rowWeight="1"
-            tools:text="@tools:sample/date/ddmmyy" />
+            app:layout_rowWeight="1" />
 
         <Spinner
-            android:id="@+id/categorySpinner"
+            android:id="@+id/categoryNewTransferSpinner"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             app:layout_columnSpan="2"
@@ -67,14 +61,14 @@
             app:layout_rowWeight="1" />
 
         <ImageView
-            android:id="@+id/locationImageView"
+            android:id="@+id/locationNewTransferIV"
             app:layout_columnWeight="1"
             app:layout_gravity="center"
             app:layout_rowWeight="1"
             app:srcCompat="@drawable/ic_place_black_24dp" />
 
         <EditText
-            android:id="@+id/locationEditText"
+            android:id="@+id/locationNewTransferET"
             android:layout_margin="10dp"
             android:background="@android:color/transparent"
             android:hint="Location"
@@ -85,14 +79,14 @@
             app:layout_rowWeight="1" />
 
         <ImageView
-            android:id="@+id/notesImageView"
+            android:id="@+id/notesNewTransferIV"
             app:layout_columnWeight="1"
             app:layout_gravity="center"
             app:layout_rowWeight="1"
             app:srcCompat="@drawable/ic_edit_black_24dp" />
 
         <EditText
-            android:id="@+id/notesEditText"
+            android:id="@+id/locationNewTransferET"
             android:layout_margin="10dp"
             android:background="@android:color/transparent"
             android:hint="Notes"
@@ -102,8 +96,40 @@
             app:layout_gravity="fill"
             app:layout_rowWeight="1" />
 
+        <Space
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <TextView
+            android:id="@+id/fromTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingLeft="10dp"
+            android:paddingTop="10dp"
+            android:text="from" />
+
         <Spinner
-            android:id="@+id/walletSpinner"
+            android:id="@+id/walletNewTransferSpinner"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            app:layout_columnSpan="2"
+            app:layout_gravity="fill_horizontal"
+            app:layout_rowWeight="1" />
+
+        <Space
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <TextView
+            android:id="@+id/toTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingLeft="10dp"
+            android:paddingTop="10dp"
+            android:text="to" />
+
+        <Spinner
+            android:id="@+id/recipientWalletNewTransferSpinner"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             app:layout_columnSpan="2"
@@ -111,6 +137,5 @@
             app:layout_rowWeight="1" />
 
     </android.support.v7.widget.GridLayout>
-
 
 </android.support.v4.widget.NestedScrollView>

@@ -6,13 +6,15 @@ import java.util.List;
 public class AppWallet {
     
     private String name;
+    private int icon;
     private Double initialBalance;
     private List<AppTransaction> transactions;
     private double balance;
 
     
-    public AppWallet(String name, double initialBalance) {
+    public AppWallet(String name, int icon, double initialBalance) {
         this.name = name;
+        this.icon = icon;
         this.initialBalance = initialBalance;
     }
 
@@ -21,6 +23,13 @@ public class AppWallet {
     }
     public void setName(String name) {
         this.name = name;
+    }
+
+    public int getIcon() {
+        return icon;
+    }
+    public void setIcon(int icon) {
+        this.icon = icon;
     }
 
     public Double getInitialBalance() {
@@ -44,7 +53,7 @@ public class AppWallet {
     private void calcTransactions(AppTransactionList transactionList){
         List<String> wallet = new ArrayList<>();
         wallet.add(this.name);
-        this.transactions = transactionList.filterTransactions(null, null, null, null, wallet);
+        this.transactions = transactionList.filterTransactions(null, null, null, null, wallet, null);
     }
 
     private void calcBalance(){

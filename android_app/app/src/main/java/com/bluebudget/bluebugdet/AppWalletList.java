@@ -12,8 +12,8 @@ public class AppWalletList {
     public AppWalletList() {}
 
 
-    public void addWallet(String name, Double initialBalance){
-        AppWallet wallet = new AppWallet(name, initialBalance);
+    public void addWallet(String name, int icon, Double initialBalance){
+        AppWallet wallet = new AppWallet(name, icon, initialBalance);
         wallets.add(wallet);
     }
 
@@ -28,5 +28,9 @@ public class AppWalletList {
 
     public void updateWallet(String walletName) {
 
+    }
+
+    public List<AppWallet> getWalletsList(){
+        return this.wallets;
     }
 }

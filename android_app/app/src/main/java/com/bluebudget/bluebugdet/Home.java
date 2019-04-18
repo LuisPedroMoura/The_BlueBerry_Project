@@ -13,6 +13,9 @@ import android.widget.TextView;
 
 public class Home extends AppCompatActivity {
 
+    public static App app;
+
+
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -23,6 +26,8 @@ public class Home extends AppCompatActivity {
             switch (item.getItemId()) {
                 case R.id.navigation_home:
                     Log.d("HOME", "home clicked");
+                    Intent newTransactions = new Intent(Home.this, testTabbedActivity.class);
+                    startActivity(newTransactions);
                     return true;
                 case R.id.navigation_transactions:
                     Log.d("HOME", "transactions clicked");
@@ -57,6 +62,9 @@ public class Home extends AppCompatActivity {
         Menu menu = navigation.getMenu();
         MenuItem menuItem = menu.getItem(0);
         menuItem.setChecked(true);
+
+
+        this.app = new App();
     }
 
 }

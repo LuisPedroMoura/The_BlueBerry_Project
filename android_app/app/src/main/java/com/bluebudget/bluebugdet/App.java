@@ -1,11 +1,8 @@
 package com.bluebudget.bluebugdet;
 
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 public class App {
 
@@ -23,8 +20,13 @@ public class App {
         this.wallets = new AppWalletList();
         this.categories = new AppCategoryList();
 
-        wallets.addWallet("Current", -1.0);
-        wallets.addWallet("Savings", -1.0);
+        addWallet("Current", R.drawable.ic_account_balance_wallet_black_24dp, -1.0);
+        addWallet("Future Expenses", R.drawable.ic_account_balance_wallet_black_24dp, -1.0);
+        addWallet("Savings",R.drawable.ic_account_balance_wallet_black_24dp, -1.0);
+
+        addCategory(null, "Home", R.drawable.ic_home_black_24dp, 0.0, 1);
+        addCategory(null, "Food", R.drawable.ic_shopping_cart_black_24dp, 0.0, 1);
+        addCategory(null, "Transports", R.drawable.ic_directions_car_black_24dp, 0.0, 1);
     }
 
 
@@ -35,11 +37,11 @@ public class App {
         return categories.getCategory(name);
     }
 
-    public void addCategory(String parent, String name, int icon, double defBudget, double defRecurrence) {
+    public void addCategory(String parent, String name, int icon, double defBudget, int defRecurrence) {
         categories.addCategory(parent, name, icon, defBudget, defRecurrence);
     }
 
-    public void updateCategory(String name, double defBudget, double defRecurrence) {
+    public void updateCategory(String name, double defBudget, int defRecurrence) {
         categories.updateCategory(name, defBudget, defRecurrence);
     }
 
@@ -60,8 +62,8 @@ public class App {
     // WALLETS -------------------------------------------------------------------------------------
     // ---------------------------------------------------------------------------------------------
 
-    public void addWallet(String name, Double initialBalance){
-        wallets.addWallet(name, initialBalance);
+    public void addWallet(String name, int icon, Double initialBalance){
+        wallets.addWallet(name, icon, initialBalance);
     }
 
     public void removeWallet(String name) {
@@ -73,19 +75,23 @@ public class App {
         wallets.updateWallet(walletName);
     }
 
+    public List<AppWallet> getWalletsList(){
+        return wallets.getWalletsList();
+    }
+
 
     // ---------------------------------------------------------------------------------------------
     // TRANSACTIONS --------------------------------------------------------------------------------
     // ---------------------------------------------------------------------------------------------
 
     public void addIncome(double value, Date date, String category, String notes , String location,
-                          String wallet, String recipientWallet) {
-        transactions.addIncome(value, date, category, notes , location, wallet, recipientWallet);
+                          String wallet) {
+        transactions.addIncome(value, date, category, notes , location, wallet);
     }
 
     public void addExpense(double value, Date date, String category, String notes , String location,
-                          String wallet, String recipientWallet) {
-        transactions.addExpense(value, date, category, notes , location, wallet, recipientWallet);
+                          String wallet) {
+        transactions.addExpense(value, date, category, notes , location, wallet);
     }
 
     public void addTransfer(double value, Date date, String category, String notes , String location,
@@ -96,9 +102,10 @@ public class App {
     public List<AppTransaction> getTransactions(Date minDate, Date maxDate,
                                                    List<Integer> categoryIDs,
                                                    List<String> locations,
-                                                   List<String> wallets) {
+                                                   List<String> wallets,
+                                                   AppTransactionType type) {
 
-        return transactions.filterTransactions(minDate, maxDate, categoryIDs, locations, wallets);
+        return transactions.filterTransactions(minDate, maxDate, categoryIDs, locations, wallets, type);
     }
 
 
