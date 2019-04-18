@@ -12,6 +12,7 @@ import android.widget.AdapterView;
 import android.widget.Spinner;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class NewIncome extends AppCompatActivity {
 
@@ -51,10 +52,13 @@ public class NewIncome extends AppCompatActivity {
     ///Category Spinner///
     //////////////////////
     private ArrayList<SpinnerItem> initCategoryList(){
+
+        List<AppCategory> categoriesList = Home.app.getCategoriesList();
         ArrayList<SpinnerItem> categoryItemList = new ArrayList<>();
-        categoryItemList.add(new SpinnerItem("Food", R.drawable.ic_shopping_cart_black_24dp));
-        categoryItemList.add(new SpinnerItem("Home", R.drawable.ic_home_black_24dp));
-        categoryItemList.add(new SpinnerItem("Transports", R.drawable.ic_directions_car_black_24dp));
+
+        for(AppCategory category : categoriesList){
+            categoryItemList.add(new SpinnerItem(category.getName(), category.getIcon()));
+        }
 
         return categoryItemList;
     }
@@ -63,12 +67,14 @@ public class NewIncome extends AppCompatActivity {
     ////Wallet Spinner////
     //////////////////////
     private ArrayList<SpinnerItem> initWalletList(){
-        ArrayList<SpinnerItem> categoryItemList = new ArrayList<>();
-        categoryItemList.add(new SpinnerItem("Current", R.drawable.ic_account_balance_wallet_black_24dp));
-        categoryItemList.add(new SpinnerItem("Savings", R.drawable.ic_account_balance_wallet_black_24dp));
-        categoryItemList.add(new SpinnerItem("Future expenses", R.drawable.ic_account_balance_wallet_black_24dp));
+        List<AppWallet> walletsList = Home.app.getWalletsList();
+        ArrayList<SpinnerItem> walletItemList = new ArrayList<>();
 
-        return categoryItemList;
+        for(AppWallet wallet : walletsList){
+            walletItemList.add(new SpinnerItem(wallet.getName(), wallet.getIcon()));
+        }
+
+        return walletItemList;
     }
 
     AdapterView.OnItemSelectedListener av = new AdapterView.OnItemSelectedListener() {

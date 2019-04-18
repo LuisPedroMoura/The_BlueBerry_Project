@@ -142,9 +142,6 @@ public class Transactions extends AppCompatActivity {
             if (isMenuOpen) {
                 Intent newIncome = new Intent(Transactions.this, NewIncome.class);
                 startActivity(newIncome);
-                closeMenu();
-            } else {
-                openMenu();
             }
         }
     };
@@ -155,10 +152,6 @@ public class Transactions extends AppCompatActivity {
             if (isMenuOpen) {
                 Intent newExpense = new Intent(Transactions.this, NewExpense.class);
                 startActivity(newExpense);
-
-                closeMenu();
-            } else {
-                openMenu();
             }
         }
     };
@@ -169,10 +162,6 @@ public class Transactions extends AppCompatActivity {
             if (isMenuOpen) {
                 Intent newTransfer = new Intent(Transactions.this, NewTransfer.class);
                 startActivity(newTransfer);
-
-                closeMenu();
-            } else {
-                openMenu();
             }
         }
     };
