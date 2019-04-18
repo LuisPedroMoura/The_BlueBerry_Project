@@ -13,17 +13,17 @@ public class AppTransactionList {
 
 
     public void addIncome(double value, Date date, String category, String notes , String location,
-                          String wallet, String recipientWallet) {
+                          String wallet) {
         AppTransaction t = new AppTransaction(value, date, category, notes, location, wallet,
-                recipientWallet, AppTransactionType.INCOME);
+                null, AppTransactionType.INCOME);
         transactions.add(t.getId(), t);
     }
 
     public void addExpense(double value, Date date, String category, String notes , String location,
-                          String wallet, String recipientWallet) {
+                          String wallet) {
         AppTransaction t = new AppTransaction(-value, date, category, notes, location, wallet,
-                recipientWallet, AppTransactionType.EXPENSE);
-        transactions.add(t.getId(), t);
+                null, AppTransactionType.EXPENSE);
+        transactions.add(0, t);
     }
 
     public void addTransfer(double value, Date date, String category, String notes , String location,
@@ -44,7 +44,8 @@ public class AppTransactionList {
     public List<AppTransaction> filterTransactions(Date minDate, Date maxDate,
                                                    List<Integer> categories,
                                                    List<String> locations,
-                                                   List<String> wallets) {
+                                                   List<String> wallets,
+                                                   AppTransactionType type) {
 
         List<AppTransaction> res = new ArrayList<>();
 
@@ -60,12 +61,13 @@ public class AppTransactionList {
             if (tr.getDate().compareTo(minDate) >= 0 && tr.getDate().compareTo(maxDate) <= 0){
                 if (categories == null || categories.contains(tr.getCategory())){
                     if (locations == null || locations.contains(tr.getLocation())){
-                        if (wallets == null || wallets.contains(tr.getWallet())){
-                            res.add(tr);
-                        }
-                        else if (wallets.contains(tr.getRecipientWallet())){
-                            tr.setValue(-tr.getValue());
-                            res.add(tr);
+                        if (type == null || tr.getType() == type) {
+                            if (wallets == null || wallets.contains(tr.getWallet())) {
+                                res.add(tr);
+                            } else if ( type == AppTransactionType.TRANSFER && wallets.contains(tr.getRecipientWallet())) {
+                                tr.setValue(-tr.getValue());
+                                res.add(tr);
+                            }
                         }
                     }
                 }

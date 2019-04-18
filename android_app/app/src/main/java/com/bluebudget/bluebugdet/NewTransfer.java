@@ -9,8 +9,11 @@ import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Spinner;
+import android.widget.TextView;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 public class NewTransfer extends AppCompatActivity {
@@ -26,11 +29,11 @@ public class NewTransfer extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
 
-        FloatingActionButton fab = findViewById(R.id.fab);
+        FloatingActionButton fab = findViewById(R.id.newTransferfab);
         fab.setOnClickListener(checkFabOnClick);
 
         //Category Spinner
-        Spinner categorySpinner = findViewById(R.id.categorySpinner);
+        Spinner categorySpinner = findViewById(R.id.categoryNewTransferSpinner);
 
         ArrayList<SpinnerItem> categoryItemList = initCategoryList();
         SpinnerAdapter categoryAdapter = new SpinnerAdapter(this, categoryItemList);
@@ -38,7 +41,7 @@ public class NewTransfer extends AppCompatActivity {
         categorySpinner.setOnItemSelectedListener(av);
 
         //(from) wallet Spinner
-        Spinner walletSpinner = findViewById(R.id.walletSpinner);
+        Spinner walletSpinner = findViewById(R.id.walletNewTransferSpinner);
 
         ArrayList<SpinnerItem> walletItemList = initWalletList();
         SpinnerAdapter walletAdapter = new SpinnerAdapter(this, walletItemList);
@@ -46,11 +49,28 @@ public class NewTransfer extends AppCompatActivity {
         walletSpinner.setOnItemSelectedListener(av);
 
         //recipient wallet Spinner
-        Spinner recipientWalletSpinner = findViewById(R.id.recipientWalletSpinner);
+        Spinner recipientWalletSpinner = findViewById(R.id.recipientWalletNewTransferSpinner);
         ArrayList<SpinnerItem> recipientWalletItemList = initWalletList();
         SpinnerAdapter recipientWalletAdapter = new SpinnerAdapter(this, recipientWalletItemList);
         recipientWalletSpinner.setAdapter(recipientWalletAdapter);
         recipientWalletSpinner.setOnItemSelectedListener(av);
+
+
+        //Date
+        TextView dateTV = findViewById(R.id.dateNewTransferTV);
+        dateTV.setOnClickListener(dateListener);
+        Intent incomingIntent = getIntent();
+        String dateContent = incomingIntent.getStringExtra("date");
+
+        if(dateContent==null){
+            Log.i(TAG, "dateContent == null");
+            SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
+            dateTV.setText(sdf.format(Calendar.getInstance().getTime()));
+        }
+        else{
+            Log.i(TAG, "dateContent != null");
+            dateTV.setText(dateContent);
+        }
 
     }
 
@@ -95,6 +115,19 @@ public class NewTransfer extends AppCompatActivity {
         @Override
         public void onNothingSelected(AdapterView<?> parent) {
 
+        }
+    };
+
+
+    //////////////////////
+    /////////Date/////////
+    //////////////////////
+    View.OnClickListener dateListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            Intent intent = new Intent(NewTransfer.this, CalendarPopUp.class);
+            intent.putExtra("className", "NewTransfer");
+            startActivity(intent);
         }
     };
 

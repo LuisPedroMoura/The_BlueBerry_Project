@@ -19,14 +19,14 @@
 
 
         <ImageView
-            android:id="@+id/euroImageView"
+            android:id="@+id/euroNewIncomeIV"
             app:layout_columnWeight="1"
             app:layout_gravity="center"
             app:layout_rowWeight="1"
             app:srcCompat="@drawable/ic_euro_symbol_black_24dp" />
 
         <EditText
-            android:id="@+id/euroEditText"
+            android:id="@+id/amountNewIncomeET"
             android:layout_margin="10dp"
             android:background="@android:color/transparent"
             android:ems="10"
@@ -38,28 +38,23 @@
             app:layout_rowWeight="1" />
 
         <ImageView
-            android:id="@+id/calendarImageView"
+            android:id="@+id/calendarNewIncomeIV"
             app:layout_columnWeight="1"
             app:layout_gravity="center"
             app:layout_rowWeight="1"
             app:srcCompat="@drawable/ic_date_range_black_24dp" />
 
-        <EditText
-            android:id="@+id/dateEditText"
+        <TextView
+            android:id="@+id/dateNewIncomeTV"
             android:layout_margin="10dp"
-            android:background="@android:color/transparent"
-            android:ems="10"
-            android:hint="dd-mm-yy"
-            android:inputType="date"
-            android:singleLine="true"
+            android:inputType="text"
             android:textSize="24sp"
-            app:layout_columnWeight="2"
+            app:layout_columnWeight="1"
             app:layout_gravity="fill"
-            app:layout_rowWeight="1"
-            tools:text="@tools:sample/date/ddmmyy" />
+            app:layout_rowWeight="1" />
 
         <Spinner
-            android:id="@+id/categorySpinner"
+            android:id="@+id/categoryNewIncomeSpinner"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             app:layout_columnSpan="2"
@@ -67,14 +62,14 @@
             app:layout_rowWeight="1" />
 
         <ImageView
-            android:id="@+id/locationImageView"
+            android:id="@+id/locationNewIncomeIV"
             app:layout_columnWeight="1"
             app:layout_gravity="center"
             app:layout_rowWeight="1"
             app:srcCompat="@drawable/ic_place_black_24dp" />
 
         <EditText
-            android:id="@+id/locationEditText"
+            android:id="@+id/locationNewIncomeEditText"
             android:layout_margin="10dp"
             android:background="@android:color/transparent"
             android:hint="Location"
@@ -85,14 +80,14 @@
             app:layout_rowWeight="1" />
 
         <ImageView
-            android:id="@+id/notesImageView"
+            android:id="@+id/notesNewIncomeIV"
             app:layout_columnWeight="1"
             app:layout_gravity="center"
             app:layout_rowWeight="1"
             app:srcCompat="@drawable/ic_edit_black_24dp" />
 
         <EditText
-            android:id="@+id/notesEditText"
+            android:id="@+id/notesNewIcomeET"
             android:layout_margin="10dp"
             android:background="@android:color/transparent"
             android:hint="Notes"
@@ -103,12 +98,14 @@
             app:layout_rowWeight="1" />
 
         <Spinner
-            android:id="@+id/walletSpinner"
+            android:id="@+id/walletNewIncomeSpinner"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             app:layout_columnSpan="2"
             app:layout_gravity="fill_horizontal"
             app:layout_rowWeight="1" />
+
+
 
     </android.support.v7.widget.GridLayout>
 

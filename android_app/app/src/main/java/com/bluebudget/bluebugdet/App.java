@@ -85,13 +85,13 @@ public class App {
     // ---------------------------------------------------------------------------------------------
 
     public void addIncome(double value, Date date, String category, String notes , String location,
-                          String wallet, String recipientWallet) {
-        transactions.addIncome(value, date, category, notes , location, wallet, recipientWallet);
+                          String wallet) {
+        transactions.addIncome(value, date, category, notes , location, wallet);
     }
 
     public void addExpense(double value, Date date, String category, String notes , String location,
-                          String wallet, String recipientWallet) {
-        transactions.addExpense(value, date, category, notes , location, wallet, recipientWallet);
+                          String wallet) {
+        transactions.addExpense(value, date, category, notes , location, wallet);
     }
 
     public void addTransfer(double value, Date date, String category, String notes , String location,
@@ -102,9 +102,10 @@ public class App {
     public List<AppTransaction> getTransactions(Date minDate, Date maxDate,
                                                    List<Integer> categoryIDs,
                                                    List<String> locations,
-                                                   List<String> wallets) {
+                                                   List<String> wallets,
+                                                   AppTransactionType type) {
 
-        return transactions.filterTransactions(minDate, maxDate, categoryIDs, locations, wallets);
+        return transactions.filterTransactions(minDate, maxDate, categoryIDs, locations, wallets, type);
     }
 
 

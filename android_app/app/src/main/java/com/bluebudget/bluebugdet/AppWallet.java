@@ -53,7 +53,7 @@ public class AppWallet {
     private void calcTransactions(AppTransactionList transactionList){
         List<String> wallet = new ArrayList<>();
         wallet.add(this.name);
-        this.transactions = transactionList.filterTransactions(null, null, null, null, wallet);
+        this.transactions = transactionList.filterTransactions(null, null, null, null, wallet, null);
     }
 
     private void calcBalance(){

@@ -18,14 +18,14 @@
 
 
         <ImageView
-            android:id="@+id/euroImageView"
+            android:id="@+id/euroNewTransferIV"
             app:layout_columnWeight="1"
             app:layout_gravity="center"
             app:layout_rowWeight="1"
             app:srcCompat="@drawable/ic_euro_symbol_black_24dp" />
 
         <EditText
-            android:id="@+id/euroEditText"
+            android:id="@+id/euroNewTransferET"
             android:layout_margin="10dp"
             android:background="@android:color/transparent"
             android:ems="10"
@@ -37,28 +37,23 @@
             app:layout_rowWeight="1" />
 
         <ImageView
-            android:id="@+id/calendarImageView"
+            android:id="@+id/calendarNewTransferIV"
             app:layout_columnWeight="1"
             app:layout_gravity="center"
             app:layout_rowWeight="1"
             app:srcCompat="@drawable/ic_date_range_black_24dp" />
 
-        <EditText
-            android:id="@+id/dateEditText"
+        <TextView
+            android:id="@+id/dateNewTransferTV"
             android:layout_margin="10dp"
-            android:background="@android:color/transparent"
-            android:ems="10"
-            android:hint="dd-mm-yy"
-            android:inputType="date"
-            android:singleLine="true"
+            android:inputType="text"
             android:textSize="24sp"
-            app:layout_columnWeight="2"
+            app:layout_columnWeight="1"
             app:layout_gravity="fill"
-            app:layout_rowWeight="1"
-            tools:text="@tools:sample/date/ddmmyy" />
+            app:layout_rowWeight="1" />
 
         <Spinner
-            android:id="@+id/categorySpinner"
+            android:id="@+id/categoryNewTransferSpinner"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             app:layout_columnSpan="2"
@@ -66,14 +61,14 @@
             app:layout_rowWeight="1" />
 
         <ImageView
-            android:id="@+id/locationImageView"
+            android:id="@+id/locationNewTransferIV"
             app:layout_columnWeight="1"
             app:layout_gravity="center"
             app:layout_rowWeight="1"
             app:srcCompat="@drawable/ic_place_black_24dp" />
 
         <EditText
-            android:id="@+id/locationEditText"
+            android:id="@+id/locationNewTransferET"
             android:layout_margin="10dp"
             android:background="@android:color/transparent"
             android:hint="Location"
@@ -84,14 +79,14 @@
             app:layout_rowWeight="1" />
 
         <ImageView
-            android:id="@+id/notesImageView"
+            android:id="@+id/notesNewTransferIV"
             app:layout_columnWeight="1"
             app:layout_gravity="center"
             app:layout_rowWeight="1"
             app:srcCompat="@drawable/ic_edit_black_24dp" />
 
         <EditText
-            android:id="@+id/notesEditText"
+            android:id="@+id/locationNewTransferET"
             android:layout_margin="10dp"
             android:background="@android:color/transparent"
             android:hint="Notes"
@@ -114,7 +109,7 @@
             android:text="from" />
 
         <Spinner
-            android:id="@+id/walletSpinner"
+            android:id="@+id/walletNewTransferSpinner"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             app:layout_columnSpan="2"
@@ -134,7 +129,7 @@
             android:text="to" />
 
         <Spinner
-            android:id="@+id/recipientWalletSpinner"
+            android:id="@+id/recipientWalletNewTransferSpinner"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             app:layout_columnSpan="2"
