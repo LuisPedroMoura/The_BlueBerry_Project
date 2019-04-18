@@ -36,6 +36,8 @@
             this.account_name_label = new System.Windows.Forms.Label();
             this.back_btn = new System.Windows.Forms.Button();
             this.login_btn = new System.Windows.Forms.Button();
+            this.username_textbox = new System.Windows.Forms.PlaceholderTextBox();
+            this.email_login_btn = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // label1
@@ -47,21 +49,23 @@
             this.label1.Size = new System.Drawing.Size(389, 32);
             this.label1.TabIndex = 0;
             this.label1.Text = "YOUR MONEY ACCOUNTS";
+            this.label1.Click += new System.EventHandler(this.label1_Click);
             // 
             // accounts_listbox
             // 
             this.accounts_listbox.FormattingEnabled = true;
             this.accounts_listbox.ItemHeight = 16;
-            this.accounts_listbox.Location = new System.Drawing.Point(101, 125);
+            this.accounts_listbox.Location = new System.Drawing.Point(83, 146);
             this.accounts_listbox.Name = "accounts_listbox";
             this.accounts_listbox.Size = new System.Drawing.Size(305, 164);
             this.accounts_listbox.TabIndex = 1;
+            this.accounts_listbox.SelectedIndexChanged += new System.EventHandler(this.accounts_listbox_SelectedIndexChanged);
             // 
             // label2
             // 
             this.label2.AutoSize = true;
             this.label2.Font = new System.Drawing.Font("Microsoft Sans Serif", 13.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label2.Location = new System.Drawing.Point(483, 125);
+            this.label2.Location = new System.Drawing.Point(515, 154);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(0, 29);
             this.label2.TabIndex = 2;
@@ -70,7 +74,7 @@
             // 
             this.balance_label.AutoSize = true;
             this.balance_label.Font = new System.Drawing.Font("Microsoft Sans Serif", 13.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.balance_label.Location = new System.Drawing.Point(461, 176);
+            this.balance_label.Location = new System.Drawing.Point(493, 205);
             this.balance_label.Name = "balance_label";
             this.balance_label.Size = new System.Drawing.Size(98, 29);
             this.balance_label.TabIndex = 3;
@@ -80,7 +84,7 @@
             // 
             this.patrimony_label.AutoSize = true;
             this.patrimony_label.Font = new System.Drawing.Font("Microsoft Sans Serif", 13.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.patrimony_label.Location = new System.Drawing.Point(461, 230);
+            this.patrimony_label.Location = new System.Drawing.Point(493, 259);
             this.patrimony_label.Name = "patrimony_label";
             this.patrimony_label.Size = new System.Drawing.Size(118, 29);
             this.patrimony_label.TabIndex = 4;
@@ -90,7 +94,7 @@
             // 
             this.account_name_label.AutoSize = true;
             this.account_name_label.Font = new System.Drawing.Font("Microsoft Sans Serif", 13.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.account_name_label.Location = new System.Drawing.Point(461, 125);
+            this.account_name_label.Location = new System.Drawing.Point(493, 154);
             this.account_name_label.Name = "account_name_label";
             this.account_name_label.Size = new System.Drawing.Size(169, 29);
             this.account_name_label.TabIndex = 5;
@@ -118,11 +122,32 @@
             this.login_btn.UseVisualStyleBackColor = true;
             this.login_btn.Click += new System.EventHandler(this.login_btn_Click);
             // 
+            // username_textbox
+            // 
+            this.username_textbox.Location = new System.Drawing.Point(83, 103);
+            this.username_textbox.Name = "username_textbox";
+            this.username_textbox.PlaceholderText = "username";
+            this.username_textbox.Size = new System.Drawing.Size(224, 22);
+            this.username_textbox.TabIndex = 8;
+            this.username_textbox.TextChanged += new System.EventHandler(this.username_textbox_TextChanged);
+            // 
+            // email_login_btn
+            // 
+            this.email_login_btn.Location = new System.Drawing.Point(313, 103);
+            this.email_login_btn.Name = "email_login_btn";
+            this.email_login_btn.Size = new System.Drawing.Size(75, 23);
+            this.email_login_btn.TabIndex = 9;
+            this.email_login_btn.Text = "Find Me!";
+            this.email_login_btn.UseVisualStyleBackColor = true;
+            this.email_login_btn.Click += new System.EventHandler(this.email_login_btn_Click);
+            // 
             // user_login
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
+            this.Controls.Add(this.email_login_btn);
+            this.Controls.Add(this.username_textbox);
             this.Controls.Add(this.login_btn);
             this.Controls.Add(this.back_btn);
             this.Controls.Add(this.account_name_label);
@@ -150,5 +175,7 @@
         private System.Windows.Forms.Label account_name_label;
         private System.Windows.Forms.Button back_btn;
         private System.Windows.Forms.Button login_btn;
+        private System.Windows.Forms.PlaceholderTextBox username_textbox;
+        private System.Windows.Forms.Button email_login_btn;
     }
 }

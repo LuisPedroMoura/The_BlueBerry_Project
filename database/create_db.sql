@@ -15,7 +15,7 @@ CREATE TABLE Project.wallets
 	account_name VARCHAR(20),
 	account_id INT,
 	CONSTRAINT PK_WALLETS PRIMARY KEY (id),
-	CONSTRAINT FK_WALLETS_MONEYACCOUNTS FOREIGN KEY (account_name, account_id) REFERENCES Projetc.money_accounts(account_name, id)
+	CONSTRAINT FK_WALLETS_MONEYACCOUNTS FOREIGN KEY (account_name, account_id) REFERENCES Project.money_accounts(account_name, id)
 		ON DELETE NO ACTION ON UPDATE CASCADE
 );
 
@@ -28,29 +28,28 @@ CREATE TABLE Project.recurrence
 
 CREATE TABLE Project.subscriptions
 (
-	term DATE, --DEFAULT DATEADD(year, 1, GETDATE()),
-	card_number INT,
-	fname VARCHAR(20),
+	card_number VARCHAR(20),
+	email VARCHAR(50),
+	term DATETIME NOT NULL, --DEFAULT DATEADD(year, 1, GETDATE()),
+	fname VARCHAR(20) NOT NULL,
 	mname VARCHAR(20),
-	lname VARCHAR(20),
-	active INT,
-	periodicity INT,
+	lname VARCHAR(20) NOT NULL,
+	active BIT NOT NULL DEFAULT(0),
+	periodicity INT NOT NULL,
 	CHECK(card_number>0),
 	CONSTRAINT PK_SUBSCRIPTIONS PRIMARY KEY (card_number),
+	CONSTRAINT FK_SUBSCRIPTIONS_USERS FOREIGN KEY (email) REFERENCES Project.users(email)
+		ON DELETE CASCADE ON UPDATE CASCADE,
 	CONSTRAINT FK_SUBSCRIPTIONS_RECURRENCE FOREIGN KEY (periodicity) REFERENCES Project.recurrence(periodicity)
-		ON DELETE NO ACTION ON UPDATE CASCADE
-		
+		ON DELETE NO ACTION ON UPDATE CASCADE	
 );
 
 CREATE TABLE Project.users
 (
 	[user_name] VARCHAR(20),
 	email VARCHAR(50),
-	card_number INT,
 	CHECK([user_name] != ''),
 	CONSTRAINT PK_USERS PRIMARY KEY (email),
-	CONSTRAINT FK_USERS_SUBSCRIPTIONS FOREIGN KEY (card_number) REFERENCES Project.subscriptions(card_number)
-		ON DELETE NO ACTION ON UPDATE CASCADE
 );
 
 CREATE TABLE Project.users_money_accounts
@@ -88,7 +87,7 @@ CREATE TABLE Project.transaction_types
 CREATE TABLE Project.transactions
 (
 	amount INT,
-	[date] DATE,
+	[date] DATETIME,
 	notes VARCHAR(50),
 	id INT IDENTITY(1,1),
 	[location] VARCHAR(50),
@@ -104,7 +103,7 @@ CREATE TABLE Project.transactions
 	CONSTRAINT FK_TRANSACTIONS_TRANSACTIONTYPES FOREIGN KEY (transaction_type_id) REFERENCES Project.transaction_types(id)
 		ON DELETE NO ACTION ON UPDATE CASCADE,
 	CONSTRAINT FK_TRANSACTIONS_WALLETS FOREIGN KEY (wallet_id) REFERENCES Project.wallets(id)
-		ON DELETE NO ACTION ON UPDATE CASCADE
+		ON DELETE NO ACTION ON UPDATE NO ACTION
 );
 
 CREATE TABLE Project.transfers
@@ -115,15 +114,15 @@ CREATE TABLE Project.transfers
 	CONSTRAINT FK_TRANSFERS_TRANSACTIONS FOREIGN KEY (transaction_id) REFERENCES Project.transactions(id)
 		ON DELETE NO ACTION ON UPDATE CASCADE,
 	CONSTRAINT FK_TRANSFERS_WALLETS FOREIGN KEY (recipient_wallet_id) REFERENCES Project.wallets(id)
-		ON DELETE NO ACTION ON UPDATE CASCADE,
+		ON DELETE NO ACTION ON UPDATE NO ACTION,
 );
 
 CREATE TABLE Project.budgets
 (
 	amount INT DEFAULT 0,
 	id INT IDENTITY(1,1),
-	[start_date] DATE,
-	end_date DATE,
+	[start_date] DATETIME,
+	end_date DATETIME,
 	periodicity INT,
 	category_id INT,
 	account_name VARCHAR(20),
@@ -138,7 +137,7 @@ CREATE TABLE Project.budgets
 CREATE TABLE Project.goals
 (
 	amount INT DEFAULT 0,
-	term DATE,
+	term DATETIME,
 	accomplished INT,
 	[name] VARCHAR(20),
 	category_id INT,
@@ -153,7 +152,7 @@ CREATE TABLE Project.goals
 CREATE TABLE Project.loans
 (
 	amount INT,
-	term DATE,
+	term DATETIME,
 	interest INT,
 	[name] VARCHAR(20),
 	montlhy_payment INT,
@@ -219,3 +218,9 @@ INSERT INTO Project.stock_types (designation,id)
 VALUES 	
 		('common', 0),
 		('preferred', 1);
+
+
+-- HAVE TO CHANGE DATE 
+select * from Project.users;
+select * from Project.subscriptions
+SELECT periodicity FROM Project.recurrence WHERE (designation='quarterly')
