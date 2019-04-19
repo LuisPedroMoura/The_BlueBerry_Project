@@ -32,14 +32,6 @@ public class NewTransfer extends AppCompatActivity {
         FloatingActionButton fab = findViewById(R.id.newTransferfab);
         fab.setOnClickListener(checkFabOnClick);
 
-        //Category Spinner
-        Spinner categorySpinner = findViewById(R.id.categoryNewTransferSpinner);
-
-        ArrayList<SpinnerItem> categoryItemList = initCategoryList();
-        SpinnerAdapter categoryAdapter = new SpinnerAdapter(this, categoryItemList);
-        categorySpinner.setAdapter(categoryAdapter);
-        categorySpinner.setOnItemSelectedListener(av);
-
         //(from) wallet Spinner
         Spinner walletSpinner = findViewById(R.id.walletNewTransferSpinner);
 
@@ -72,21 +64,6 @@ public class NewTransfer extends AppCompatActivity {
             dateTV.setText(dateContent);
         }
 
-    }
-
-    //////////////////////
-    ///Category Spinner///
-    //////////////////////
-    private ArrayList<SpinnerItem> initCategoryList(){
-
-        List<AppCategory> categoriesList = Home.app.getCategoriesList();
-        ArrayList<SpinnerItem> categoryItemList = new ArrayList<>();
-
-        for(AppCategory category : categoriesList){
-            categoryItemList.add(new SpinnerItem(category.getName(), category.getIcon()));
-        }
-
-        return categoryItemList;
     }
 
     //////////////////////
