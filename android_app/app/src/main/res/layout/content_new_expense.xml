@@ -92,7 +92,7 @@
             android:hint="Notes"
             android:inputType="text"
             android:textSize="24sp"
-            app:layout_gravity="fill"/>
+            app:layout_gravity="fill" />
 
         <Spinner
             android:id="@+id/walletNewExpenseSpinner"

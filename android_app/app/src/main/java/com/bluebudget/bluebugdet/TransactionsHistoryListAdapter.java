@@ -1,6 +1,7 @@
 package com.bluebudget.bluebugdet;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -32,7 +33,7 @@ public class TransactionsHistoryListAdapter extends ArrayAdapter<TransactionsHis
         //get the history info
         String date = getItem(position).getDate();
         int icon = getItem(position).getIcon();
-        String category = getItem(position).getCategory();
+        String description = getItem(position).getDescription();
         String amount = getItem(position).getAmount();
 
         //create history object
@@ -45,13 +46,22 @@ public class TransactionsHistoryListAdapter extends ArrayAdapter<TransactionsHis
         //update info
         TextView dateTV = convertView.findViewById(R.id.dateTextView);
         ImageView iconIV = convertView.findViewById(R.id.categoryIconImageView);
-        TextView categoryTV = convertView.findViewById(R.id.categoryTextView);
+        TextView descriptionTV = convertView.findViewById(R.id.descriptionTextView);
         TextView amountTV = convertView.findViewById(R.id.amountTextView);
 
         dateTV.setText(date);
         iconIV.setImageResource(icon);
-        categoryTV.setText(category);
+        descriptionTV.setText(description);
         amountTV.setText(amount);
+
+        Double value = Double.parseDouble(amount);
+        if(value<0){
+            //Log.i(TAG, value+"");
+            amountTV.setTextColor(Color.RED);
+        }
+        else{
+            amountTV.setTextColor(Color.GREEN);
+        }
 
         return convertView;
     }

@@ -11,9 +11,16 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
 
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.List;
+
 public class Home extends AppCompatActivity {
 
-    public static App app;
+    public static App app = new App();
+
+    private static final String TAG = "Home";
 
 
 
@@ -25,22 +32,22 @@ public class Home extends AppCompatActivity {
 
             switch (item.getItemId()) {
                 case R.id.navigation_home:
-                    Log.d("HOME", "home clicked");
+                    Log.d(TAG, "home clicked");
                     Intent newTransactions = new Intent(Home.this, testTabbedActivity.class);
                     startActivity(newTransactions);
                     return true;
                 case R.id.navigation_transactions:
-                    Log.d("HOME", "transactions clicked");
+                    Log.d(TAG, "transactions clicked");
                     Intent transactions = new Intent(Home.this, Transactions.class);
                     startActivity(transactions);
                     return true;
                 case R.id.navigation_budget:
-                    Log.d("HOME", "budget clicked");
+                    Log.d(TAG, "budget clicked");
                     Intent budget = new Intent(Home.this, Budget.class);
                     startActivity(budget);
                     return true;
                 case R.id.navigation_stats:
-                    Log.d("HOME", "stats clicked");
+                    Log.d(TAG, "stats clicked");
                     Intent stats = new Intent(Home.this, Stats.class);
                     startActivity(stats);
                     return true;
@@ -64,7 +71,8 @@ public class Home extends AppCompatActivity {
         menuItem.setChecked(true);
 
 
-        this.app = new App();
+        //this.app = new App();
+
     }
 
 }
