@@ -9,7 +9,7 @@ CREATE TABLE Project.money_accounts
 
 CREATE TABLE Project.wallets
 (
-	balance INT DEFAULT 0,
+	balance MONEY,
 	[name] VARCHAR(20),
 	id INT IDENTITY(1,1),
 	account_name VARCHAR(20),
@@ -18,6 +18,7 @@ CREATE TABLE Project.wallets
 	CONSTRAINT FK_WALLETS_MONEYACCOUNTS FOREIGN KEY (account_name, account_id) REFERENCES Project.money_accounts(account_name, id)
 		ON DELETE NO ACTION ON UPDATE CASCADE
 );
+DECLARE @IdentityOutput table ( ID int )
 
 CREATE TABLE Project.recurrence
 (
@@ -43,6 +44,10 @@ CREATE TABLE Project.subscriptions
 	CONSTRAINT FK_SUBSCRIPTIONS_RECURRENCE FOREIGN KEY (periodicity) REFERENCES Project.recurrence(periodicity)
 		ON DELETE NO ACTION ON UPDATE CASCADE	
 );
+
+select * from Project.users;
+select * from project.subscriptions;
+delete from Project.users where [user_name] like 'user%';
 
 CREATE TABLE Project.users
 (
@@ -151,11 +156,11 @@ CREATE TABLE Project.goals
 
 CREATE TABLE Project.loans
 (
-	amount INT,
+	amount MONEY,
 	term DATETIME,
-	interest INT,
+	interest DECIMAL(5,2),
 	[name] VARCHAR(20),
-	montlhy_payment INT,
+	montlhy_payment MONEY,
 	account_name VARCHAR(20),
 	account_id INT,
 	CHECK([name] != ''),
