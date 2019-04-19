@@ -225,6 +225,7 @@
             this.extra_textBox.Size = new System.Drawing.Size(100, 22);
             this.extra_textBox.TabIndex = 32;
             this.extra_textBox.MouseClick += new System.Windows.Forms.MouseEventHandler(this.extra_textBox_MouseClick);
+            this.extra_textBox.TextChanged += new System.EventHandler(this.extra_textBox_TextChanged);
             this.extra_textBox.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.extra_textBox_KeyPress);
             this.extra_textBox.Leave += new System.EventHandler(this.extra_textBox_Leave);
             // 

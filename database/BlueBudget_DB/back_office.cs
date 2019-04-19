@@ -376,5 +376,12 @@ namespace BlueBudget_DB
                 default_textBoxes();
             }
         }
+
+        private void extra_textBox_TextChanged(object sender, EventArgs e)
+        {
+
+             extra_textBox.ForeColor = Color.Black;
+
+        }
     }
 }
