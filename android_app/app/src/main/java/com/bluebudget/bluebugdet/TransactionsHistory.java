@@ -3,13 +3,13 @@ package com.bluebudget.bluebugdet;
 public class TransactionsHistory {
     private String date;
     private int icon;
-    private String category;
+    private String description;
     private String amount;
 
-    public TransactionsHistory(String date, int icon, String category, String amount) {
+    public TransactionsHistory(String date, int icon, String description, String amount) {
         this.date = date;
         this.icon = icon;
-        this.category = category;
+        this.description = description;
         this.amount = amount;
     }
 
@@ -29,12 +29,12 @@ public class TransactionsHistory {
         this.icon = icon;
     }
 
-    public String getCategory() {
-        return category;
+    public String getDescription() {
+        return description;
     }
 
-    public void setCategory(String category) {
-        this.category = category;
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     public String getAmount() {

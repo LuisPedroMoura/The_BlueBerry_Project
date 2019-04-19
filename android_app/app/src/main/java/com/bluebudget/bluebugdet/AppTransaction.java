@@ -1,5 +1,5 @@
 package com.bluebudget.bluebugdet;
-import java.util.Date;
+import java.util.Calendar;
 
 public class AppTransaction {
 
@@ -7,14 +7,14 @@ public class AppTransaction {
     private int id;
     private double value;
     private AppTransactionType type;
-    private Date date;
+    private Calendar date;
     private String category;
     private String notes;
     private String location;
     private String wallet;
     private String recipientWallet;
 
-    public AppTransaction(double value, Date date, String category, String notes, String location,
+    public AppTransaction(double value, Calendar date, String category, String notes, String location,
                           String wallet, String recipientWallet, AppTransactionType type) {
         this.id = ++COUNTER;
         this.value = value;
@@ -24,6 +24,7 @@ public class AppTransaction {
         this.location = location;
         this.wallet = wallet;
         this.recipientWallet = recipientWallet;
+        this.type = type;
     }
 
 
@@ -48,10 +49,10 @@ public class AppTransaction {
         this.value = value;
     }
 
-    public Date getDate(){
+    public Calendar getDate(){
         return this.date;
     }
-    public void setDate(Date date){
+    public void setDate(Calendar date){
         this.date = date;
     }
 

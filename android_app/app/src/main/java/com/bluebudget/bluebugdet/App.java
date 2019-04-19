@@ -1,6 +1,6 @@
 package com.bluebudget.bluebugdet;
 
-import java.util.Date;
+import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
 
@@ -13,6 +13,8 @@ public class App {
     private AppWalletList wallets;
     private AppTransactionList transactions;
 
+
+    private static final String TAG = "APP";
 
 
     public App(){
@@ -84,22 +86,22 @@ public class App {
     // TRANSACTIONS --------------------------------------------------------------------------------
     // ---------------------------------------------------------------------------------------------
 
-    public void addIncome(double value, Date date, String category, String notes , String location,
+    public void addIncome(double value, Calendar date, String category, String notes , String location,
                           String wallet) {
         transactions.addIncome(value, date, category, notes , location, wallet);
     }
 
-    public void addExpense(double value, Date date, String category, String notes , String location,
-                          String wallet) {
+    public void addExpense(double value, Calendar date, String category, String notes , String location,
+                           String wallet) {
         transactions.addExpense(value, date, category, notes , location, wallet);
     }
 
-    public void addTransfer(double value, Date date, String category, String notes , String location,
+    public void addTransfer(double value, Calendar date, String notes , String location,
                           String wallet, String recipientWallet) {
-        transactions.addTransfer(value, date, category, notes , location, wallet, recipientWallet);
+        transactions.addTransfer(value, date, notes , location, wallet, recipientWallet);
     }
 
-    public List<AppTransaction> getTransactions(Date minDate, Date maxDate,
+    public List<AppTransaction> getTransactions(Calendar minDate, Calendar maxDate,
                                                    List<Integer> categoryIDs,
                                                    List<String> locations,
                                                    List<String> wallets,

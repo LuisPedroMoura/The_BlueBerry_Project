@@ -1,7 +1,10 @@
 package com.bluebudget.bluebugdet;
 
+import android.util.Log;
+
 import java.util.ArrayList;
-import java.util.Date;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -10,27 +13,29 @@ public class AppTransactionList {
 
     private Map<Integer, AppTransaction> transactions = new HashMap<>();
 
+    private static final String TAG = "APPTRANSACTIONLIST";
+
 
     public AppTransactionList() {}
 
 
-    public void addIncome(double value, Date date, String category, String notes , String location,
+    public void addIncome(double value, Calendar date, String category, String notes , String location,
                           String wallet) {
         AppTransaction t = new AppTransaction(value, date, category, notes, location, wallet,
                 null, AppTransactionType.INCOME);
         transactions.put(t.getId(), t);
     }
 
-    public void addExpense(double value, Date date, String category, String notes , String location,
+    public void addExpense(double value, Calendar date, String category, String notes , String location,
                           String wallet) {
         AppTransaction t = new AppTransaction(-value, date, category, notes, location, wallet,
                 null, AppTransactionType.EXPENSE);
         transactions.put(t.getId(), t);
     }
 
-    public void addTransfer(double value, Date date, String category, String notes , String location,
+    public void addTransfer(double value, Calendar date, String notes , String location,
                           String wallet, String recipientWallet) {
-        AppTransaction t = new AppTransaction(-value, date, category, notes, location, wallet,
+        AppTransaction t = new AppTransaction(-value, date, null, notes, location, wallet,
                 recipientWallet, AppTransactionType.TRANSFER);
         transactions.put(t.getId(), t);
     }
@@ -43,7 +48,7 @@ public class AppTransactionList {
         transactions.remove(transaction.getId());
     }
 
-    public List<AppTransaction> filterTransactions(Date minDate, Date maxDate,
+    public List<AppTransaction> filterTransactions(Calendar minDate, Calendar maxDate,
                                                    List<Integer> categories,
                                                    List<String> locations,
                                                    List<String> wallets,
@@ -51,16 +56,29 @@ public class AppTransactionList {
 
         List<AppTransaction> res = new ArrayList<>();
 
+        if (minDate == null){
+            minDate = new GregorianCalendar(0,0,0, 0, 0, 0);
+
+        }
+        if (maxDate == null){
+            maxDate =  new GregorianCalendar(30000,12,31, 0, 0, 0);
+        }
+
         for (Integer id : this.transactions.keySet()){
 
             AppTransaction tr = this.transactions.get(id);
 
-            if (minDate == null){
-                minDate = new Date(0,0,0);
-            }
-            if (maxDate == null){
-                maxDate = new Date();
-            }
+            /*Log.i(TAG, "minDate.getClass().getSimpleName() " + minDate.getClass().getSimpleName());
+            Log.i(TAG,"maxDate.getClass().getSimpleName() " + maxDate.getClass().getSimpleName());
+            Log.i(TAG, "tr.getDate().getClass().getSimpleName() " + tr.getDate().getClass().getSimpleName());
+            Log.i(TAG, "minDate.getTime() " + minDate.getTime().toString());
+            Log.i(TAG, "maxDate.getTime() " + maxDate.getTime().toString());
+            Log.i(TAG, "tr.getDate().getTime() " + tr.getDate().getTime().toString());
+            Log.i(TAG, "tr.getDate().compareTo(minDate) >= 0 -> " + (tr.getDate().compareTo(minDate) >= 0));
+            Log.i(TAG, "tr.getDate().compareTo(maxDate) <= 0 -> " + (tr.getDate().compareTo(maxDate) <= 0));
+            Log.i(TAG, "tr.getDate().getTime().compareTo(minDate.getTime()) >= 0 " + (tr.getDate().getTime().compareTo(minDate.getTime()) >= 0));
+            Log.i(TAG, "tr.getDate().getTime().compareTo(maxDate.getTime()) <= 0 " + (tr.getDate().getTime().compareTo(maxDate.getTime()) <= 0));
+            */
 
             if (tr.getDate().compareTo(minDate) >= 0 && tr.getDate().compareTo(maxDate) <= 0){
                 if (categories == null || categories.contains(tr.getCategory())){

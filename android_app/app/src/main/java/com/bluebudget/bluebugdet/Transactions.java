@@ -21,7 +21,9 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.List;
+import java.util.Locale;
 
 public class Transactions extends AppCompatActivity {
 
@@ -30,10 +32,33 @@ public class Transactions extends AppCompatActivity {
     OvershootInterpolator interpolator = new OvershootInterpolator();
     Boolean isMenuOpen = false;
 
+    BottomNavigationView navigation;
     ListView transactionsHistoryLV;
 
-    private static final String TAG = "TRANSACTIONS";
+    private static final String TAG = "Transactions";
 
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_transactions);
+
+        //get the icon selected and go to the respective activity
+        navigation = findViewById(R.id.navigation);
+        navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
+
+        //highlight the selected icon
+        Menu menu = navigation.getMenu();
+        MenuItem menuItem = menu.getItem(1);
+        menuItem.setChecked(true);
+
+        getNewTransactionInfo();
+
+        initHistoryListView();
+
+        initFabMenu();
+
+    }
 
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
@@ -65,65 +90,78 @@ public class Transactions extends AppCompatActivity {
         }
     };
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_transactions);
 
-        //get the icon selected and go to the respective activity
-        BottomNavigationView navigation = findViewById(R.id.navigation);
-        navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
+    private void getNewTransactionInfo(){
+        Log.i(TAG, "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+        Log.i(TAG, "getNewTransactionInfo");
 
-        //highlight the selected icon
-        Menu menu = navigation.getMenu();
-        MenuItem menuItem = menu.getItem(1);
-        menuItem.setChecked(true);
+        Intent incomingIntent = getIntent();
 
-        //add transactions
-        //Home.app.addExpense(20.0, new Date(1990, 9, 21), "Home", "nota", "aveiro", "Current");
+        String transactionType = incomingIntent.getStringExtra("transactionType");
 
-        initHistoryListView();
+        Log.i(TAG, (transactionType != null)+"");
+        if (transactionType != null) {
 
-        initFabMenu();
+            Double amount = incomingIntent.getDoubleExtra("amount", 0);
+            String date = incomingIntent.getStringExtra("date");
+            String [] a = date.split("-");
+            Calendar calendar = new GregorianCalendar(Integer.parseInt(a[2]),Integer.parseInt(a[1]),Integer.parseInt(a[0]));
+            String category = incomingIntent.getStringExtra("category");
+            String location = incomingIntent.getStringExtra("location");
+            String notes = incomingIntent.getStringExtra("notes");
+            String wallet = incomingIntent.getStringExtra("wallet");
+            String recipientWallet = incomingIntent.getStringExtra("recipientWallet");
 
+            Log.i(TAG, transactionType + " " + amount + " " + date + " " + category + " " + notes + " " + location + " " + wallet + " " + recipientWallet);
+
+            //add transactions
+            if(transactionType.equals("NewExpense")){
+                Home.app.addExpense(amount, calendar, category, notes, location, wallet);
+            }
+            else if(transactionType.equals("NewIncome")){
+                Home.app.addIncome(amount, calendar, category, notes, location, wallet);
+            }
+            else if(transactionType.equals("NewTransfer")){
+                Home.app.addTransfer(amount, calendar, notes, location, wallet, recipientWallet);
+                Log.i(TAG, "added new transfer");
+                List<AppTransaction> allTransactions = Home.app.getTransactions(null, null, null, null, null , null);
+                Log.i(TAG, allTransactions.size()+"");
+            }
+        }
     }
 
     private void initHistoryListView(){
         Log.d(TAG, "history initiated");
 
-
         transactionsHistoryLV = findViewById(R.id.transactionsHistoryListView);
 
         ArrayList<TransactionsHistory> transactionsHistoryList = new ArrayList<>();
-        /*List<String> wallets = new ArrayList<>();
-        wallets.add("Current");
-        List<AppTransaction> allTransactions = Home.app.getTransactions(null, null, null, null, wallets , null);
+        List<AppTransaction> allTransactions = Home.app.getTransactions(null, null, null, null, null , null);
 
         for(AppTransaction t : allTransactions){
 
             Format formatter = new SimpleDateFormat("dd-MM-yyyy");
-            String date = formatter.format(t.getDate());
+            String date = formatter.format(t.getDate().getTime());
 
-            int icon = R.drawable.ic_trending_down_black_24dp;
+            Log.i(TAG, t.getValue()+"");
+            Log.i(TAG, t.getType()+"");
+
+
+            String description;
+            int icon;
             if(t.getType() == AppTransactionType.TRANSFER){
+                description = "from " + t.getWallet() + "\nto " + t.getRecipientWallet();
                 icon = R.drawable.ic_compare_arrows_black_24dp;
-            }
-            else if (t.getType() == AppTransactionType.INCOME){
-                icon = R.drawable.ic_trending_up_black_24dp;
+            }else{
+                description = t.getCategory();
+                icon = Home.app.getCategory(description).getIcon();
             }
 
-            TransactionsHistory th = new TransactionsHistory(date, icon, t.getCategory(), Double.toString(t.getValue()));
+
+            TransactionsHistory th = new TransactionsHistory(date, icon, description, Double.toString(t.getValue()));
             transactionsHistoryList.add(th);
-
-            Log.d(TAG, "entered for");
         }
 
-        TransactionsHistoryListAdapter adapter = new TransactionsHistoryListAdapter(this, R.layout.transactions_history_layout, transactionsHistoryList);
-        transactionsHistoryLV.setAdapter(adapter);
-*/
-
-        TransactionsHistory th = new TransactionsHistory("21-9-1998", R.drawable.ic_compare_arrows_black_24dp, "Home", "20.0"+"€");
-        transactionsHistoryList.add(th);
         TransactionsHistoryListAdapter adapter = new TransactionsHistoryListAdapter(this, R.layout.transactions_history_layout, transactionsHistoryList);
         transactionsHistoryLV.setAdapter(adapter);
 

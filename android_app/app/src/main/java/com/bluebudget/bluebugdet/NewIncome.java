@@ -1,5 +1,6 @@
 package com.bluebudget.bluebugdet;
 
+import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -9,6 +10,8 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.DatePicker;
+import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
 
@@ -19,22 +22,38 @@ import java.util.List;
 
 public class NewIncome extends AppCompatActivity {
 
-    private static final String TAG = "NewTransaction";
+    private Toolbar toolbar;
+
+    private FloatingActionButton fab;
+    private EditText amountET;
+    private TextView dateTV;
+    private Spinner categorySpinner;
+    private EditText locationET;
+    private EditText notesET;
+    private Spinner walletSpinner;
+
+    private static final String TAG = "NewIncome";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_income);
 
-        Toolbar toolbar = findViewById(R.id.toolbar);
+        toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
 
-        FloatingActionButton fab = findViewById(R.id.newIncomefab);
+        fab = findViewById(R.id.newIncomefab);
         fab.setOnClickListener(checkFabOnClick);
 
+        amountET = findViewById(R.id.amountNewIncomeET);
+
+        locationET = findViewById(R.id.locationNewIncomeET);
+
+        notesET = findViewById(R.id.notesNewIncomeET);
+
         //Category Spinner
-        Spinner categorySpinner = findViewById(R.id.categoryNewIncomeSpinner);
+        categorySpinner = findViewById(R.id.categoryNewIncomeSpinner);
 
         ArrayList<SpinnerItem> categoryItemList = initCategoryList();
         SpinnerAdapter categoryAdapter = new SpinnerAdapter(this, categoryItemList);
@@ -42,7 +61,7 @@ public class NewIncome extends AppCompatActivity {
         categorySpinner.setOnItemSelectedListener(av);
 
         //Category Spinner
-        Spinner walletSpinner = findViewById(R.id.walletNewIncomeSpinner);
+        walletSpinner = findViewById(R.id.walletNewIncomeSpinner);
 
         ArrayList<SpinnerItem> walletItemList = initWalletList();
         SpinnerAdapter walletAdapter = new SpinnerAdapter(this, walletItemList);
@@ -51,20 +70,10 @@ public class NewIncome extends AppCompatActivity {
 
 
         //Date
-        TextView dateTV = findViewById(R.id.dateNewIncomeTV);
+        dateTV = findViewById(R.id.dateNewIncomeTV);
         dateTV.setOnClickListener(dateListener);
-        Intent incomingIntent = getIntent();
-        String dateContent = incomingIntent.getStringExtra("date");
-
-        if(dateContent==null){
-            Log.i(TAG, "dateContent == null");
-            SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
-            dateTV.setText(sdf.format(Calendar.getInstance().getTime()));
-        }
-        else{
-            Log.i(TAG, "dateContent != null");
-            dateTV.setText(dateContent);
-        }
+        SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
+        dateTV.setText(sdf.format(Calendar.getInstance().getTime()));
 
     }
 
@@ -118,9 +127,26 @@ public class NewIncome extends AppCompatActivity {
     View.OnClickListener dateListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            Intent intent = new Intent(NewIncome.this, CalendarPopUp.class);
-            intent.putExtra("className", "NewIncome");
-            startActivity(intent);
+            showDatePickerDialog();
+        }
+    };
+
+    public void showDatePickerDialog(){
+        DatePickerDialog datePickerDialog = new DatePickerDialog(
+                this,
+                onDateSetListener,
+                Calendar.getInstance().get(Calendar.YEAR),
+                Calendar.getInstance().get(Calendar.MONTH),
+                Calendar.getInstance().get(Calendar.DAY_OF_MONTH));
+        datePickerDialog.show();
+    }
+
+
+    DatePickerDialog.OnDateSetListener onDateSetListener = new DatePickerDialog.OnDateSetListener(){
+        @Override
+        public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+            String date = dayOfMonth + "-" + (month+1) + "-" + year;
+            dateTV.setText(date);
         }
     };
 
@@ -130,6 +156,22 @@ public class NewIncome extends AppCompatActivity {
         public void onClick(View view) {
             Log.d(TAG, "check clicked");
             Intent transactions = new Intent(NewIncome.this, Transactions.class);
+
+            transactions.putExtra("transactionType", "NewIncome");
+            String amount = amountET.getText().toString();
+            if(amount.equals("")){
+                amount = 0.0+"";
+            }
+            transactions.putExtra("amount", Double.parseDouble(amount));
+            transactions.putExtra("date", dateTV.getText().toString());
+
+            SpinnerItem csi = (SpinnerItem) categorySpinner.getSelectedItem();
+            transactions.putExtra("category", csi.getName() );
+            transactions.putExtra("location", locationET.getText().toString());
+            transactions.putExtra("notes", notesET.getText().toString());
+            SpinnerItem wsi = (SpinnerItem) walletSpinner.getSelectedItem();
+            transactions.putExtra("wallet", wsi.getName());
+
             startActivity(transactions);
         }
     };

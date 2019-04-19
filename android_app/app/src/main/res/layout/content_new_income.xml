@@ -69,7 +69,7 @@
             app:srcCompat="@drawable/ic_place_black_24dp" />
 
         <EditText
-            android:id="@+id/locationNewIncomeEditText"
+            android:id="@+id/locationNewIncomeET"
             android:layout_margin="10dp"
             android:background="@android:color/transparent"
             android:hint="Location"
@@ -87,7 +87,7 @@
             app:srcCompat="@drawable/ic_edit_black_24dp" />
 
         <EditText
-            android:id="@+id/notesNewIcomeET"
+            android:id="@+id/notesNewIncomeET"
             android:layout_margin="10dp"
             android:background="@android:color/transparent"
             android:hint="Notes"
