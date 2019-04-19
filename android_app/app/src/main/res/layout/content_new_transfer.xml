@@ -52,14 +52,6 @@
             app:layout_gravity="fill"
             app:layout_rowWeight="1" />
 
-        <Spinner
-            android:id="@+id/categoryNewTransferSpinner"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            app:layout_columnSpan="2"
-            app:layout_gravity="fill_horizontal"
-            app:layout_rowWeight="1" />
-
         <ImageView
             android:id="@+id/locationNewTransferIV"
             app:layout_columnWeight="1"
@@ -86,7 +78,7 @@
             app:srcCompat="@drawable/ic_edit_black_24dp" />
 
         <EditText
-            android:id="@+id/locationNewTransferET"
+            android:id="@+id/notesNewTransferET"
             android:layout_margin="10dp"
             android:background="@android:color/transparent"
             android:hint="Notes"
