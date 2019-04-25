@@ -2,10 +2,11 @@ CREATE TABLE Project.money_accounts
 (
 	id INT IDENTITY(1,1),
 	account_name VARCHAR(20),
-	patrimony INT DEFAULT 0,
+	patrimony MONEY DEFAULT 0.0,
 	CHECK (account_name!=''),
 	CONSTRAINT PK_MONEYACCOUNTS PRIMARY KEY (id)
 );
+
 
 CREATE TABLE Project.wallets
 (

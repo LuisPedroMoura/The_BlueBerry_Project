@@ -58,8 +58,8 @@ namespace BlueBudget_DB
             account_textbox.ForeColor = Color.Black;
             // calculate(sum) wallets balance
             String[] columns = { "balance" };
-            List<IDictionary<String, String>> where = new List<IDictionary<string, string>>();
-            where.Add(new Dictionary<String, String> { { "account_id", account_id } });
+            var where = DB_API.where();
+            where["account_id"] = account_id;
             DataTableReader rdr = DB_API.DBselect("Project.wallets", columns, where);
             Decimal balance = 0.00m;
             while (rdr.Read())
@@ -118,7 +118,7 @@ namespace BlueBudget_DB
             CURRENT_USER = email;
 
             // verify if user exists
-            var exists = DB_API.Exists("Project.users", "email", DB_API.Str(email));
+            var exists = DB_API.Exists("Project.users", "email", email);
             if (!exists)
             {
                 notifications_textbox.Text = "ERROR:\nUser does not exist!";
@@ -129,7 +129,8 @@ namespace BlueBudget_DB
             var columns = new String[] { "account_name", "account_id" };
 
             // choose filter to be applied
-            var where = new List<IDictionary<String, String>> { new Dictionary<String, String> { { "user_email", DB_API.Str(email) } } };
+            var where = DB_API.where();
+            where["user_email"] = email;
             
             // read query result
             var rdr = DB_API.DBselect("Project.users_money_accounts", columns, where);
@@ -180,20 +181,14 @@ namespace BlueBudget_DB
                 return;
             }
 
-            // insert new account into 'money_accounts' table
+            // insert new account into 'money_accounts' and 'users_money_accounts' tables
             IDictionary<String, String> attrValue = new Dictionary<string, string>();
-            attrValue["account_name"] = DB_API.Str(account_name);
+            attrValue["user_email"] = CURRENT_USER;
+            attrValue["account_name"] = account_name;
             attrValue["patrimony"] = 0.0.ToString();
-            string account_id = DB_API.DBinsertGetID("Project.money_accounts", attrValue).ToString();
+            DB_API.DBexecProc("pr_insert_money_account", attrValue);
 
-            // insert new account into 'users_money_accounts' table
-            attrValue.Clear();
-            attrValue["account_name"] = DB_API.Str(account_name);
-            attrValue["account_id"] = account_id;
-            attrValue["user_email"] = DB_API.Str(CURRENT_USER);
-            DB_API.DBinsert("Project.users_money_accounts", attrValue);
-
-            CURRENT_USER_ACCOUNTS[account_name] = int.Parse(account_id);
+            //CURRENT_USER_ACCOUNTS[account_name] = int.Parse(account_id);
             LISTBOXCONTENT.Add(account_name);
 // O PROBLEMA É A REATRIBUIÇÃO... ALGO DE BINDING... VER PORQUE E COMO FNCIONA NO BACK OFFICE!
             accounts_listbox.DataSource = LISTBOXCONTENT;
@@ -213,8 +208,8 @@ namespace BlueBudget_DB
                 return;
             }
             var where = DB_API.where();
-            where[0]["account_id"] = account_id;
-            DB_API.DBdelete("Project.money_accounts", where);
+            where["account_id"] = account_id;
+            DB_API.DBexecProc("pr_delete_money_account", where);
         }
 
         private void adduser_btn_Click(object sender, EventArgs e)
@@ -240,7 +235,7 @@ namespace BlueBudget_DB
             }
 
             // verify if user exists
-            exists = DB_API.Exists("Project.users", "email", DB_API.Str(user_email));
+            exists = DB_API.Exists("Project.users", "email", user_email);
             if (!exists)
             {
                 notifications_textbox.Text = "ERROR:\nUser does not exist!";
@@ -249,10 +244,10 @@ namespace BlueBudget_DB
 
             // insert new account into 'users_money_accounts' tablee
             IDictionary<String, String> attrValue = new Dictionary<string, string>();        
-            attrValue["account_name"] = DB_API.Str(account_name);
+            attrValue["account_name"] = account_name;
             attrValue["account_id"] = account_id;
-            attrValue["user_email"] = DB_API.Str(user_email);
-            DB_API.DBinsert("Project.users_money_accounts", attrValue);
+            attrValue["user_email"] = user_email;
+            DB_API.DBexecProc("Project.users_money_accounts", attrValue);
 
             associatedusers_listbox.DataSource += account_name;
             notifications_textbox.Text = "SUCCESS:\nNew account was added!";
@@ -279,7 +274,7 @@ namespace BlueBudget_DB
             }
 
             // verify if user exists
-            exists = DB_API.Exists("Project.users", "email", DB_API.Str(user_email));
+            exists = DB_API.Exists("Project.users", "email", user_email);
             if (!exists)
             {
                 notifications_textbox.Text = "ERROR:\nUser does not exist!";
@@ -288,9 +283,9 @@ namespace BlueBudget_DB
 
             // delete user access to account
             var where = DB_API.where();
-            where[0]["account_id"] = account_id;
-            where[0]["user_email"] = DB_API.Str(user_email);
-            DB_API.DBdelete("Project.users_money_accounts", where);
+            where["account_id"] = account_id;
+            where["user_email"] = user_email;
+            DB_API.DBexecProc("pr_delete_money_account", where);
         }
 
 

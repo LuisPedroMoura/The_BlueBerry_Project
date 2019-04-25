@@ -17,14 +17,9 @@ namespace BlueBudget_DB
             InitializeComponent();
 
             // populate listbox with users
-            Console.WriteLine("phase 0");
             populate_listBox();
-            Console.WriteLine("phase 1");
             populate_comboBox();
-            Console.WriteLine("phase 2");
             defaultTextboxes();
-            Console.WriteLine("phase 3");
-
         }
 
         // -------------------------------------------------------------------
@@ -72,49 +67,28 @@ namespace BlueBudget_DB
             var where = DB_API.where();
 
             // verify if user exists, if so, cannot be added, only updated
-            var exists = DB_API.Exists("Project.users", "email", DB_API.Str(email));
+            var exists = DB_API.Exists("Project.users", "email", email);
             if (exists)
             {
                 notifications_textbox.Text = "ERROR:\nUser already exists!";
                 return;
             }
 
-            // add user to 'users' table
-            attrValue["email"] = DB_API.Str(email);
-            attrValue["[user_name]"] = DB_API.Str(username);
-            DB_API.DBinsert("Project.users", attrValue);
-
-            // user is gonna be subscribed
-            if (active_checkBox.Checked)
-            {
-                // get periodicity id using designation from comboBox
-                string[] coll = { "periodicity" };
-                string tableName = "Project.recurrence";
-                where[0].Add("designation", DB_API.Str(periodicity));
-                var res = new List<String>();
-                var rdr = DB_API.DBselect(tableName, coll, where);
-                while (rdr.Read())
+            // add user
+            attrValue = new Dictionary<String, String>
                 {
-                    res.Add(((int)rdr["periodicity"]).ToString());
-                }
-                periodicity = res[0];
-
-                // add user to 'subscriptions' table
-                attrValue = new Dictionary<String, String>
-                {
-                    { "email", DB_API.Str(email) },
-                    { "fname", DB_API.Str(fname) },
-                    { "mname", DB_API.Str(mname) },
-                    { "lname", DB_API.Str(lname) },
-                    { "card_number", DB_API.Str(cardNo) },
+                    { "user_name", username },
+                    { "email", email },
+                    { "fname", fname },
+                    { "mname", mname },
+                    { "lname", lname },
+                    { "card_number", cardNo },
                     { "periodicity", periodicity },
-                    { "term", DB_API.Str(term) },
+                    { "term", term },
                     { "active", "1" }
                 };
-                attrValue = DB_API.CleanDict(attrValue);
-                DB_API.DBinsert("Project.subscriptions", attrValue);
-            }
-            
+            DB_API.DBexecProc("pr_insert_user", attrValue);
+
             // upadte listBox with new user
             populate_listBox();
             notifications_textbox.Text = "SUCCESS:\n New user was added to database!";
@@ -135,10 +109,6 @@ namespace BlueBudget_DB
 
             // create data structures for insertions
             var attrValue = DB_API.attrValue();
-            attrValue["email"] = DB_API.Str(email);
-            // create data structures for selections, updates and deletions
-            var set = DB_API.set();
-            var where = DB_API.where();
 
             // verify if email field is filled
             if (email.Equals(""))
@@ -158,94 +128,28 @@ namespace BlueBudget_DB
             }
 
             // verify if user exists, so it can be updated
-            var exists = DB_API.Exists("Project.users", "email", DB_API.Str(email));
+            var exists = DB_API.Exists("Project.users", "email", email);
             if (!exists)
             {
                 notifications_textbox.Text = "ERROR:\nUser does not exist. Unable to update!";
                 return;
             }
 
-            // alter username
-            set["[user_name]"] = DB_API.Str(username);
-            where[0]["email"] = DB_API.Str(email);
-            DB_API.DBupdate("Project.users", set, where);
-
-            // update 'subscriptions' table
-            // user will be subscribed
-            if (active_checkBox.Checked)
-            {
-                // verify if user was subscribed before
-                var rdr = DB_API.DBselect("Project.subscriptions", new String[] { "*" }, where);
-                bool subscribed = rdr.HasRows;
-
-                // if user was not subscribed and will now be
-                if (!subscribed)
-                {
-                    // get periodicity id using designation from comboBox
-                    var columns = new String[] { "periodicity" };
-                    where[0].Clear();
-                    where[0].Add("designation", DB_API.Str(periodicity));
-                    var res = new List<String>();
-                    rdr = DB_API.DBselect("Project.recurrence", columns, where);
-                    while (rdr.Read())
+            // update user
+            attrValue = new Dictionary<String, String>
                     {
-                        res.Add(rdr["periodicity"].ToString());
-                    }
-                    periodicity = res[0];
-
-                    // add user to 'subscriptions' table
-                    attrValue = new Dictionary<String, String>
-                    {
-                        { "email", DB_API.Str(email) },
-                        { "fname", DB_API.Str(fname) },
-                        { "mname", DB_API.Str(mname) },
-                        { "lname", DB_API.Str(lname) },
-                        { "card_number", DB_API.Str(cardNo) },
+                        { "user_name", username },
+                        { "email", email },
+                        { "fname", fname },
+                        { "mname", mname },
+                        { "lname", lname },
+                        { "card_number", cardNo },
                         { "periodicity", periodicity },
-                        { "term", DB_API.Str(term) },
+                        { "term", term },
                         { "active", "1" }
                     };
-                    attrValue = DB_API.CleanDict(attrValue);
-                    DB_API.DBinsert("Project.subscriptions", attrValue);
-                }
-                else // if user was already subscribed and is just gonna change info
-                {
-                    // get periodicity id using designation from comboBox
-                    var columns = new String[] { "periodicity" };
-                    where[0].Clear();
-                    where[0].Add("designation", DB_API.Str(periodicity));
-                    var res = new List<String>();
-                    rdr = DB_API.DBselect("Project.recurrence", columns, where);
-                    while (rdr.Read())
-                    {
-                        res.Add(((int)rdr["periodicity"]).ToString());
-                    }
-                    periodicity = res[0];
-
-                    // update subscriptions table
-                    set = new Dictionary<String, String>
-                    {
-                        { "card_number", DB_API.Str(cardNo) },
-                        { "fname", DB_API.Str(fname) },
-                        { "mname", DB_API.Str(mname) },
-                        { "lname", DB_API.Str(lname) },
-                        { "term", DB_API.Str(term) },
-                        { "periodicity", periodicity },
-                        { "active", "1" }
-                    };
-                    set = DB_API.nullifyDict(set);
-                    where[0].Clear();
-                    where[0].Add("email", DB_API.Str(email));
-                    DB_API.DBupdate("Project.subscriptions", set, where);
-                }
-            }
-            else // user will be unsubscribed
-            {
-                where[0].Clear();
-                where[0].Add("email", DB_API.Str(email));
-                DB_API.DBdelete("Project.subscriptions", where);
-            }
-
+            DB_API.DBexecProc("pr_update_user", attrValue);
+              
             // update listBox
             populate_listBox();
             notifications_textbox.Text = "SUCCESS:\n User " + email + " was updated!";
@@ -264,10 +168,10 @@ namespace BlueBudget_DB
             }
 
             List<IDictionary<String, String>> where = new List<IDictionary<String, String>>();
-            where.Add(new Dictionary<String, String> { { "email", DB_API.Str(email) } });
+            where.Add(new Dictionary<String, String> { { "email", email } });
 
             // delete user form 'users' table
-            DB_API.DBdelete("Project.users", where);
+            DB_API.DBexecProc("pr_delete_user", where[0]);
 
             populate_listBox();
         }
@@ -283,7 +187,7 @@ namespace BlueBudget_DB
             // search DB for user
             String[] columns = { "[user_name]" };
             var where = DB_API.where();
-            where[0]["email"] = DB_API.Str(email);
+            where["email"] = email;
             var res = new List<String>();
             res.Add(email);
             var rdr = DB_API.DBselect("Project.users", columns, where);
@@ -359,7 +263,7 @@ namespace BlueBudget_DB
                 cardnumber_textbox.ForeColor = !"".Equals(values[5]) ? Color.Black : Color.Gray;
 
                 var where = DB_API.where();
-                where[0]["periodicity"] = values[6];
+                where["periodicity"] = values[6];
                 var res = new List<String>();
                 var rdr = DB_API.DBselect("Project.recurrence", new String[] { "designation" }, where);
                 while (rdr.Read())
@@ -489,5 +393,9 @@ namespace BlueBudget_DB
             }
         }
 
+        private void back_office_Load(object sender, EventArgs e)
+        {
+
+        }
     }
 }
