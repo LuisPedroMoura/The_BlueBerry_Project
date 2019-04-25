@@ -48,85 +48,109 @@ namespace BlueBudget_DB
         }
 
         // ----------------------------------------------------------------------------------------------
+        // VERY COMMON QUERIES ENCAPSULATED BY METHODS --------------------------------------------------
+        // ----------------------------------------------------------------------------------------------
+
+        public static bool Exists(String tableName, String columnName, String attrName)
+        {
+            var where = DB_API.where();
+            where[columnName] = attrName;
+            var rdr = DB_API.DBselect(tableName, new string[] { "*" }, where);
+            if (!rdr.HasRows)
+            {
+                return false;
+            }
+            return true;
+        }
+
+        // ----------------------------------------------------------------------------------------------
         // SQL QUERY GENERIC METHODS --------------------------------------------------------------------
         // ----------------------------------------------------------------------------------------------
 
-        public static int DBinsert(String tableName, IDictionary<String, String> attrValue)
+
+        public static int DBexecProc(String procName, IDictionary<String, String> attrValue)
         {
-            // step 1: create sql query
-            String sql = "INSERT INTO "+tableName+" ";
-            sql += AttrParser(attrValue, ",", "()");
-            sql += " VALUES ";
-            sql += ValuesParser(attrValue, ",", "()");
+            SqlConnection cnx = DBconnect();
+
+            // step 1: create sql query and assign it to sql cmd
+            SqlCommand cmd = cnx.CreateCommand();
+            cmd.CommandText = procParser(procName, attrValue);
+
+            // step 2: parameterize cmd
+            cmdParameterizer(cmd, attrValue);
 
             Console.WriteLine("################################################");
-            Console.WriteLine(sql);
+            Console.WriteLine(cmd.CommandText);
             Console.WriteLine("################################################");
 
             // step 2: execute
-            return ExecuteNonQuery(sql);
-        }
-
-        public static int DBupdate(String tableName, IDictionary<String, String> set,
-            List<IDictionary<String, String>> where)
-        {
-            // step 1: create sql query
-            String sql = "UPDATE " + tableName + " SET ";
-            List<IDictionary<String, String>> set_list = new List<IDictionary<string, string>>();
-            set_list.Add(set);
-            sql += AttrValueParser(set_list, ",", "", "=", "()");
-            sql += " WHERE ";
-            sql += AttrValueParser(where, "AND", "OR", "is", "()");
-
-            Console.WriteLine("################################################");
-            Console.WriteLine(sql);
-            Console.WriteLine("################################################");
-
-            // step 2: execute
-            return ExecuteNonQuery(sql);
-        }
-
-        public static int DBdelete(String tableName, List<IDictionary<String, String>> where)
-        {
-            // step 1: create sql query
-            String sql = "DELETE FROM " + tableName + " ";
-            sql += " WHERE ";
-            sql += AttrValueParser(where, "AND", "OR", "is", "()");
-
-            Console.WriteLine("################################################");
-            Console.WriteLine(sql);
-            Console.WriteLine("################################################");
-
-            // step 2: execute
-            return ExecuteNonQuery(sql);
-        }
-
-        public static DataTableReader DBselect(String tableName, String[] collumns,
-            List<IDictionary<String,String>> where)
-        {
-
-            // create SQL statement
-            string sql = "SELECT";
-            foreach (String str in collumns)
+            int rows = 0;
+            try
             {
-                sql += " " + str + ",";
+                rows = cmd.ExecuteNonQuery();
+                Console.WriteLine("Query executed successfully");
             }
-            sql = sql.Substring(0, sql.Length - 1); // removes last comma
-            sql += " FROM " + tableName;
-
-            if (where.Count != 0)
+            catch (Exception ex)
             {
-                sql += " WHERE ";
-                sql += AttrValueParser(where, "AND", "OR", "is", "()");
+                Console.WriteLine("Error executing query: " + ex.ToString());
             }
+            finally
+            {
+                DBdisconnect(cnx);
+            }
+            return rows;
+        }
+
+        public static DataTableReader DBselect(String functionName, String[] collumns,
+            IDictionary<String,String> where)
+        {
+            SqlConnection cnx = DBconnect();
+
+            // step 1: create sql query and assign it to sql cmd
+            SqlCommand cmd = cnx.CreateCommand();
+            cmd.CommandText = functionParser(functionName, where);
+
+            // step 2: parameterize cmd
+            cmdParameterizer(cmd, where);
+
             Console.WriteLine("################################################");
-            Console.WriteLine(sql);
+            Console.WriteLine(cmd.CommandText);
             Console.WriteLine("################################################");
 
             // execute SQL and return
+            SqlDataReader rdr = cmd.ExecuteReader();
+            DataTable dt = new DataTable();
+            dt.Load(rdr);
+            return dt.CreateDataReader();
+        }
+
+        public static DataTableReader DBselect(String sql)
+        {
+            Console.WriteLine("################################################");
+            Console.WriteLine(sql);
+            Console.WriteLine("################################################");
+
             return ExecuteReader(sql);
         }
 
+        // ----------------------------------------------------------------------------------------------
+        // GETTERS FOR DATA TYPES THAT ARE BORING TO INSTANTIATE ----------------------------------------
+        // ----------------------------------------------------------------------------------------------
+
+        public static IDictionary<String, String> where()
+        {
+            return new Dictionary<String, String>();
+        }
+
+        public static IDictionary<String, String> set()
+        {
+            return new Dictionary<String, String>();
+        }
+
+        public static IDictionary<String, String> attrValue()
+        {
+            return set();
+        }
 
         // ----------------------------------------------------------------------------------------------
         // QUERY EXECUTION METHODS ----------------------------------------------------------------------
@@ -159,11 +183,8 @@ namespace BlueBudget_DB
             DataTable dt = new DataTable();
             try
             {
-                //Console.WriteLine("step 0: " + sql);
                 SqlCommand cmd = new SqlCommand(query, cnx);
-                //Console.WriteLine("step 1");
                 SqlDataReader rdr = cmd.ExecuteReader();
-                //Console.WriteLine("step 3");
                 dt.Load(rdr);
                 rdr.Close();
                 
@@ -179,9 +200,69 @@ namespace BlueBudget_DB
             return dt.CreateDataReader();
         }
 
+        private static object ExecuteScalar(String query)
+        {
+            SqlConnection cnx = DBconnect();
+            try
+            {
+                SqlCommand cmd = new SqlCommand(query, cnx);
+                return cmd.ExecuteScalar();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error executing query: " + ex.ToString());
+            }
+            finally
+            {
+                DBdisconnect(cnx);
+            }
+            return null;
+        }
+
         // ----------------------------------------------------------------------------------------------
         // AUXILAR PARSING METHODS ----------------------------------------------------------------------
         // ----------------------------------------------------------------------------------------------
+
+
+
+
+        private static String procParser(String procName, IDictionary<String, String> attrValue)
+        {
+            string sql = "EXEC " + procName + " ";
+
+            foreach (KeyValuePair<String, String> entry in attrValue)
+            {
+                sql += "@" + entry.Key + ", ";
+            }
+            sql = sql.Substring(0, sql.Length - 2);
+
+            return sql;
+        }
+
+        private static String functionParser(String functionName, IDictionary<String, String> attrValue)
+        {
+            string sql = "SELECT * FROM " + functionName + " (";
+
+            foreach (KeyValuePair<String, String> entry in attrValue)
+            {
+                sql += "@" + entry.Key + ", ";
+            }
+            sql = sql.Substring(0, sql.Length - 2);
+            sql += ")";
+
+            return sql;
+        }
+
+        private static void cmdParameterizer(SqlCommand cmd, IDictionary<String, String> attrValue)
+        {
+            foreach (KeyValuePair<String, String> entry in attrValue)
+            {
+                cmd.Parameters.AddWithValue("@" + entry.Key, entry.Value);
+            }
+        }
+
+
+
 
         private static String AttrValueParser(List<IDictionary<String, String>> attrValue, String separator1,
             String separator2, String nullSeparator, String parenthesis)
@@ -192,28 +273,35 @@ namespace BlueBudget_DB
             }
 
             string sql = "";
-
+            bool hasLastSep = false;
             foreach (IDictionary<String, String> dict in attrValue)
             {
-                sql += parenthesis[0];
-
-                foreach (KeyValuePair<string, string> entry in dict)
+                if (dict.Count > 0)
                 {
+                    sql += parenthesis[0];
 
-                    if (entry.Value.Equals("null"))
+                    foreach (KeyValuePair<string, string> entry in dict)
                     {
-                        sql += entry.Key + " " + nullSeparator + entry.Value;
+
+                        if (entry.Value.Equals("null"))
+                        {
+                            sql += entry.Key + " " + nullSeparator + entry.Value;
+                        }
+                        else
+                        {
+                            sql += entry.Key + "=" + entry.Value;
+                        }
+                        sql += " " + separator1 + " ";
                     }
-                    else
-                    {
-                        sql += entry.Key + "=" + entry.Value;
-                    }
-                    sql += " " + separator1 + " ";
+                    sql = sql.Substring(0, sql.Length - 1 - (separator1.Length + 1)); // removes last separator1
+                    sql += parenthesis[1] + " " + separator2 + " ";
+                    hasLastSep = true;
                 }
-                sql = sql.Substring(0, sql.Length - 1 - (separator1.Length + 1)); // removes last separator1
-                sql += parenthesis[1] + " " + separator2 + " ";
+                
             }
-            sql = sql.Substring(0, sql.Length - 1 - (separator2.Length + 1)); // removes last separator2
+            if (hasLastSep) {
+                sql = sql.Substring(0, sql.Length - 1 - (separator2.Length + 1)); // removes last separator2
+            }
 
             return sql;
         }
@@ -275,9 +363,5 @@ namespace BlueBudget_DB
             return dict;
         }
 
-        public static String Str(String str)
-        {
-            return "'" + str + "'";
-        }
     }
 }

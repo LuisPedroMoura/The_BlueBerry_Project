@@ -44,13 +44,15 @@
             this.label6 = new System.Windows.Forms.Label();
             this.term_dateTimePicker = new System.Windows.Forms.DateTimePicker();
             this.periodicity_comboBox = new System.Windows.Forms.ComboBox();
-            this.extra_textBox = new System.Windows.Forms.TextBox();
-            this.username_textbox = new System.Windows.Forms.PlaceholderTextBox();
-            this.email_textbox = new System.Windows.Forms.PlaceholderTextBox();
-            this.cardnumber_textbox = new System.Windows.Forms.PlaceholderTextBox();
-            this.lastname_textbox = new System.Windows.Forms.PlaceholderTextBox();
-            this.firstname_textbox = new System.Windows.Forms.PlaceholderTextBox();
-            this.middlename_textbox = new System.Windows.Forms.PlaceholderTextBox();
+            this.username_textbox = new System.Windows.Forms.TextBox();
+            this.email_textbox = new System.Windows.Forms.TextBox();
+            this.firstname_textbox = new System.Windows.Forms.TextBox();
+            this.lastname_textbox = new System.Windows.Forms.TextBox();
+            this.middlename_textbox = new System.Windows.Forms.TextBox();
+            this.cardnumber_textbox = new System.Windows.Forms.TextBox();
+            this.notifications_textbox = new System.Windows.Forms.RichTextBox();
+            this.label7 = new System.Windows.Forms.Label();
+            this.label8 = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // add_btn
@@ -139,7 +141,7 @@
             this.users_listbox.Location = new System.Drawing.Point(37, 54);
             this.users_listbox.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.users_listbox.Name = "users_listbox";
-            this.users_listbox.Size = new System.Drawing.Size(261, 356);
+            this.users_listbox.Size = new System.Drawing.Size(261, 276);
             this.users_listbox.TabIndex = 22;
             this.users_listbox.SelectedIndexChanged += new System.EventHandler(this.users_listbox_SelectedIndexChanged);
             // 
@@ -205,90 +207,125 @@
             // 
             // term_dateTimePicker
             // 
-            this.term_dateTimePicker.Location = new System.Drawing.Point(534, 327);
+            this.term_dateTimePicker.Location = new System.Drawing.Point(512, 327);
+            this.term_dateTimePicker.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.term_dateTimePicker.Name = "term_dateTimePicker";
-            this.term_dateTimePicker.Size = new System.Drawing.Size(200, 22);
+            this.term_dateTimePicker.Size = new System.Drawing.Size(223, 22);
             this.term_dateTimePicker.TabIndex = 30;
             // 
             // periodicity_comboBox
             // 
             this.periodicity_comboBox.FormattingEnabled = true;
             this.periodicity_comboBox.Location = new System.Drawing.Point(376, 327);
+            this.periodicity_comboBox.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.periodicity_comboBox.Name = "periodicity_comboBox";
             this.periodicity_comboBox.Size = new System.Drawing.Size(121, 24);
             this.periodicity_comboBox.TabIndex = 31;
-            // 
-            // extra_textBox
-            // 
-            this.extra_textBox.Location = new System.Drawing.Point(609, 249);
-            this.extra_textBox.Name = "extra_textBox";
-            this.extra_textBox.Size = new System.Drawing.Size(100, 22);
-            this.extra_textBox.TabIndex = 32;
-            this.extra_textBox.MouseClick += new System.Windows.Forms.MouseEventHandler(this.extra_textBox_MouseClick);
-            this.extra_textBox.TextChanged += new System.EventHandler(this.extra_textBox_TextChanged);
-            this.extra_textBox.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.extra_textBox_KeyPress);
-            this.extra_textBox.Leave += new System.EventHandler(this.extra_textBox_Leave);
             // 
             // username_textbox
             // 
             this.username_textbox.Location = new System.Drawing.Point(376, 54);
             this.username_textbox.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.username_textbox.Name = "username_textbox";
-            this.username_textbox.PlaceholderText = "username";
             this.username_textbox.Size = new System.Drawing.Size(357, 22);
-            this.username_textbox.TabIndex = 20;
+            this.username_textbox.TabIndex = 33;
+            this.username_textbox.Enter += new System.EventHandler(this.username_textbox_Enter);
+            this.username_textbox.Leave += new System.EventHandler(this.username_textbox_Leave_1);
             // 
             // email_textbox
             // 
             this.email_textbox.Location = new System.Drawing.Point(376, 96);
             this.email_textbox.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.email_textbox.Name = "email_textbox";
-            this.email_textbox.PlaceholderText = "email";
             this.email_textbox.Size = new System.Drawing.Size(357, 22);
-            this.email_textbox.TabIndex = 19;
-            // 
-            // cardnumber_textbox
-            // 
-            this.cardnumber_textbox.Location = new System.Drawing.Point(376, 287);
-            this.cardnumber_textbox.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.cardnumber_textbox.Name = "cardnumber_textbox";
-            this.cardnumber_textbox.PlaceholderText = "card number";
-            this.cardnumber_textbox.Size = new System.Drawing.Size(357, 22);
-            this.cardnumber_textbox.TabIndex = 14;
-            // 
-            // lastname_textbox
-            // 
-            this.lastname_textbox.Location = new System.Drawing.Point(376, 249);
-            this.lastname_textbox.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.lastname_textbox.Name = "lastname_textbox";
-            this.lastname_textbox.PlaceholderText = "Last Name";
-            this.lastname_textbox.Size = new System.Drawing.Size(183, 22);
-            this.lastname_textbox.TabIndex = 13;
+            this.email_textbox.TabIndex = 34;
+            this.email_textbox.Enter += new System.EventHandler(this.email_textbox_Enter);
+            this.email_textbox.Leave += new System.EventHandler(this.email_textbox_Leave_1);
             // 
             // firstname_textbox
             // 
             this.firstname_textbox.Location = new System.Drawing.Point(376, 209);
             this.firstname_textbox.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.firstname_textbox.Name = "firstname_textbox";
-            this.firstname_textbox.PlaceholderText = "First Name";
             this.firstname_textbox.Size = new System.Drawing.Size(183, 22);
-            this.firstname_textbox.TabIndex = 12;
+            this.firstname_textbox.TabIndex = 35;
+            this.firstname_textbox.Enter += new System.EventHandler(this.firstname_textbox_Enter);
+            this.firstname_textbox.Leave += new System.EventHandler(this.firstname_textbox_Leave_1);
+            // 
+            // lastname_textbox
+            // 
+            this.lastname_textbox.Location = new System.Drawing.Point(376, 249);
+            this.lastname_textbox.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.lastname_textbox.Name = "lastname_textbox";
+            this.lastname_textbox.Size = new System.Drawing.Size(183, 22);
+            this.lastname_textbox.TabIndex = 36;
+            this.lastname_textbox.Enter += new System.EventHandler(this.lastname_textbox_Enter);
+            this.lastname_textbox.Leave += new System.EventHandler(this.lastname_textbox_Leave_1);
             // 
             // middlename_textbox
             // 
-            this.middlename_textbox.Location = new System.Drawing.Point(567, 209);
+            this.middlename_textbox.Location = new System.Drawing.Point(567, 208);
             this.middlename_textbox.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.middlename_textbox.Name = "middlename_textbox";
-            this.middlename_textbox.PlaceholderText = "Middle Name";
             this.middlename_textbox.Size = new System.Drawing.Size(167, 22);
-            this.middlename_textbox.TabIndex = 11;
+            this.middlename_textbox.TabIndex = 37;
+            this.middlename_textbox.Enter += new System.EventHandler(this.middlename_textbox_Enter);
+            this.middlename_textbox.Leave += new System.EventHandler(this.middlename_textbox_Leave_1);
+            // 
+            // cardnumber_textbox
+            // 
+            this.cardnumber_textbox.Location = new System.Drawing.Point(376, 287);
+            this.cardnumber_textbox.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.cardnumber_textbox.Name = "cardnumber_textbox";
+            this.cardnumber_textbox.Size = new System.Drawing.Size(357, 22);
+            this.cardnumber_textbox.TabIndex = 38;
+            this.cardnumber_textbox.Enter += new System.EventHandler(this.cardnumber_textbox_Enter);
+            this.cardnumber_textbox.Leave += new System.EventHandler(this.cardnumber_textbox_Leave_1);
+            // 
+            // notifications_textbox
+            // 
+            this.notifications_textbox.Location = new System.Drawing.Point(37, 354);
+            this.notifications_textbox.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.notifications_textbox.Name = "notifications_textbox";
+            this.notifications_textbox.ReadOnly = true;
+            this.notifications_textbox.Size = new System.Drawing.Size(261, 56);
+            this.notifications_textbox.TabIndex = 40;
+            this.notifications_textbox.Text = "";
+            // 
+            // label7
+            // 
+            this.label7.AutoSize = true;
+            this.label7.Location = new System.Drawing.Point(33, 36);
+            this.label7.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(111, 17);
+            this.label7.TabIndex = 41;
+            this.label7.Text = "registered users";
+            // 
+            // label8
+            // 
+            this.label8.AutoSize = true;
+            this.label8.Location = new System.Drawing.Point(33, 337);
+            this.label8.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label8.Name = "label8";
+            this.label8.Size = new System.Drawing.Size(83, 17);
+            this.label8.TabIndex = 42;
+            this.label8.Text = "notifications";
             // 
             // back_office
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
-            this.Controls.Add(this.extra_textBox);
+            this.Controls.Add(this.label8);
+            this.Controls.Add(this.label7);
+            this.Controls.Add(this.notifications_textbox);
+            this.Controls.Add(this.cardnumber_textbox);
+            this.Controls.Add(this.middlename_textbox);
+            this.Controls.Add(this.lastname_textbox);
+            this.Controls.Add(this.firstname_textbox);
+            this.Controls.Add(this.email_textbox);
+            this.Controls.Add(this.username_textbox);
             this.Controls.Add(this.periodicity_comboBox);
             this.Controls.Add(this.term_dateTimePicker);
             this.Controls.Add(this.label6);
@@ -299,14 +336,8 @@
             this.Controls.Add(this.label1);
             this.Controls.Add(this.users_listbox);
             this.Controls.Add(this.back_btn);
-            this.Controls.Add(this.username_textbox);
-            this.Controls.Add(this.email_textbox);
             this.Controls.Add(this.active_checkBox);
             this.Controls.Add(this.subscrition_label);
-            this.Controls.Add(this.cardnumber_textbox);
-            this.Controls.Add(this.lastname_textbox);
-            this.Controls.Add(this.firstname_textbox);
-            this.Controls.Add(this.middlename_textbox);
             this.Controls.Add(this.user_info_label);
             this.Controls.Add(this.delete_btn);
             this.Controls.Add(this.update_btn);
@@ -325,14 +356,8 @@
         private System.Windows.Forms.Button update_btn;
         private System.Windows.Forms.Button delete_btn;
         private System.Windows.Forms.Label user_info_label;
-        private System.Windows.Forms.PlaceholderTextBox middlename_textbox;
-        private System.Windows.Forms.PlaceholderTextBox firstname_textbox;
-        private System.Windows.Forms.PlaceholderTextBox lastname_textbox;
-        private System.Windows.Forms.PlaceholderTextBox cardnumber_textbox;
         private System.Windows.Forms.Label subscrition_label;
         private System.Windows.Forms.CheckBox active_checkBox;
-        private System.Windows.Forms.PlaceholderTextBox email_textbox;
-        private System.Windows.Forms.PlaceholderTextBox username_textbox;
         private System.Windows.Forms.Button back_btn;
         private System.Windows.Forms.ListBox users_listbox;
         private System.Windows.Forms.Label label1;
@@ -343,6 +368,14 @@
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.DateTimePicker term_dateTimePicker;
         private System.Windows.Forms.ComboBox periodicity_comboBox;
-        private System.Windows.Forms.TextBox extra_textBox;
+        private System.Windows.Forms.TextBox username_textbox;
+        private System.Windows.Forms.TextBox email_textbox;
+        private System.Windows.Forms.TextBox firstname_textbox;
+        private System.Windows.Forms.TextBox lastname_textbox;
+        private System.Windows.Forms.TextBox middlename_textbox;
+        private System.Windows.Forms.TextBox cardnumber_textbox;
+        private System.Windows.Forms.RichTextBox notifications_textbox;
+        private System.Windows.Forms.Label label7;
+        private System.Windows.Forms.Label label8;
     }
 }
