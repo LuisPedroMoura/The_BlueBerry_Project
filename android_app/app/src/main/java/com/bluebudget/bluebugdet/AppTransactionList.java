@@ -19,14 +19,14 @@ public class AppTransactionList {
     public AppTransactionList() {}
 
 
-    public void addIncome(double value, Calendar date, String category, String notes , String location,
+    public void addIncome(double value, Calendar date, AppCategory category, String notes , String location,
                           String wallet) {
         AppTransaction t = new AppTransaction(value, date, category, notes, location, wallet,
                 null, AppTransactionType.INCOME);
         transactions.put(t.getId(), t);
     }
 
-    public void addExpense(double value, Calendar date, String category, String notes , String location,
+    public void addExpense(double value, Calendar date, AppCategory category, String notes , String location,
                           String wallet) {
         AppTransaction t = new AppTransaction(-value, date, category, notes, location, wallet,
                 null, AppTransactionType.EXPENSE);
@@ -49,7 +49,7 @@ public class AppTransactionList {
     }
 
     public List<AppTransaction> filterTransactions(Calendar minDate, Calendar maxDate,
-                                                   List<Integer> categories,
+                                                   List<String> categories,
                                                    List<String> locations,
                                                    List<String> wallets,
                                                    AppTransactionType type) {
@@ -81,7 +81,8 @@ public class AppTransactionList {
             */
 
             if (tr.getDate().compareTo(minDate) >= 0 && tr.getDate().compareTo(maxDate) <= 0){
-                if (categories == null || categories.contains(tr.getCategory())){
+                Log.i(TAG, "(categories == null) "+(categories == null));
+                if (categories == null || categories.contains(tr.getCategory().getName()) || categories.contains(tr.getCategory().getParent())){
                     if (locations == null || locations.contains(tr.getLocation())){
                         if (type == null || tr.getType() == type) {
                             if (wallets == null || wallets.contains(tr.getWallet())) {

@@ -8,13 +8,13 @@ public class AppTransaction {
     private double value;
     private AppTransactionType type;
     private Calendar date;
-    private String category;
+    private AppCategory category;
     private String notes;
     private String location;
     private String wallet;
     private String recipientWallet;
 
-    public AppTransaction(double value, Calendar date, String category, String notes, String location,
+    public AppTransaction(double value, Calendar date, AppCategory category, String notes, String location,
                           String wallet, String recipientWallet, AppTransactionType type) {
         this.id = ++COUNTER;
         this.value = value;
@@ -56,10 +56,10 @@ public class AppTransaction {
         this.date = date;
     }
 
-    public String getCategory(){
+    public AppCategory getCategory(){
         return this.category;
     }
-    public void setCategory(String categoryI){
+    public void setCategory(AppCategory categoryI){
         this.category = category;
     }
 

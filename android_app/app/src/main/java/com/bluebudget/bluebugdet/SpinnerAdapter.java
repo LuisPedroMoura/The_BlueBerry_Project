@@ -29,7 +29,7 @@ public class SpinnerAdapter extends ArrayAdapter<SpinnerItem> {
     private View initView(int position, View convertView, ViewGroup parent){
         if(convertView==null){
             convertView= LayoutInflater.from(getContext()).inflate(
-                    R.layout.spinner_row_layout, parent, false
+                    R.layout.layout_spinner_row, parent, false
             );
         }
 

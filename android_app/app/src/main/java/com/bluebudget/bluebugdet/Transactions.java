@@ -3,7 +3,6 @@ package com.bluebudget.bluebugdet;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
-import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -15,25 +14,24 @@ import android.view.View;
 import android.view.animation.OvershootInterpolator;
 import android.widget.ListView;
 
-import java.text.DateFormatSymbols;
+
 import java.text.Format;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
-import java.util.Locale;
 
 public class Transactions extends AppCompatActivity {
 
-    FloatingActionButton addFab, incomeFab, expenseFab, transferFab;
-    Float translationY = 100f;
-    OvershootInterpolator interpolator = new OvershootInterpolator();
-    Boolean isMenuOpen = false;
+    private FloatingActionButton addFab, incomeFab, expenseFab, transferFab;
+    private Float translationY = 100f;
+    private OvershootInterpolator interpolator = new OvershootInterpolator();
+    private Boolean isMenuOpen = false;
 
-    BottomNavigationView navigation;
-    ListView transactionsHistoryLV;
+    private Toolbar toolbar;
+    private BottomNavigationView navigation;
+    private ListView transactionsHistoryLV;
 
     private static final String TAG = "Transactions";
 
@@ -42,6 +40,9 @@ public class Transactions extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_transactions);
+
+        toolbar = findViewById(R.id.transactionToolbar);
+        setSupportActionBar(toolbar);
 
         //get the icon selected and go to the respective activity
         navigation = findViewById(R.id.navigation);
@@ -92,14 +93,13 @@ public class Transactions extends AppCompatActivity {
 
 
     private void getNewTransactionInfo(){
-        Log.i(TAG, "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+        //Log.i(TAG, "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
         Log.i(TAG, "getNewTransactionInfo");
 
         Intent incomingIntent = getIntent();
 
         String transactionType = incomingIntent.getStringExtra("transactionType");
 
-        Log.i(TAG, (transactionType != null)+"");
         if (transactionType != null) {
 
             Double amount = incomingIntent.getDoubleExtra("amount", 0);
@@ -116,10 +116,10 @@ public class Transactions extends AppCompatActivity {
 
             //add transactions
             if(transactionType.equals("NewExpense")){
-                Home.app.addExpense(amount, calendar, category, notes, location, wallet);
+                Home.app.addExpense(amount, calendar, Home.app.getCategory(category), notes, location, wallet);
             }
             else if(transactionType.equals("NewIncome")){
-                Home.app.addIncome(amount, calendar, category, notes, location, wallet);
+                Home.app.addIncome(amount, calendar, Home.app.getCategory(category), notes, location, wallet);
             }
             else if(transactionType.equals("NewTransfer")){
                 Home.app.addTransfer(amount, calendar, notes, location, wallet, recipientWallet);
@@ -143,8 +143,8 @@ public class Transactions extends AppCompatActivity {
             Format formatter = new SimpleDateFormat("dd-MM-yyyy");
             String date = formatter.format(t.getDate().getTime());
 
-            Log.i(TAG, t.getValue()+"");
-            Log.i(TAG, t.getType()+"");
+            //Log.i(TAG, t.getValue()+"");
+            //Log.i(TAG, t.getType()+"");
 
 
             String description;
@@ -153,7 +153,7 @@ public class Transactions extends AppCompatActivity {
                 description = "from " + t.getWallet() + "\nto " + t.getRecipientWallet();
                 icon = R.drawable.ic_compare_arrows_black_24dp;
             }else{
-                description = t.getCategory();
+                description = t.getCategory().getName();
                 icon = Home.app.getCategory(description).getIcon();
             }
 
@@ -162,7 +162,7 @@ public class Transactions extends AppCompatActivity {
             transactionsHistoryList.add(th);
         }
 
-        TransactionsHistoryListAdapter adapter = new TransactionsHistoryListAdapter(this, R.layout.transactions_history_layout, transactionsHistoryList);
+        TransactionsHistoryListAdapter adapter = new TransactionsHistoryListAdapter(this, R.layout.layout_transactions_history, transactionsHistoryList);
         transactionsHistoryLV.setAdapter(adapter);
 
         Log.d(TAG, "history done");
@@ -262,4 +262,17 @@ public class Transactions extends AppCompatActivity {
             }
         }
     };
+
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_filter_toolbar, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        Log.i(TAG, item.toString()+" selected");
+        return super.onOptionsItemSelected(item);
+    }
 }

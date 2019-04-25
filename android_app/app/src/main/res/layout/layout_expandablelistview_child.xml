@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    >
+
+    <LinearLayout
+        android:id="@+id/childLinearLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:weightSum="100">
+
+        <ImageView
+            android:id="@+id/childIconImageView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:padding="10dp"
+            app:srcCompat="@drawable/ic_subdirectory_arrow_right_black_24dp"
+            android:layout_weight="10"/>
+
+        <TextView
+            android:id="@+id/childDescriptionTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="18sp"
+            android:padding="10dp"
+            android:text="Total Income"
+            android:layout_weight="25"/>
+
+        <TextView
+            android:id="@+id/childAmountTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="18sp"
+            android:padding="10dp"
+            android:gravity="end"
+            android:text="0.00€"
+            android:layout_weight="55"/>
+
+        <ImageView
+            android:id="@+id/childMoreImageView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="10dp"
+            app:layout_gravity="end"
+            app:srcCompat="@drawable/ic_more_vert_black_24dp"
+            android:layout_weight="10"/>
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/childAddSubCatTextView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="18dp"
+        android:gravity="center"
+        android:visibility="invisible"/>
+</LinearLayout>
