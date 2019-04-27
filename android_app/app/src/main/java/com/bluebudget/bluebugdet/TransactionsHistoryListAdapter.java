@@ -57,10 +57,10 @@ public class TransactionsHistoryListAdapter extends ArrayAdapter<TransactionsHis
         Double value = Double.parseDouble(amount);
         if(value<0){
             //Log.i(TAG, value+"");
-            amountTV.setTextColor(Color.RED);
+            amountTV.setTextColor(amountTV.getContext().getResources().getColor(R.color.colorRed));
         }
         else{
-            amountTV.setTextColor(Color.GREEN);
+            amountTV.setTextColor(amountTV.getContext().getResources().getColor(R.color.colorGreen));
         }
 
         return convertView;

@@ -86,12 +86,12 @@ public class App {
     // TRANSACTIONS --------------------------------------------------------------------------------
     // ---------------------------------------------------------------------------------------------
 
-    public void addIncome(double value, Calendar date, String category, String notes , String location,
+    public void addIncome(double value, Calendar date, AppCategory category, String notes , String location,
                           String wallet) {
         transactions.addIncome(value, date, category, notes , location, wallet);
     }
 
-    public void addExpense(double value, Calendar date, String category, String notes , String location,
+    public void addExpense(double value, Calendar date, AppCategory category, String notes , String location,
                            String wallet) {
         transactions.addExpense(value, date, category, notes , location, wallet);
     }
@@ -102,12 +102,12 @@ public class App {
     }
 
     public List<AppTransaction> getTransactions(Calendar minDate, Calendar maxDate,
-                                                   List<Integer> categoryIDs,
+                                                   List<String> categoryNames,
                                                    List<String> locations,
                                                    List<String> wallets,
                                                    AppTransactionType type) {
 
-        return transactions.filterTransactions(minDate, maxDate, categoryIDs, locations, wallets, type);
+        return transactions.filterTransactions(minDate, maxDate, categoryNames, locations, wallets, type);
     }
 
 
