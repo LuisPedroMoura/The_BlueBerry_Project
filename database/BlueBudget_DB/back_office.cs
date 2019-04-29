@@ -17,24 +17,24 @@ namespace BlueBudget_DB
             InitializeComponent();
 
             // populate listbox with users
-            populate_listBox();
-            populate_comboBox();
-            defaultTextboxes();
+            Populate_listBox();
+            Populate_comboBox();
+            DefaultTextboxes();
         }
 
         // -------------------------------------------------------------------
         // BUTTONS -----------------------------------------------------------
         // -------------------------------------------------------------------
 
-        private void back_btn_Click(object sender, EventArgs e)
+        private void Back_btn_Click(object sender, EventArgs e)
         {
             this.Close();
         }
 
 
-        private void add_btn_Click(object sender, EventArgs e)
+        private void Add_btn_Click(object sender, EventArgs e)
         {
-            // get values from text boxes if they where inserted by user
+            // get values from text boxes if they were inserted by user
             string username = username_textbox.ForeColor == Color.Black ? username_textbox.Text : "";
             string email = email_textbox.ForeColor == Color.Black ? email_textbox.Text : "";
             string fname = firstname_textbox.ForeColor == Color.Black ? firstname_textbox.Text : "";
@@ -61,13 +61,8 @@ namespace BlueBudget_DB
                 }
             }
 
-            // create data structures for insertions
-            var attrValue = DB_API.attrValue();
-            // create data structures for selections
-            var where = DB_API.where();
-
             // verify if user exists, if so, cannot be added, only updated
-            var exists = DB_API.Exists("Project.users", "email", email);
+            var exists = DB_API.ExistsUser(DB_API.UserEnt.email, email);
             if (exists)
             {
                 notifications_textbox.Text = "ERROR:\nUser already exists!";
@@ -75,29 +70,18 @@ namespace BlueBudget_DB
             }
 
             // add user
-            attrValue = new Dictionary<String, String>
-                {
-                    { "user_name", username },
-                    { "email", email },
-                    { "fname", fname },
-                    { "mname", mname },
-                    { "lname", lname },
-                    { "card_number", cardNo },
-                    { "periodicity", periodicity },
-                    { "term", term },
-                    { "active", "1" }
-                };
-            DB_API.DBexecProc("pr_insert_user", attrValue);
+            string active = active_checkBox.Checked ? "1" : "0";
+            DB_API.InsertUser(username, email, fname, mname, lname, cardNo, periodicity, term, active);
+            notifications_textbox.Text = "SUCCESS:\n New user was added to database!";
 
             // upadte listBox with new user
-            populate_listBox();
-            notifications_textbox.Text = "SUCCESS:\n New user was added to database!";
+            Populate_listBox();
         }
 
 
-        private void update_btn_Click(object sender, EventArgs e)
+        private void Update_btn_Click(object sender, EventArgs e)
         {
-            // get values from text boxes if they where inserted by user
+            // get values from text boxes if they attrValue inserted by user
             string username = username_textbox.ForeColor == Color.Black ? username_textbox.Text : "";
             string email = email_textbox.ForeColor == Color.Black ? email_textbox.Text : "";
             string fname = firstname_textbox.ForeColor == Color.Black ? firstname_textbox.Text : "";
@@ -106,9 +90,6 @@ namespace BlueBudget_DB
             string cardNo = cardnumber_textbox.ForeColor == Color.Black ? cardnumber_textbox.Text : "";
             string periodicity = (string)periodicity_comboBox.SelectedItem;
             string term = term_dateTimePicker.Value.ToString();
-
-            // create data structures for insertions
-            var attrValue = DB_API.attrValue();
 
             // verify if email field is filled
             if (email.Equals(""))
@@ -128,7 +109,7 @@ namespace BlueBudget_DB
             }
 
             // verify if user exists, so it can be updated
-            var exists = DB_API.Exists("Project.users", "email", email);
+            var exists = DB_API.ExistsUser(DB_API.UserEnt.email, email);
             if (!exists)
             {
                 notifications_textbox.Text = "ERROR:\nUser does not exist. Unable to update!";
@@ -136,27 +117,17 @@ namespace BlueBudget_DB
             }
 
             // update user
-            attrValue = new Dictionary<String, String>
-                    {
-                        { "user_name", username },
-                        { "email", email },
-                        { "fname", fname },
-                        { "mname", mname },
-                        { "lname", lname },
-                        { "card_number", cardNo },
-                        { "periodicity", periodicity },
-                        { "term", term },
-                        { "active", "1" }
-                    };
-            DB_API.DBexecProc("pr_update_user", attrValue);
+            string active = active_checkBox.Checked ? "1" : "0";
+            DB_API.UpdateUser(username, email, fname, mname, lname, cardNo, periodicity, term, active);
+            
               
             // update listBox
-            populate_listBox();
+            Populate_listBox();
             notifications_textbox.Text = "SUCCESS:\n User " + email + " was updated!";
         }
 
 
-        private void delete_btn_Click(object sender, EventArgs e)
+        private void Delete_btn_Click(object sender, EventArgs e)
         {
             string email = email_textbox.ForeColor == Color.Black ? email_textbox.Text : "";
 
@@ -167,56 +138,49 @@ namespace BlueBudget_DB
                 return;
             }
 
-            List<IDictionary<String, String>> where = new List<IDictionary<String, String>>();
-            where.Add(new Dictionary<String, String> { { "email", email } });
-
             // delete user form 'users' table
-            DB_API.DBexecProc("pr_delete_user", where[0]);
+            DB_API.DeleteUser(email);
 
-            populate_listBox();
+            // update listBox
+            Populate_listBox();
+            notifications_textbox.Text = "SUCCESS:\n User " + email + " was deleted!";
         }
 
         // -------------------------------------------------------------------
         // LIST BOX ----------------------------------------------------------
         // -------------------------------------------------------------------
 
-        private void users_listbox_SelectedIndexChanged(object sender, EventArgs e)
+        private void Users_listbox_SelectedIndexChanged(object sender, EventArgs e)
         {
             // get selected item value
             string email = (string)users_listbox.SelectedItem;
+
             // search DB for user
-            String[] columns = { "[user_name]" };
-            var where = DB_API.where();
-            where["email"] = email;
+            var rdr = DB_API.SelectUser(email);
             var res = new List<String>();
-            res.Add(email);
-            var rdr = DB_API.DBselect("Project.users", columns, where);
             while (rdr.Read())
             {
-                res.Add((string)rdr["user_name"]);
+                res.Add(rdr[DB_API.UserEnt.user_name.ToString()].ToString());
+                res.Add(rdr[DB_API.UserEnt.email.ToString()].ToString());
+                res.Add(rdr[DB_API.UserEnt.fname.ToString()].ToString());
+                res.Add(rdr[DB_API.UserEnt.mname.ToString()].ToString());
+                res.Add(rdr[DB_API.UserEnt.lname.ToString()].ToString());
+                res.Add(rdr[DB_API.UserEnt.card_number.ToString()].ToString());
+                res.Add(rdr[DB_API.UserEnt.periodicity.ToString()].ToString());
+                res.Add(rdr[DB_API.UserEnt.term.ToString()].ToString());
+                res.Add(rdr[DB_API.UserEnt.active.ToString()].ToString());
             }
-            // search DB for subscriptions
-            rdr = DB_API.DBselect("Project.subscriptions", new string[] { "*" }, where);
-            while (rdr.Read())
-            {
-                res.Add(rdr["fname"].ToString());
-                res.Add(rdr["mname"].ToString());
-                res.Add(rdr["lname"].ToString());
-                res.Add(rdr["card_number"].ToString());
-                res.Add(rdr["periodicity"].ToString());
-                res.Add(rdr["term"].ToString());
-                res.Add(rdr["active"].ToString());
-            }
-            update_textBoxes(res);
+
+            Update_textBoxes(res);
         }
 
-        private void populate_listBox()
+        private void Populate_listBox()
         {
+            var rdr = DB_API.SelectAllUsers();
             var res = new List<String>();
-            var rdr = DB_API.DBselect("Project.users", new String[] { "email" }, DB_API.where());
             while (rdr.Read())
             {
-                res.Add(rdr["email"].ToString());
+                res.Add(rdr[DB_API.UserEnt.email.ToString()].ToString());
             }
             users_listbox.DataSource = res;
         }
@@ -225,20 +189,20 @@ namespace BlueBudget_DB
         // TEXT BOXES --------------------------------------------------------
         // -------------------------------------------------------------------
 
-        private void populate_comboBox()
+        private void Populate_comboBox()
         {
+            var rdr = DB_API.SelectAllRecurrences();
             var res = new List<String>();
-            var rdr = DB_API.DBselect("Project.recurrence", new string[] { "designation" }, DB_API.where());
             while (rdr.Read())
             {
-                res.Add((string)rdr["designation"]);
+                res.Add((string)rdr[DB_API.RecurrenceEnt.designation.ToString()]);
             }
             periodicity_comboBox.DataSource = res;
         }
 
-        private void update_textBoxes(List<String> values)
+        private void Update_textBoxes(List<String> values)
         {
-            defaultTextboxes();
+            DefaultTextboxes();
 
             email_textbox.Text = values[0]; email_textbox.ForeColor = Color.Black;
 
@@ -262,18 +226,9 @@ namespace BlueBudget_DB
                 cardnumber_textbox.Text = values[5];
                 cardnumber_textbox.ForeColor = !"".Equals(values[5]) ? Color.Black : Color.Gray;
 
-                var where = DB_API.where();
-                where["periodicity"] = values[6];
-                var res = new List<String>();
-                var rdr = DB_API.DBselect("Project.recurrence", new String[] { "designation" }, where);
-                while (rdr.Read())
-                {
-                    res.Add((string)rdr["designation"]);
-                }
-                periodicity_comboBox.Text = res[0];
+                periodicity_comboBox.Text = DB_API.SelectRecurrenceById(values[6]);
 
                 term_dateTimePicker.Value = DateTime.Parse(values[7]);
-                    
             }
             
             if (values.Count > 2 && values[8].Equals("True"))
@@ -290,7 +245,7 @@ namespace BlueBudget_DB
         // TEXT BOXES HINTS --------------------------------------------------
         // -------------------------------------------------------------------
 
-        private void defaultTextboxes()
+        private void DefaultTextboxes()
         {
             email_textbox.Text = "email";
             email_textbox.ForeColor = Color.Gray;
@@ -304,17 +259,17 @@ namespace BlueBudget_DB
             lastname_textbox.ForeColor = Color.Gray;
             cardnumber_textbox.Text = "card number";
             cardnumber_textbox.ForeColor = Color.Gray;
-            populate_comboBox();
+            Populate_comboBox();
             term_dateTimePicker.Value = DateTime.Now;
             active_checkBox.Checked = false;
         }
 
-        private void email_textbox_Enter(object sender, EventArgs e)
+        private void Email_textbox_Enter(object sender, EventArgs e)
         {
             email_textbox.Text = "";
             email_textbox.ForeColor = Color.Black;
         }
-        private void email_textbox_Leave_1(object sender, EventArgs e)
+        private void Email_textbox_Leave_1(object sender, EventArgs e)
         {
             if (email_textbox.Text.Equals(""))
             {
@@ -323,12 +278,12 @@ namespace BlueBudget_DB
             }
         }
 
-        private void username_textbox_Enter(object sender, EventArgs e)
+        private void Username_textbox_Enter(object sender, EventArgs e)
         {
             username_textbox.Text = "";
             username_textbox.ForeColor = Color.Black;
         }
-        private void username_textbox_Leave_1(object sender, EventArgs e)
+        private void Username_textbox_Leave_1(object sender, EventArgs e)
         {
             if (username_textbox.Text.Equals(""))
             {
@@ -337,12 +292,12 @@ namespace BlueBudget_DB
             }
         }
 
-        private void firstname_textbox_Enter(object sender, EventArgs e)
+        private void Firstname_textbox_Enter(object sender, EventArgs e)
         {
             firstname_textbox.Text = "";
             firstname_textbox.ForeColor = Color.Black;
         }
-        private void firstname_textbox_Leave_1(object sender, EventArgs e)
+        private void Firstname_textbox_Leave_1(object sender, EventArgs e)
         {
             if (firstname_textbox.Text.Equals(""))
             {
@@ -351,12 +306,12 @@ namespace BlueBudget_DB
             }
         }
 
-        private void middlename_textbox_Enter(object sender, EventArgs e)
+        private void Middlename_textbox_Enter(object sender, EventArgs e)
         {
             middlename_textbox.Text = "";
             middlename_textbox.ForeColor = Color.Black;
         }
-        private void middlename_textbox_Leave_1(object sender, EventArgs e)
+        private void Middlename_textbox_Leave_1(object sender, EventArgs e)
         {
             if (middlename_textbox.Text.Equals(""))
             {
@@ -365,12 +320,12 @@ namespace BlueBudget_DB
             }
         }
 
-        private void lastname_textbox_Enter(object sender, EventArgs e)
+        private void Lastname_textbox_Enter(object sender, EventArgs e)
         {
             lastname_textbox.Text = "";
             lastname_textbox.ForeColor = Color.Black;
         }
-        private void lastname_textbox_Leave_1(object sender, EventArgs e)
+        private void Lastname_textbox_Leave_1(object sender, EventArgs e)
         {
             if (lastname_textbox.Text.Equals(""))
             {
@@ -379,12 +334,12 @@ namespace BlueBudget_DB
             }
         }
 
-        private void cardnumber_textbox_Enter(object sender, EventArgs e)
+        private void Cardnumber_textbox_Enter(object sender, EventArgs e)
         {
             cardnumber_textbox.Text = "";
             cardnumber_textbox.ForeColor = Color.Black;
         }
-        private void cardnumber_textbox_Leave_1(object sender, EventArgs e)
+        private void Cardnumber_textbox_Leave_1(object sender, EventArgs e)
         {
             if (cardnumber_textbox.Text.Equals(""))
             {
@@ -393,7 +348,7 @@ namespace BlueBudget_DB
             }
         }
 
-        private void back_office_Load(object sender, EventArgs e)
+        private void Back_office_Load(object sender, EventArgs e)
         {
 
         }

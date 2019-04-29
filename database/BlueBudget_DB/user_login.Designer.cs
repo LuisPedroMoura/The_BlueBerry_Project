@@ -74,7 +74,7 @@
             this.accounts_listbox.Name = "accounts_listbox";
             this.accounts_listbox.Size = new System.Drawing.Size(168, 134);
             this.accounts_listbox.TabIndex = 1;
-            this.accounts_listbox.SelectedIndexChanged += new System.EventHandler(this.accounts_listbox_SelectedIndexChanged);
+            this.accounts_listbox.SelectedIndexChanged += new System.EventHandler(this.Accounts_listbox_SelectedIndexChanged);
             // 
             // label2
             // 
@@ -118,7 +118,7 @@
             this.back_btn.TabIndex = 6;
             this.back_btn.Text = "back";
             this.back_btn.UseVisualStyleBackColor = true;
-            this.back_btn.Click += new System.EventHandler(this.back_btn_Click);
+            this.back_btn.Click += new System.EventHandler(this.Back_btn_Click);
             // 
             // login_btn
             // 
@@ -130,7 +130,7 @@
             this.login_btn.TabIndex = 7;
             this.login_btn.Text = "login";
             this.login_btn.UseVisualStyleBackColor = true;
-            this.login_btn.Click += new System.EventHandler(this.login_btn_Click);
+            this.login_btn.Click += new System.EventHandler(this.Login_btn_Click);
             // 
             // findme_btn
             // 
@@ -141,7 +141,7 @@
             this.findme_btn.TabIndex = 9;
             this.findme_btn.Text = "Find Me!";
             this.findme_btn.UseVisualStyleBackColor = true;
-            this.findme_btn.Click += new System.EventHandler(this.findme_btn_Click);
+            this.findme_btn.Click += new System.EventHandler(this.Findme_btn_Click);
             // 
             // notifications_textbox
             // 
@@ -167,8 +167,8 @@
             this.userfindme_textbox.Name = "userfindme_textbox";
             this.userfindme_textbox.Size = new System.Drawing.Size(168, 20);
             this.userfindme_textbox.TabIndex = 12;
-            this.userfindme_textbox.Enter += new System.EventHandler(this.email_textbox_Enter);
-            this.userfindme_textbox.Leave += new System.EventHandler(this.email_textbox_Leave);
+            this.userfindme_textbox.Enter += new System.EventHandler(this.Email_textbox_Enter);
+            this.userfindme_textbox.Leave += new System.EventHandler(this.Email_textbox_Leave);
             // 
             // user_textbox
             // 
@@ -176,8 +176,8 @@
             this.user_textbox.Name = "user_textbox";
             this.user_textbox.Size = new System.Drawing.Size(141, 20);
             this.user_textbox.TabIndex = 13;
-            this.user_textbox.Enter += new System.EventHandler(this.user_textbox_Enter);
-            this.user_textbox.Leave += new System.EventHandler(this.user_textbox_Leave);
+            this.user_textbox.Enter += new System.EventHandler(this.User_textbox_Enter);
+            this.user_textbox.Leave += new System.EventHandler(this.User_textbox_Leave);
             // 
             // adduser_btn
             // 
@@ -187,7 +187,7 @@
             this.adduser_btn.TabIndex = 14;
             this.adduser_btn.Text = "add user";
             this.adduser_btn.UseVisualStyleBackColor = true;
-            this.adduser_btn.Click += new System.EventHandler(this.adduser_btn_Click);
+            this.adduser_btn.Click += new System.EventHandler(this.Adduser_btn_Click);
             // 
             // deleteuser_btn
             // 
@@ -197,7 +197,7 @@
             this.deleteuser_btn.TabIndex = 15;
             this.deleteuser_btn.Text = "delete user";
             this.deleteuser_btn.UseVisualStyleBackColor = true;
-            this.deleteuser_btn.Click += new System.EventHandler(this.deleteuser_btn_Click);
+            this.deleteuser_btn.Click += new System.EventHandler(this.Deleteuser_btn_Click);
             // 
             // balance_textbox
             // 
@@ -221,8 +221,8 @@
             this.account_textbox.Name = "account_textbox";
             this.account_textbox.Size = new System.Drawing.Size(141, 20);
             this.account_textbox.TabIndex = 18;
-            this.account_textbox.Enter += new System.EventHandler(this.account_textbox_Enter);
-            this.account_textbox.Leave += new System.EventHandler(this.account_textbox_Leave);
+            this.account_textbox.Enter += new System.EventHandler(this.Account_textbox_Enter);
+            this.account_textbox.Leave += new System.EventHandler(this.Account_textbox_Leave);
             // 
             // newaccount_btn
             // 
@@ -232,7 +232,7 @@
             this.newaccount_btn.TabIndex = 19;
             this.newaccount_btn.Text = "new account";
             this.newaccount_btn.UseVisualStyleBackColor = true;
-            this.newaccount_btn.Click += new System.EventHandler(this.newaccount_btn_Click);
+            this.newaccount_btn.Click += new System.EventHandler(this.Newaccount_btn_Click);
             // 
             // deleteaccount_btn
             // 
@@ -242,7 +242,7 @@
             this.deleteaccount_btn.TabIndex = 20;
             this.deleteaccount_btn.Text = "delete account";
             this.deleteaccount_btn.UseVisualStyleBackColor = true;
-            this.deleteaccount_btn.Click += new System.EventHandler(this.deleteaccount_btn_Click);
+            this.deleteaccount_btn.Click += new System.EventHandler(this.Deleteaccount_btn_Click);
             // 
             // label4
             // 
@@ -269,7 +269,7 @@
             this.associatedusers_listbox.Name = "associatedusers_listbox";
             this.associatedusers_listbox.Size = new System.Drawing.Size(182, 56);
             this.associatedusers_listbox.TabIndex = 24;
-            this.associatedusers_listbox.SelectedIndexChanged += new System.EventHandler(this.associatedusers_listbox_SelectedIndexChanged);
+            this.associatedusers_listbox.SelectedIndexChanged += new System.EventHandler(this.Associatedusers_listbox_SelectedIndexChanged);
             // 
             // user_login
             // 
@@ -302,7 +302,7 @@
             this.Name = "user_login";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "user_login";
-            this.Load += new System.EventHandler(this.user_login_Load);
+            this.Load += new System.EventHandler(this.User_login_Load);
             this.ResumeLayout(false);
             this.PerformLayout();
 

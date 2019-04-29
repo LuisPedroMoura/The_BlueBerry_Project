@@ -22,12 +22,12 @@ namespace BlueBudget_DB
 
         }
 
-        private void label1_Click(object sender, EventArgs e)
+        private void App_name_label_Click(object sender, EventArgs e)
         {
 
         }
 
-        private void back_office_btn_Click(object sender, EventArgs e)
+        private void Back_office_btn_Click(object sender, EventArgs e)
         {
             var frm = new back_office();
             frm.Location = this.Location;
@@ -37,7 +37,7 @@ namespace BlueBudget_DB
             this.Hide();
         }
 
-        private void users_btn_Click(object sender, EventArgs e)
+        private void Users_btn_Click(object sender, EventArgs e)
         {
             var frm = new user_login();
             frm.Location = this.Location;
@@ -46,5 +46,6 @@ namespace BlueBudget_DB
             frm.Show();
             this.Hide();
         }
+
     }
 }

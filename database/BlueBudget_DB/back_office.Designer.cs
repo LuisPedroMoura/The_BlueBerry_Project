@@ -65,7 +65,7 @@
             this.add_btn.TabIndex = 4;
             this.add_btn.Text = "add";
             this.add_btn.UseVisualStyleBackColor = true;
-            this.add_btn.Click += new System.EventHandler(this.add_btn_Click);
+            this.add_btn.Click += new System.EventHandler(this.Add_btn_Click);
             // 
             // update_btn
             // 
@@ -77,7 +77,7 @@
             this.update_btn.TabIndex = 5;
             this.update_btn.Text = "update";
             this.update_btn.UseVisualStyleBackColor = true;
-            this.update_btn.Click += new System.EventHandler(this.update_btn_Click);
+            this.update_btn.Click += new System.EventHandler(this.Update_btn_Click);
             // 
             // delete_btn
             // 
@@ -89,7 +89,7 @@
             this.delete_btn.TabIndex = 6;
             this.delete_btn.Text = "delete";
             this.delete_btn.UseVisualStyleBackColor = true;
-            this.delete_btn.Click += new System.EventHandler(this.delete_btn_Click);
+            this.delete_btn.Click += new System.EventHandler(this.Delete_btn_Click);
             // 
             // user_info_label
             // 
@@ -132,7 +132,7 @@
             this.back_btn.TabIndex = 21;
             this.back_btn.Text = "back";
             this.back_btn.UseVisualStyleBackColor = true;
-            this.back_btn.Click += new System.EventHandler(this.back_btn_Click);
+            this.back_btn.Click += new System.EventHandler(this.Back_btn_Click);
             // 
             // users_listbox
             // 
@@ -143,7 +143,7 @@
             this.users_listbox.Name = "users_listbox";
             this.users_listbox.Size = new System.Drawing.Size(261, 276);
             this.users_listbox.TabIndex = 22;
-            this.users_listbox.SelectedIndexChanged += new System.EventHandler(this.users_listbox_SelectedIndexChanged);
+            this.users_listbox.SelectedIndexChanged += new System.EventHandler(this.Users_listbox_SelectedIndexChanged);
             // 
             // label1
             // 
@@ -229,8 +229,8 @@
             this.username_textbox.Name = "username_textbox";
             this.username_textbox.Size = new System.Drawing.Size(357, 22);
             this.username_textbox.TabIndex = 33;
-            this.username_textbox.Enter += new System.EventHandler(this.username_textbox_Enter);
-            this.username_textbox.Leave += new System.EventHandler(this.username_textbox_Leave_1);
+            this.username_textbox.Enter += new System.EventHandler(this.Username_textbox_Enter);
+            this.username_textbox.Leave += new System.EventHandler(this.Username_textbox_Leave_1);
             // 
             // email_textbox
             // 
@@ -239,8 +239,8 @@
             this.email_textbox.Name = "email_textbox";
             this.email_textbox.Size = new System.Drawing.Size(357, 22);
             this.email_textbox.TabIndex = 34;
-            this.email_textbox.Enter += new System.EventHandler(this.email_textbox_Enter);
-            this.email_textbox.Leave += new System.EventHandler(this.email_textbox_Leave_1);
+            this.email_textbox.Enter += new System.EventHandler(this.Email_textbox_Enter);
+            this.email_textbox.Leave += new System.EventHandler(this.Email_textbox_Leave_1);
             // 
             // firstname_textbox
             // 
@@ -249,8 +249,8 @@
             this.firstname_textbox.Name = "firstname_textbox";
             this.firstname_textbox.Size = new System.Drawing.Size(183, 22);
             this.firstname_textbox.TabIndex = 35;
-            this.firstname_textbox.Enter += new System.EventHandler(this.firstname_textbox_Enter);
-            this.firstname_textbox.Leave += new System.EventHandler(this.firstname_textbox_Leave_1);
+            this.firstname_textbox.Enter += new System.EventHandler(this.Firstname_textbox_Enter);
+            this.firstname_textbox.Leave += new System.EventHandler(this.Firstname_textbox_Leave_1);
             // 
             // lastname_textbox
             // 
@@ -259,8 +259,8 @@
             this.lastname_textbox.Name = "lastname_textbox";
             this.lastname_textbox.Size = new System.Drawing.Size(183, 22);
             this.lastname_textbox.TabIndex = 36;
-            this.lastname_textbox.Enter += new System.EventHandler(this.lastname_textbox_Enter);
-            this.lastname_textbox.Leave += new System.EventHandler(this.lastname_textbox_Leave_1);
+            this.lastname_textbox.Enter += new System.EventHandler(this.Lastname_textbox_Enter);
+            this.lastname_textbox.Leave += new System.EventHandler(this.Lastname_textbox_Leave_1);
             // 
             // middlename_textbox
             // 
@@ -269,8 +269,8 @@
             this.middlename_textbox.Name = "middlename_textbox";
             this.middlename_textbox.Size = new System.Drawing.Size(167, 22);
             this.middlename_textbox.TabIndex = 37;
-            this.middlename_textbox.Enter += new System.EventHandler(this.middlename_textbox_Enter);
-            this.middlename_textbox.Leave += new System.EventHandler(this.middlename_textbox_Leave_1);
+            this.middlename_textbox.Enter += new System.EventHandler(this.Middlename_textbox_Enter);
+            this.middlename_textbox.Leave += new System.EventHandler(this.Middlename_textbox_Leave_1);
             // 
             // cardnumber_textbox
             // 
@@ -279,8 +279,8 @@
             this.cardnumber_textbox.Name = "cardnumber_textbox";
             this.cardnumber_textbox.Size = new System.Drawing.Size(357, 22);
             this.cardnumber_textbox.TabIndex = 38;
-            this.cardnumber_textbox.Enter += new System.EventHandler(this.cardnumber_textbox_Enter);
-            this.cardnumber_textbox.Leave += new System.EventHandler(this.cardnumber_textbox_Leave_1);
+            this.cardnumber_textbox.Enter += new System.EventHandler(this.Cardnumber_textbox_Enter);
+            this.cardnumber_textbox.Leave += new System.EventHandler(this.Cardnumber_textbox_Leave_1);
             // 
             // notifications_textbox
             // 
@@ -345,7 +345,7 @@
             this.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.Name = "back_office";
             this.Text = "back_office";
-            this.Load += new System.EventHandler(this.back_office_Load);
+            this.Load += new System.EventHandler(this.Back_office_Load);
             this.ResumeLayout(false);
             this.PerformLayout();
 
