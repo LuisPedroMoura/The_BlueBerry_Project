@@ -64,24 +64,20 @@ namespace BlueBudget_DB
             }
 
             // extract money acounts names for listBox
+            var res = new List<String>();
             while (rdr.Read())
             {
                 string account_name = rdr[DB_API.MoneyAccountEnt.account_name.ToString()].ToString();
-                if (!res.Contains(account_name))
-                {
-                    res.Add(account_name);
-                    CURRENT_USER_ACCOUNTS[account_name] = (int)rdr[DB_API.MoneyAccountEnt.id.ToString()];
-                }
+                res.Add(account_name);
+                CURRENT_USER_ACCOUNTS[account_name] = (int)rdr[DB_API.MoneyAccountEnt.account_id.ToString()];
             }
             accounts_listbox.DataSource = res;
         }
 
-        private void Populate_associatedUsers_listBox(String account_name)
+        private void Populate_associatedUsers_listBox(String account_id)
         {
+            var rdr = DB_API.SelectMoneyAccountUsers(account_id);
             var res = new List<String>();
-            var where = DB_API.Where();
-            where[DB_API.MoneyAccountEnt.account_name] = account_name;
-            var rdr = DB_API.DBselect(DB_API.Entity.money_account, DB_API.Where());
             while (rdr.Read())
             {
                 res.Add(rdr[DB_API.MoneyAccountEnt.user_email.ToString()].ToString());
@@ -100,10 +96,8 @@ namespace BlueBudget_DB
             account_textbox.Text = account_name;
             account_textbox.ForeColor = Color.Black;
 
-            // get account info
-            var where = DB_API.Where();
-            where[DB_API.MoneyAccountEnt.account_id] = account_id;
-            var rdr = DB_API.DBselect(DB_API.Entity.money_account, where);
+            // get account complete info
+            var rdr = DB_API.SelectMoneyAccountById(account_id);
             while (rdr.Read())
             {
                 balance_textbox.Text = ((Decimal)rdr[DB_API.MoneyAccountEnt.balance.ToString()]).ToString() + "€";
@@ -111,7 +105,7 @@ namespace BlueBudget_DB
             }
 
             // get associated user of selected account
-            rdr = DB_API.DBselect("Project.users_money_accounts", where);
+            rdr = DB_API.SelectMoneyAccountUsers(account_id);
             List<String> res = new List<string>();
             while (rdr.Read())
             {
@@ -126,6 +120,8 @@ namespace BlueBudget_DB
             // get selected item value and paste it to textbox
             user_textbox.Text = (string)associatedusers_listbox.SelectedItem;
             user_textbox.ForeColor = Color.Black;
+
+            // UNFINISHED!
         }
 
         // -------------------------------------------------------------------
@@ -145,7 +141,7 @@ namespace BlueBudget_DB
             }
 
             // verify if user exists
-            var exists = DB_API.DBexists(DB_API.Entity.user, DB_API.UserEnt.email, email);
+            var exists = DB_API.ExistsUser(email);
             if (!exists)
             {
                 notifications_textbox.Text = "ERROR:\nUser does not exist!";
@@ -168,6 +164,7 @@ namespace BlueBudget_DB
                 notifications_textbox.Text = "ERROR:\nAccount name is mandatory!";
                 return;
             }
+
             // verify that a user is selected
             if (CURRENT_USER.Equals(""))
             {
@@ -183,16 +180,9 @@ namespace BlueBudget_DB
             }
 
             // insert new account into 'money_accounts' and 'users_money_accounts' tables
-            IDictionary<String, String> attrValue = new Dictionary<string, string>();
-            attrValue["user_email"] = CURRENT_USER;
-            attrValue["account_name"] = account_name;
-            attrValue["patrimony"] = 0.0.ToString();
-            DB_API.DBexecProc("pr_insert_money_account", attrValue);
+            DB_API.InsertMoneyAccount(CURRENT_USER, account_name);
 
-            //CURRENT_USER_ACCOUNTS[account_name] = int.Parse(account_id);
-            LISTBOXCONTENT.Add(account_name);
-// O PROBLEMA É A REATRIBUIÇÃO... ALGO DE BINDING... VER PORQUE E COMO FNCIONA NO BACK OFFICE!
-            accounts_listbox.DataSource = LISTBOXCONTENT;
+            Populate_moneyAccounts_listBox(CURRENT_USER);
             notifications_textbox.Text = "SUCCESS:\nNew account was added!";
         }
 
@@ -201,22 +191,22 @@ namespace BlueBudget_DB
             // get textbox value
             string account_name = account_textbox.ForeColor == Color.Black ? account_textbox.Text : "";
             string account_id = CURRENT_USER_ACCOUNTS[account_name].ToString();
+
             // verify if account exists already
-            var exists = DB_API.Exists("Project.money_accounts", "account_id", account_id);
+            var exists = DB_API.ExistsMoneyAccount(account_id);
             if (!exists)
             {
                 notifications_textbox.Text = "ERROR:\nAccount does not exist!";
                 return;
             }
-            var where = DB_API.where();
-            where["account_id"] = account_id;
-            DB_API.DBexecProc("pr_delete_money_account", where);
+
+            // delete money account
+            DB_API.DeleteMoneyAccount(account_id);
         }
 
         private void Adduser_btn_Click(object sender, EventArgs e)
         {
             // get textbox value
-            string user_email = user_textbox.ForeColor == Color.Black ? user_textbox.Text : "";
             string account_name = account_textbox.ForeColor == Color.Black ? account_textbox.Text : "";
             string account_id = CURRENT_USER_ACCOUNTS[account_name].ToString();
 
@@ -228,38 +218,41 @@ namespace BlueBudget_DB
             }
 
             // verify if account exists
-            var exists = DB_API.Exists("Project.money_accounts", "account_id", account_id);
+            var exists = DB_API.ExistsMoneyAccount(account_id);
             if (!exists)
             {
                 notifications_textbox.Text = "ERROR:\nAccount does not exist!";
                 return;
             }
 
+            // verify that a user is selected
+            if (CURRENT_USER.Equals(""))
+            {
+                notifications_textbox.Text = "ERROR:\nUser must be selected to attribute account to!";
+                return;
+            }
+
             // verify if user exists
-            exists = DB_API.Exists("Project.users", "email", user_email);
+            exists = DB_API.ExistsUser(CURRENT_USER);
             if (!exists)
             {
                 notifications_textbox.Text = "ERROR:\nUser does not exist!";
                 return;
             }
 
-            // insert new account into 'users_money_accounts' tablee
-            IDictionary<String, String> attrValue = new Dictionary<string, string>();        
-            attrValue["account_name"] = account_name;
-            attrValue["account_id"] = account_id;
-            attrValue["user_email"] = user_email;
-            DB_API.DBexecProc("Project.users_money_accounts", attrValue);
+            // insert new account into 'users_money_accounts table
+            DB_API.MoneyAccountAddUser(account_id, CURRENT_USER);
 
-            associatedusers_listbox.DataSource += account_name;
+            Populate_associatedUsers_listBox(account_id);
             notifications_textbox.Text = "SUCCESS:\nNew account was added!";
         }
 
         private void Deleteuser_btn_Click(object sender, EventArgs e)
         {
             // get textbox value
-            string user_email = user_textbox.ForeColor == Color.Black ? user_textbox.Text : "";
             string account_name = account_textbox.ForeColor == Color.Black ? account_textbox.Text : "";
             string account_id = CURRENT_USER_ACCOUNTS[account_name].ToString();
+
             // verify if account field is filled
             if ("".Equals(account_name))
             {
@@ -267,15 +260,22 @@ namespace BlueBudget_DB
                 return;
             }
             // verify if account exists
-            var exists = DB_API.Exists("Project.money_accounts", "account_id", account_id);
+            var exists = DB_API.ExistsMoneyAccount(account_id);
             if (!exists)
             {
                 notifications_textbox.Text = "ERROR:\nAccount does not exist!";
                 return;
             }
 
+            // verify that a user is selected
+            if (CURRENT_USER.Equals(""))
+            {
+                notifications_textbox.Text = "ERROR:\nUser must be selected to attribute account to!";
+                return;
+            }
+
             // verify if user exists
-            exists = DB_API.Exists("Project.users", "email", user_email);
+            exists = DB_API.ExistsUser(CURRENT_USER);
             if (!exists)
             {
                 notifications_textbox.Text = "ERROR:\nUser does not exist!";
@@ -283,10 +283,7 @@ namespace BlueBudget_DB
             }
 
             // delete user access to account
-            var where = DB_API.where();
-            where["account_id"] = account_id;
-            where["user_email"] = user_email;
-            DB_API.DBexecProc("pr_delete_money_account", where);
+            DB_API.MoneyAccountRemoveUser(account_id, CURRENT_USER);
         }
 
 

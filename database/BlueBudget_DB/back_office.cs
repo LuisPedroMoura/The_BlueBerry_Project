@@ -62,7 +62,7 @@ namespace BlueBudget_DB
             }
 
             // verify if user exists, if so, cannot be added, only updated
-            var exists = DB_API.ExistsUser(DB_API.UserEnt.email, email);
+            var exists = DB_API.ExistsUser(email);
             if (exists)
             {
                 notifications_textbox.Text = "ERROR:\nUser already exists!";
@@ -109,7 +109,7 @@ namespace BlueBudget_DB
             }
 
             // verify if user exists, so it can be updated
-            var exists = DB_API.ExistsUser(DB_API.UserEnt.email, email);
+            var exists = DB_API.ExistsUser(email);
             if (!exists)
             {
                 notifications_textbox.Text = "ERROR:\nUser does not exist. Unable to update!";
@@ -156,7 +156,7 @@ namespace BlueBudget_DB
             string email = (string)users_listbox.SelectedItem;
 
             // search DB for user
-            var rdr = DB_API.SelectUser(email);
+            var rdr = DB_API.SelectUserByEmail(email);
             var res = new List<String>();
             while (rdr.Read())
             {

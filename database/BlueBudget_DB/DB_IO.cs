@@ -25,24 +25,26 @@ namespace BlueBudget_DB
             Scalar
         };
 
-        public enum Entity
+        public enum DB_Interface
         {
-            user,
-            subscription,
-            recurrence,
-            money_account,
-            purchased_stock,
-            stock,
-            stock_type,
-            loan,
-            wallet,
-            categorie,
-            budget,
-            goal,
-            transaction,
-            transfer,
-            transaction_type
-        };
+            pr_insert_user,
+            pr_update_user,
+            pr_delete_subscription,
+            pr_delete_user,
+            pr_select_user,
+            pr_exists_user,
+            pr_select_recurrences,
+            pr_insert_money_account,
+            //pr_update_money_account,
+            pr_delete_money_account,
+            pr_select_money_accounts,
+            pr_select_user_money_accounts,
+            pr_exists_money_account,
+            pr_money_account_add_user,
+            pr_money_account_remove_user
+            //pr_insert_wallet
+        }
+        
 
 
         // ----------------------------------------------------------------------------------------------
@@ -82,36 +84,36 @@ namespace BlueBudget_DB
         // SQL QUERY GENERIC METHODS --------------------------------------------------------------------
         // ----------------------------------------------------------------------------------------------
 
-        public static int Insert(System.Enum entity, IDictionary<System.Enum, String> attrValue)
+        public static int Insert(System.Enum proc, IDictionary<System.Enum, String> attrValue)
         {
-            return ExecProcNonQuery("pr_insert_"+entity, attrValue);
+            return ExecProcNonQuery(proc.ToString(), attrValue);
         }
 
-        public static int Delete(System.Enum entity, IDictionary<System.Enum, String> attrValue)
+        public static int Delete(System.Enum proc, IDictionary<System.Enum, String> attrValue)
         {
-            return ExecProcNonQuery("pr_delete_" + entity, attrValue);
+            return ExecProcNonQuery(proc.ToString(), attrValue);
         }
 
-        public static int Update(System.Enum entity, IDictionary<System.Enum, String> attrValue)
+        public static int Update(System.Enum proc, IDictionary<System.Enum, String> attrValue)
         {
-            return ExecProcNonQuery("pr_update_" + entity, attrValue);
+            return ExecProcNonQuery(proc.ToString(), attrValue);
         }
 
-        public static DataTableReader SelectReader(System.Enum entity, IDictionary<System.Enum, String> attrValue)
+        public static DataTableReader SelectReader(System.Enum proc, IDictionary<System.Enum, String> attrValue)
         {
-            return ExecProcReader("pr_select_" + entity, attrValue);
+            return ExecProcReader(proc.ToString(), attrValue);
         }
 
-        public static Object SelectScalar(System.Enum entity, IDictionary<System.Enum, String> attrValue)
+        public static Object SelectScalar(System.Enum proc, IDictionary<System.Enum, String> attrValue)
         {
-            return ExecProcScalar("pr_select_" + entity, attrValue);
+            return ExecProcScalar(proc.ToString(), attrValue);
         }
 
-        public static bool Exists(System.Enum entity, System.Enum column, String value)
+        public static bool Exists(System.Enum proc, System.Enum column, String value)
         {
             var attrValue = AttrValue();
             attrValue[column] = value;
-            int res = ExecProcExists("pr_exists_"+entity, attrValue);
+            int res = ExecProcExists(proc.ToString(), attrValue);
             if (res == 1)
             {
                 return true;
