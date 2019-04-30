@@ -18,12 +18,6 @@ namespace BlueBudget_DB
         private static readonly String dbUserName = "p1g2";
         private static readonly String dbUserPass = "bananas@Bd";
 
-        public enum ProcType
-        {
-            Reader,
-            NonQuery,
-            Scalar
-        };
 
         public enum DB_Interface
         {
@@ -31,9 +25,10 @@ namespace BlueBudget_DB
             pr_update_user,
             pr_delete_subscription,
             pr_delete_user,
-            pr_select_user,
+            pr_select_users,
             pr_exists_user,
             pr_select_recurrences,
+            pr_select_recurrence_id,
             pr_insert_money_account,
             //pr_update_money_account,
             pr_delete_money_account,
@@ -84,44 +79,36 @@ namespace BlueBudget_DB
         // SQL QUERY GENERIC METHODS --------------------------------------------------------------------
         // ----------------------------------------------------------------------------------------------
 
-        public static int Insert(System.Enum proc, IDictionary<System.Enum, String> attrValue)
+        public static int Insert(System.Enum proc, IDictionary<System.Enum, Object> attrValue)
         {
             return ExecProcNonQuery(proc.ToString(), attrValue);
         }
 
-        public static int Delete(System.Enum proc, IDictionary<System.Enum, String> attrValue)
+        public static int Delete(System.Enum proc, IDictionary<System.Enum, Object> attrValue)
         {
             return ExecProcNonQuery(proc.ToString(), attrValue);
         }
 
-        public static int Update(System.Enum proc, IDictionary<System.Enum, String> attrValue)
+        public static int Update(System.Enum proc, IDictionary<System.Enum, Object> attrValue)
         {
             return ExecProcNonQuery(proc.ToString(), attrValue);
         }
 
-        public static DataTableReader SelectReader(System.Enum proc, IDictionary<System.Enum, String> attrValue)
+        public static DataTableReader SelectReader(System.Enum proc, IDictionary<System.Enum, Object> attrValue)
         {
             return ExecProcReader(proc.ToString(), attrValue);
         }
 
-        public static Object SelectScalar(System.Enum proc, IDictionary<System.Enum, String> attrValue)
+        public static Object SelectScalar(System.Enum proc, IDictionary<System.Enum, Object> attrValue)
         {
             return ExecProcScalar(proc.ToString(), attrValue);
         }
 
-        public static bool Exists(System.Enum proc, System.Enum column, String value)
+        public static bool Exists(System.Enum proc, System.Enum column, Object value)
         {
             var attrValue = AttrValue();
             attrValue[column] = value;
-            int res = ExecProcExists(proc.ToString(), attrValue);
-            if (res == 1)
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
+            return ExecProcExists(proc.ToString(), attrValue);
         }
 
 
@@ -129,7 +116,7 @@ namespace BlueBudget_DB
         // EXECUTION OF STORED PROCEDURES ---------------------------------------------------------------
         // ----------------------------------------------------------------------------------------------
 
-        private static int ExecProcNonQuery(String procName, IDictionary<System.Enum, String> attrValue)
+        private static int ExecProcNonQuery(String procName, IDictionary<System.Enum, Object> attrValue)
         {
             SqlConnection cnx = DBconnect();
 
@@ -142,15 +129,13 @@ namespace BlueBudget_DB
             // step 2: parameterize cmd
             CmdParameterizer(cmd, attrValue);
 
-            Console.WriteLine("################################################");
-            Console.WriteLine(cmd.CommandText);
-            Console.WriteLine("################################################");
+            Console.WriteLine("####### ####### " + cmd.CommandText);
 
             // step 3: execute
             return ExecuteNonQuery(cnx, cmd);
         }
 
-        private static DataTableReader ExecProcReader(String procName, IDictionary<System.Enum, String> attrValue)
+        private static DataTableReader ExecProcReader(String procName, IDictionary<System.Enum, Object> attrValue)
         {
             SqlConnection cnx = DBconnect();
 
@@ -163,15 +148,13 @@ namespace BlueBudget_DB
             // step 2: parameterize cmd
             CmdParameterizer(cmd, attrValue);
 
-            Console.WriteLine("################################################");
-            Console.WriteLine(cmd.CommandText);
-            Console.WriteLine("################################################");
+            Console.WriteLine("####### ####### "+cmd.CommandText);
 
             // step 3: execute
             return ExecuteReader(cnx, cmd);
         }
 
-        private static Object ExecProcScalar(String procName, IDictionary<System.Enum, String> attrValue)
+        private static Object ExecProcScalar(String procName, IDictionary<System.Enum, Object> attrValue)
         {
             SqlConnection cnx = DBconnect();
 
@@ -184,15 +167,13 @@ namespace BlueBudget_DB
             // step 2: parameterize cmd
             CmdParameterizer(cmd, attrValue);
 
-            Console.WriteLine("################################################");
-            Console.WriteLine(cmd.CommandText);
-            Console.WriteLine("################################################");
+            Console.WriteLine("####### ####### " + cmd.CommandText);
 
             // step 3: execute
             return ExecuteScalar(cnx, cmd);
         }
 
-        private static int ExecProcExists(String procName, IDictionary<System.Enum, String> attrValue)
+        private static bool ExecProcExists(String procName, IDictionary<System.Enum, Object> attrValue)
         {
             SqlConnection cnx = DBconnect();
 
@@ -205,12 +186,10 @@ namespace BlueBudget_DB
             // step 2: parameterize cmd
             CmdParameterizer(cmd, attrValue);
 
-            Console.WriteLine("################################################");
-            Console.WriteLine(cmd.CommandText);
-            Console.WriteLine("################################################");
+            Console.WriteLine("####### ####### " + cmd.CommandText);
 
             // step 3: execute
-            return (int)ExecuteScalar(cnx, cmd);
+            return Convert.ToBoolean(ExecuteScalar(cnx, cmd));
         }
 
 
@@ -282,17 +261,17 @@ namespace BlueBudget_DB
         // AUXILAR PARSING METHODS ----------------------------------------------------------------------
         // ----------------------------------------------------------------------------------------------
 
-        private static void CmdParameterizer(SqlCommand cmd, IDictionary<System.Enum, String> attrValue)
+        private static void CmdParameterizer(SqlCommand cmd, IDictionary<System.Enum, Object> attrValue)
         {
-            foreach (KeyValuePair<System.Enum, String> entry in attrValue)
+            foreach (KeyValuePair<System.Enum, Object> entry in attrValue)
             {
                 cmd.Parameters.AddWithValue("@" + entry.Key, entry.Value);
             }
         }
 
-        public static IDictionary<System.Enum, String> CleanDict(IDictionary<System.Enum, String> dict)
+        public static IDictionary<System.Enum, Object> CleanDict(IDictionary<System.Enum, Object> dict)
         {
-            foreach (KeyValuePair<System.Enum, String> entry in dict)
+            foreach (KeyValuePair<System.Enum, Object> entry in dict)
             {
                 if (entry.Value.Equals("")){
                     dict.Remove(entry.Key);
@@ -302,9 +281,9 @@ namespace BlueBudget_DB
             return dict;
         }
 
-        public static IDictionary<System.Enum, String> NullifyDict(IDictionary<System.Enum, String> dict)
+        public static IDictionary<System.Enum, Object> NullifyDict(IDictionary<System.Enum, Object> dict)
         {
-            foreach (KeyValuePair<System.Enum, String> entry in dict)
+            foreach (KeyValuePair<System.Enum, Object> entry in dict)
             {
                 if (entry.Value.Equals(""))
                 {
@@ -319,9 +298,9 @@ namespace BlueBudget_DB
         // GETTERS FOR DATA TYPES THAT ARE BORING TO INSTANTIATE ----------------------------------------
         // ----------------------------------------------------------------------------------------------
 
-        public static IDictionary<System.Enum, String> AttrValue()
+        public static IDictionary<System.Enum, Object> AttrValue()
         {
-            return new Dictionary<System.Enum, String>();
+            return new Dictionary<System.Enum, Object>();
         }
 
 

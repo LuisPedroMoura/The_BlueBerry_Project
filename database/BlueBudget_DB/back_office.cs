@@ -41,8 +41,8 @@ namespace BlueBudget_DB
             string mname = middlename_textbox.ForeColor == Color.Black ? middlename_textbox.Text : "";
             string lname = lastname_textbox.ForeColor == Color.Black ? lastname_textbox.Text : "";
             string cardNo = cardnumber_textbox.ForeColor == Color.Black ? cardnumber_textbox.Text : "";
-            string periodicity = (string)periodicity_comboBox.SelectedItem;
-            string term = term_dateTimePicker.Value.ToString();
+            int periodicity = DB_API.SelectRecurenceIdbyDesignation((string)periodicity_comboBox.SelectedItem);
+            DateTime term = DateTime.Parse(term_dateTimePicker.Value.ToString());
 
             // verify if email field is filled
             if (email.Equals(""))
@@ -70,8 +70,7 @@ namespace BlueBudget_DB
             }
 
             // add user
-            string active = active_checkBox.Checked ? "1" : "0";
-            DB_API.InsertUser(username, email, fname, mname, lname, cardNo, periodicity, term, active);
+            DB_API.InsertUser(username, email, fname, mname, lname, cardNo, periodicity, term, active_checkBox.Checked);
             notifications_textbox.Text = "SUCCESS:\n New user was added to database!";
 
             // upadte listBox with new user
@@ -88,8 +87,8 @@ namespace BlueBudget_DB
             string mname = middlename_textbox.ForeColor == Color.Black ? middlename_textbox.Text : "";
             string lname = lastname_textbox.ForeColor == Color.Black ? lastname_textbox.Text : "";
             string cardNo = cardnumber_textbox.ForeColor == Color.Black ? cardnumber_textbox.Text : "";
-            string periodicity = (string)periodicity_comboBox.SelectedItem;
-            string term = term_dateTimePicker.Value.ToString();
+            int periodicity = DB_API.SelectRecurenceIdbyDesignation((string)periodicity_comboBox.SelectedItem);
+            DateTime term = DateTime.Parse(term_dateTimePicker.Value.ToString());
 
             // verify if email field is filled
             if (email.Equals(""))
@@ -117,8 +116,7 @@ namespace BlueBudget_DB
             }
 
             // update user
-            string active = active_checkBox.Checked ? "1" : "0";
-            DB_API.UpdateUser(username, email, fname, mname, lname, cardNo, periodicity, term, active);
+            DB_API.UpdateUser(username, email, fname, mname, lname, cardNo, periodicity, term, active_checkBox.Checked);
             
               
             // update listBox
@@ -157,18 +155,27 @@ namespace BlueBudget_DB
 
             // search DB for user
             var rdr = DB_API.SelectUserByEmail(email);
-            var res = new List<String>();
+            var res = new List<Object>();
             while (rdr.Read())
             {
-                res.Add(rdr[DB_API.UserEnt.user_name.ToString()].ToString());
                 res.Add(rdr[DB_API.UserEnt.email.ToString()].ToString());
+                res.Add(rdr[DB_API.UserEnt.user_name.ToString()].ToString());
                 res.Add(rdr[DB_API.UserEnt.fname.ToString()].ToString());
                 res.Add(rdr[DB_API.UserEnt.mname.ToString()].ToString());
                 res.Add(rdr[DB_API.UserEnt.lname.ToString()].ToString());
                 res.Add(rdr[DB_API.UserEnt.card_number.ToString()].ToString());
-                res.Add(rdr[DB_API.UserEnt.periodicity.ToString()].ToString());
-                res.Add(rdr[DB_API.UserEnt.term.ToString()].ToString());
-                res.Add(rdr[DB_API.UserEnt.active.ToString()].ToString());
+                if (rdr[DB_API.UserEnt.active.ToString()].ToString().Equals(""))
+                {
+                    res.Add(1); // periodicity
+                    res.Add(DateTime.Today); // term
+                    res.Add(false); // active
+                }
+                else
+                {
+                    res.Add(rdr[DB_API.UserEnt.periodicity.ToString()]);
+                    res.Add(DateTime.Parse(rdr[DB_API.UserEnt.term.ToString()].ToString()));
+                    res.Add(Boolean.Parse(rdr[DB_API.UserEnt.active.ToString()].ToString()));
+                }
             }
 
             Update_textBoxes(res);
@@ -200,45 +207,41 @@ namespace BlueBudget_DB
             periodicity_comboBox.DataSource = res;
         }
 
-        private void Update_textBoxes(List<String> values)
+        private void Update_textBoxes(List<Object> values)
         {
             DefaultTextboxes();
 
-            email_textbox.Text = values[0]; email_textbox.ForeColor = Color.Black;
+            email_textbox.Text = (string)values[0]; email_textbox.ForeColor = Color.Black;
 
             if (values.Count > 1)
             {
-                username_textbox.Text = values[1];
+                username_textbox.Text = (string)values[1];
                 username_textbox.ForeColor = !"".Equals(values[1]) ? Color.Black : Color.Gray;
             }
 
             if (values.Count > 2)
             {
-                firstname_textbox.Text = values[2];
+                firstname_textbox.Text = (string)values[2];
                 firstname_textbox.ForeColor = !"".Equals(values[2]) ? Color.Black : Color.Gray;
 
-                middlename_textbox.Text = values[3];
+                middlename_textbox.Text = (string)values[3];
                 middlename_textbox.ForeColor = !"".Equals(values[3]) ? Color.Black : Color.Gray;
 
-                lastname_textbox.Text = values[4];
+                lastname_textbox.Text = (string)values[4];
                 lastname_textbox.ForeColor = !"".Equals(values[4]) ? Color.Black : Color.Gray;
 
-                cardnumber_textbox.Text = values[5];
+                cardnumber_textbox.Text = (string)values[5];
                 cardnumber_textbox.ForeColor = !"".Equals(values[5]) ? Color.Black : Color.Gray;
 
-                periodicity_comboBox.Text = DB_API.SelectRecurrenceById(values[6]);
-
-                term_dateTimePicker.Value = DateTime.Parse(values[7]);
+                periodicity_comboBox.Text = DB_API.SelectRecurrenceById((int)values[6]);
+                if (values[7].Equals(""))
+                {
+                    values[7] = DateTime.Today.ToString();
+                }
+                term_dateTimePicker.Value = (DateTime)values[7];
             }
             
-            if (values.Count > 2 && values[8].Equals("True"))
-            {
-                active_checkBox.Checked = true;
-            }
-            else
-            {
-                active_checkBox.Checked = false;
-            }
+            active_checkBox.Checked = (bool)values[8];
         }
 
         // -------------------------------------------------------------------

@@ -50,7 +50,7 @@ namespace BlueBudget_DB
         // LIST BOXES --------------------------------------------------------
         // -------------------------------------------------------------------
 
-        private void Populate_moneyAccounts_listBox(String email)
+        private void Populate_moneyAccounts_listBox(string email)
         {
 
             // get money accounts from DB
@@ -60,6 +60,7 @@ namespace BlueBudget_DB
             if (!rdr.HasRows)
             {
                 notifications_textbox.Text = "WARNING:\nUser has no accounts.";
+                accounts_listbox.DataSource = new List<String>();
                 return;
             }
 
@@ -74,7 +75,7 @@ namespace BlueBudget_DB
             accounts_listbox.DataSource = res;
         }
 
-        private void Populate_associatedUsers_listBox(String account_id)
+        private void Populate_associatedUsers_listBox(int account_id)
         {
             var rdr = DB_API.SelectMoneyAccountUsers(account_id);
             var res = new List<String>();
@@ -85,12 +86,11 @@ namespace BlueBudget_DB
             associatedusers_listbox.DataSource = res;
         }
 
-
         private void Accounts_listbox_SelectedIndexChanged(object sender, EventArgs e)
         {
             // get selected item value
             string account_name = (string)accounts_listbox.SelectedItem;
-            string account_id = CURRENT_USER_ACCOUNTS[account_name].ToString();
+            int account_id = CURRENT_USER_ACCOUNTS[account_name];
 
             // set account_name label
             account_textbox.Text = account_name;
@@ -113,7 +113,6 @@ namespace BlueBudget_DB
             }
             associatedusers_listbox.DataSource = res;
         }
-
 
         private void Associatedusers_listbox_SelectedIndexChanged(object sender, EventArgs e)
         {
@@ -152,7 +151,6 @@ namespace BlueBudget_DB
             Populate_moneyAccounts_listBox(email);
         }
 
-
         private void Newaccount_btn_Click(object sender, EventArgs e)
         {
             // get textbox value
@@ -190,7 +188,7 @@ namespace BlueBudget_DB
         {
             // get textbox value
             string account_name = account_textbox.ForeColor == Color.Black ? account_textbox.Text : "";
-            string account_id = CURRENT_USER_ACCOUNTS[account_name].ToString();
+            int account_id = CURRENT_USER_ACCOUNTS[account_name];
 
             // verify if account exists already
             var exists = DB_API.ExistsMoneyAccount(account_id);
@@ -202,13 +200,17 @@ namespace BlueBudget_DB
 
             // delete money account
             DB_API.DeleteMoneyAccount(account_id);
+
+            // repopulate accounts_listbox
+            Populate_moneyAccounts_listBox(CURRENT_USER);
         }
 
         private void Adduser_btn_Click(object sender, EventArgs e)
         {
             // get textbox value
+            string new_user = user_textbox.ForeColor == Color.Black ? user_textbox.Text : "";
             string account_name = account_textbox.ForeColor == Color.Black ? account_textbox.Text : "";
-            string account_id = CURRENT_USER_ACCOUNTS[account_name].ToString();
+            int account_id = CURRENT_USER_ACCOUNTS[account_name];
 
             // verify if account field is filled
             if ("".Equals(account_name))
@@ -226,14 +228,14 @@ namespace BlueBudget_DB
             }
 
             // verify that a user is selected
-            if (CURRENT_USER.Equals(""))
+            if (new_user.Equals(""))
             {
                 notifications_textbox.Text = "ERROR:\nUser must be selected to attribute account to!";
                 return;
             }
 
             // verify if user exists
-            exists = DB_API.ExistsUser(CURRENT_USER);
+            exists = DB_API.ExistsUser(new_user);
             if (!exists)
             {
                 notifications_textbox.Text = "ERROR:\nUser does not exist!";
@@ -241,17 +243,18 @@ namespace BlueBudget_DB
             }
 
             // insert new account into 'users_money_accounts table
-            DB_API.MoneyAccountAddUser(account_id, CURRENT_USER);
+            DB_API.MoneyAccountAddUser(account_id, new_user);
 
             Populate_associatedUsers_listBox(account_id);
-            notifications_textbox.Text = "SUCCESS:\nNew account was added!";
+            notifications_textbox.Text = "SUCCESS:\nNew user was added to account "+account_name+"!";
         }
 
         private void Deleteuser_btn_Click(object sender, EventArgs e)
         {
             // get textbox value
+            string user = user_textbox.ForeColor == Color.Black ? user_textbox.Text : "";
             string account_name = account_textbox.ForeColor == Color.Black ? account_textbox.Text : "";
-            string account_id = CURRENT_USER_ACCOUNTS[account_name].ToString();
+            int account_id = CURRENT_USER_ACCOUNTS[account_name];
 
             // verify if account field is filled
             if ("".Equals(account_name))
@@ -268,14 +271,14 @@ namespace BlueBudget_DB
             }
 
             // verify that a user is selected
-            if (CURRENT_USER.Equals(""))
+            if (user.Equals(""))
             {
                 notifications_textbox.Text = "ERROR:\nUser must be selected to attribute account to!";
                 return;
             }
 
             // verify if user exists
-            exists = DB_API.ExistsUser(CURRENT_USER);
+            exists = DB_API.ExistsUser(user);
             if (!exists)
             {
                 notifications_textbox.Text = "ERROR:\nUser does not exist!";
@@ -283,7 +286,7 @@ namespace BlueBudget_DB
             }
 
             // delete user access to account
-            DB_API.MoneyAccountRemoveUser(account_id, CURRENT_USER);
+            DB_API.MoneyAccountRemoveUser(account_id, user);
         }
 
 
@@ -300,7 +303,6 @@ namespace BlueBudget_DB
             user_textbox.Text = "associated user email";
             user_textbox.ForeColor = Color.Gray;
         }
-
 
         private void Email_textbox_Enter(object sender, EventArgs e)
         {

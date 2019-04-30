@@ -44,15 +44,6 @@ namespace BlueBudget_DB
             balance
         }
 
-        // ----------------------------------------------------------------------------------------------
-        // GENERIC METHODS ------------------------------------------------------------------------------
-        // ----------------------------------------------------------------------------------------------
-
-        public static bool Exists(System.Enum entity, System.Enum column, String value)
-        {
-            return DB_IO.Exists(entity, column, value);
-        }
-
 
         // ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
         // API METHODS ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -69,9 +60,9 @@ namespace BlueBudget_DB
         }
 
         public static void InsertUser(string username, string email, string fname, string mname, string lname,
-            string cardNo, string periodicity, string term, string active)
+            string cardNo, int periodicity, DateTime term, bool active)
         {
-            var attrValue = new Dictionary<System.Enum, String>
+            var attrValue = new Dictionary<System.Enum, Object>
             {
                 { DB_API.UserEnt.user_name, username },
                 { DB_API.UserEnt.email, email },
@@ -87,9 +78,9 @@ namespace BlueBudget_DB
         }
 
         public static void UpdateUser(string username, string email, string fname = null, string mname = null,
-            string lname = null, string cardNo = null, string periodicity = null, string term = null, string active = null)
+            string lname = null, string cardNo = null, int periodicity = 1, DateTime term = new DateTime(), bool? active = null)
         {
-            var attrValue = new Dictionary<System.Enum, String>
+            var attrValue = new Dictionary<System.Enum, Object>
             {
                 { DB_API.UserEnt.user_name, username },
                 { DB_API.UserEnt.email, email },
@@ -106,21 +97,21 @@ namespace BlueBudget_DB
 
         public static void DeleteUser(string email)
         {
-            var attrValue = DB_API.AttrValue();
+            var attrValue = DB_IO.AttrValue();
             attrValue[DB_API.UserEnt.email] = email;
             DB_IO.Delete(DB_IO.DB_Interface.pr_delete_user, attrValue);
         }
 
         public static DataTableReader SelectUserByEmail(string email)
         {
-            var attrValue = DB_API.AttrValue();
+            var attrValue = DB_IO.AttrValue();
             attrValue[DB_API.UserEnt.email] = email;
-            return DB_IO.SelectReader(DB_IO.DB_Interface.pr_select_user, attrValue);
+            return DB_IO.SelectReader(DB_IO.DB_Interface.pr_select_users, attrValue);
         }
 
         public static DataTableReader SelectAllUsers()
         {
-            return DB_IO.SelectReader(DB_IO.DB_Interface.pr_select_user, DB_API.AttrValue());
+            return DB_IO.SelectReader(DB_IO.DB_Interface.pr_select_users, DB_IO.AttrValue());
         }
 
 
@@ -130,16 +121,24 @@ namespace BlueBudget_DB
 
         public static DataTableReader SelectAllRecurrences()
         {
-            return DB_IO.SelectReader(DB_IO.DB_Interface.pr_select_recurrences, DB_API.AttrValue());
+            return DB_IO.SelectReader(DB_IO.DB_Interface.pr_select_recurrences, DB_IO.AttrValue());
         }
 
-        public static String SelectRecurrenceById(string id)
+        public static String SelectRecurrenceById(int id)
         {
-            var attrValue = DB_API.AttrValue();
+            var attrValue = DB_IO.AttrValue();
             attrValue[DB_API.RecurrenceEnt.periodicity] = id;
-            var rdr = DB_IO.SelectReader(DB_IO.DB_Interface.pr_select_recurrences, DB_API.AttrValue());
+            var rdr = DB_IO.SelectReader(DB_IO.DB_Interface.pr_select_recurrences, attrValue);
             rdr.Read();
             return rdr[DB_API.RecurrenceEnt.designation.ToString()].ToString();
+        }
+
+        public static int SelectRecurenceIdbyDesignation(string designation)
+        {
+            var attrValue = DB_IO.AttrValue();
+            attrValue[DB_API.RecurrenceEnt.designation] = designation;
+            Console.WriteLine(DB_IO.SelectScalar(DB_IO.DB_Interface.pr_select_recurrences, attrValue));
+            return (int) DB_IO.SelectScalar(DB_IO.DB_Interface.pr_select_recurrence_id, attrValue);
         }
 
 
@@ -147,74 +146,66 @@ namespace BlueBudget_DB
         // MONEY ACCOUNTS -------------------------------------------------------------------------------
         // ----------------------------------------------------------------------------------------------
 
-        public static bool ExistsMoneyAccount(string account_id)
+        public static bool ExistsMoneyAccount(int account_id)
         {
             return DB_IO.Exists(DB_IO.DB_Interface.pr_exists_money_account, DB_API.MoneyAccountEnt.account_id, account_id);
         }
 
-        public static void InsertMoneyAccount(string user_email, string account_name, string balance = null, string patrimony = null)
+        public static void InsertMoneyAccount(string user_email, string account_name, Decimal? balance = null, Decimal? patrimony = null)
         {
-            var attrValue = new Dictionary<System.Enum, String>
+            var attrValue = new Dictionary<System.Enum, Object>
             {
                 { DB_API.MoneyAccountEnt.user_email, user_email },
                 { DB_API.MoneyAccountEnt.account_name, account_name },
                 { DB_API.MoneyAccountEnt.balance, balance },
                 { DB_API.MoneyAccountEnt.patrimony, patrimony }
             };
-            DB_IO.Insert(DB_IO.DB_Interface.pr_insert_user, attrValue);
+            DB_IO.Insert(DB_IO.DB_Interface.pr_insert_money_account, attrValue);
         }
 
-        public static void DeleteMoneyAccount(string account_id)
+        public static void DeleteMoneyAccount(int account_id)
         {
-            var attrValue = DB_API.AttrValue();
+            var attrValue = DB_IO.AttrValue();
             attrValue[DB_API.MoneyAccountEnt.account_id] = account_id;
             DB_IO.Delete(DB_IO.DB_Interface.pr_delete_money_account, attrValue);
         }
 
-        public static DataTableReader SelectMoneyAccountById(string account_id)
+        public static DataTableReader SelectMoneyAccountById(int account_id)
         {
-            var attrValue = DB_API.AttrValue();
-            attrValue[DB_API.MoneyAccountEnt.id] = account_id;
+            var attrValue = DB_IO.AttrValue();
+            attrValue[DB_API.MoneyAccountEnt.account_id] = account_id;
             return DB_IO.SelectReader(DB_IO.DB_Interface.pr_select_money_accounts, attrValue);
         }
 
         public static DataTableReader SelectUserMoneyAccounts(string email)
         {
-            var attrValue = DB_API.AttrValue();
-            attrValue[DB_API.UserEnt.email] = email;
+            var attrValue = DB_IO.AttrValue();
+            attrValue[DB_API.MoneyAccountEnt.user_email] = email;
             return DB_IO.SelectReader(DB_IO.DB_Interface.pr_select_user_money_accounts, attrValue);
         }
 
-        public static DataTableReader SelectMoneyAccountUsers(string account_id)
+        public static DataTableReader SelectMoneyAccountUsers(int account_id)
         {
-            var attrValue = DB_API.AttrValue();
-            attrValue[DB_API.MoneyAccountEnt.id] = account_id;
+            var attrValue = DB_IO.AttrValue();
+            attrValue[DB_API.MoneyAccountEnt.account_id] = account_id;
             return DB_IO.SelectReader(DB_IO.DB_Interface.pr_select_user_money_accounts, attrValue);
         }
 
-        public static void MoneyAccountAddUser(string account_id, string user_email)
+        public static void MoneyAccountAddUser(int account_id, string user_email)
         {
-            var attrValue = DB_API.AttrValue();
+            var attrValue = DB_IO.AttrValue();
             attrValue[DB_API.MoneyAccountEnt.account_id] = account_id;
             attrValue[DB_API.MoneyAccountEnt.user_email] = user_email;
             DB_IO.Insert(DB_IO.DB_Interface.pr_money_account_add_user, attrValue);
         }
 
-        public static void MoneyAccountRemoveUser(string account_id, string user_email)
+        public static void MoneyAccountRemoveUser(int account_id, string user_email)
         {
-            var attrValue = DB_API.AttrValue();
+            var attrValue = DB_IO.AttrValue();
             attrValue[DB_API.MoneyAccountEnt.account_id] = account_id;
             attrValue[DB_API.MoneyAccountEnt.user_email] = user_email;
             DB_IO.Delete(DB_IO.DB_Interface.pr_money_account_remove_user, attrValue);
         }
 
-        // ----------------------------------------------------------------------------------------------
-        // GETTERS FOR DATA TYPES THAT ARE BORING TO INSTANTIATE ----------------------------------------
-        // ----------------------------------------------------------------------------------------------
-
-        public static IDictionary<System.Enum, String> AttrValue()
-        {
-            return new Dictionary<System.Enum, String>();
-        }
     }
 }
