@@ -15,6 +15,7 @@ import android.widget.ListView;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class Budget extends AppCompatActivity {
 
@@ -90,9 +91,9 @@ public class Budget extends AppCompatActivity {
 
         ArrayList<BudgetProgression> budgetProgressionList = new ArrayList<>();
 
-        List<AppCategory> allCategories = Home.app.getCategoriesList();
+        List<AppCategory> budgetTypeExpenses = Home.app.allCatTypeOrdered(AppBudgetType.EXPENSE);
 
-        for(AppCategory c : allCategories){
+        for(AppCategory c : budgetTypeExpenses){
 
             String catName = c.getName();
             Log.i(TAG, "category name " + catName);

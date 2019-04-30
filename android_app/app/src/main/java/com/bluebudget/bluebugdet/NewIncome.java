@@ -19,6 +19,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+import java.util.Map;
 
 public class NewIncome extends AppCompatActivity {
 
@@ -82,8 +83,9 @@ public class NewIncome extends AppCompatActivity {
     //////////////////////
     private ArrayList<SpinnerItem> initCategoryList(){
 
-        List<AppCategory> categoriesList = Home.app.getCategoriesList();
         ArrayList<SpinnerItem> categoryItemList = new ArrayList<>();
+
+        List<AppCategory> categoriesList = Home.app.allCatTypeOrdered(AppBudgetType.INCOME);
 
         for(AppCategory category : categoriesList){
             categoryItemList.add(new SpinnerItem(category.getName(), category.getIcon()));

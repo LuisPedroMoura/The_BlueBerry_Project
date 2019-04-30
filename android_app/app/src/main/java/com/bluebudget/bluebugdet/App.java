@@ -14,7 +14,7 @@ public class App {
     private AppTransactionList transactions;
 
 
-    private static final String TAG = "APP";
+    private static final String TAG = "App";
 
 
     public App(){
@@ -26,9 +26,12 @@ public class App {
         addWallet("Future Expenses", R.drawable.ic_account_balance_wallet_black_24dp, -1.0);
         addWallet("Savings",R.drawable.ic_account_balance_wallet_black_24dp, -1.0);
 
-        addCategory(null, "Home", R.drawable.ic_home_black_24dp, 0.0, 1);
-        addCategory(null, "Food", R.drawable.ic_shopping_cart_black_24dp, 0.0, 1);
-        addCategory(null, "Transports", R.drawable.ic_directions_car_black_24dp, 0.0, 1);
+        addCategory(null, "Income", R.drawable.ic_trending_up_black_24dp, 0.0, 1, AppBudgetType.INCOME);
+        addCategory("Income", "Gifts", R.drawable.ic_subdirectory_arrow_right_black_24dp, 0.0, 1, AppBudgetType.INCOME);
+        addCategory(null, "Home", R.drawable.ic_home_black_24dp, 0.0, 1, AppBudgetType.EXPENSE);
+        addCategory("Home", "cleaning products", R.drawable.ic_subdirectory_arrow_right_black_24dp, 0.0, 1, AppBudgetType.EXPENSE);
+        addCategory(null, "Food", R.drawable.ic_shopping_cart_black_24dp, 0.0, 1, AppBudgetType.EXPENSE);
+        addCategory(null, "Transports", R.drawable.ic_directions_car_black_24dp, 0.0, 1, AppBudgetType.EXPENSE);
     }
 
 
@@ -39,8 +42,8 @@ public class App {
         return categories.getCategory(name);
     }
 
-    public void addCategory(String parent, String name, int icon, double defBudget, int defRecurrence) {
-        categories.addCategory(parent, name, icon, defBudget, defRecurrence);
+    public void addCategory(String parent, String name, int icon, double defBudget, int defRecurrence, AppBudgetType type) {
+        categories.addCategory(parent, name, icon, defBudget, defRecurrence, type);
     }
 
     public void updateCategory(String name, double defBudget, int defRecurrence) {
@@ -58,6 +61,17 @@ public class App {
     public Map<AppCategory,List<AppCategory>> getCategoriesAndSubCategoriesDict(){
         return categories.getCategoriesAndSubCategories();
     }
+
+    public List<AppCategory> filterCategories(List<String> parentsList,
+                                              List<AppBudgetType> typesList){
+        return categories.filterCategories(parentsList, typesList);
+    }
+
+    public List<AppCategory> allCatTypeOrdered(AppBudgetType type){
+        return categories.allCatTypeOrdered(type);
+    }
+
+
 
 
     // ---------------------------------------------------------------------------------------------

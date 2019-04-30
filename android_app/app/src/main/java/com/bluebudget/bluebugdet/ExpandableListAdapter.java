@@ -41,9 +41,6 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
 
     @Override
     public Object getGroup(int groupPosition) {
-
-        Log.i(TAG, "getGroup -> groupPosition = "+groupPosition);
-
         return headerList.get(groupPosition);
     }
 
@@ -108,12 +105,12 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
 
 
         LayoutInflater inflater = (LayoutInflater) this.context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        if(childList.size()==2){
-            Log.i(TAG, "Inflate -> childList.size()==2");
+        if(childList.size()==3){
+            //Log.i(TAG, "Inflate -> childList.size()==2");
             convertView = inflater.inflate(R.layout.layout_expandablelistview_child, null);
         }
         else{
-            Log.i(TAG, "Inflate -> else");
+            //Log.i(TAG, "Inflate -> else");
             convertView = inflater.inflate(R.layout.layout_expandablelistview_textview, null);
         }
 
@@ -121,17 +118,19 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
 
 
         TextView addSubCatTV = convertView.findViewById(R.id.textviewTextView);
+        ImageView iconIV = convertView.findViewById(R.id.childIconImageView);
         TextView descriptionTV = convertView.findViewById(R.id.childDescriptionTextView);
         TextView amountTV = convertView.findViewById(R.id.childAmountTextView);
 
-        if(childList.size()==2){
 
-            Log.i(TAG, "childList.size()==2");
+        if(childList.size()==3){
 
-            String description = childList.get(0);
-            Log.i(TAG, "description " + description);
+            Log.i(TAG, "childList.size()==3");
+            int icon = Integer.parseInt(childList.get(0));
+            iconIV.setImageResource(icon);
+            String description = childList.get(1);
             descriptionTV.setText(description);
-            String amount = childList.get(1);
+            String amount = childList.get(2);
             amountTV.setText(amount);
 
             Log.i(TAG, "description = " + description);

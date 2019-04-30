@@ -1,10 +1,14 @@
 package com.bluebudget.bluebugdet;
 
+import android.util.Log;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
+import static android.support.constraint.Constraints.TAG;
 
 public class AppCategoryList {
 
@@ -17,8 +21,8 @@ public class AppCategoryList {
         return categories.get(name);
     }
 
-    public void addCategory(String parent, String name, int icon, double def_budget, int def_recurrence) {
-        AppCategory newCat = new AppCategory(parent, name, icon, def_budget, def_recurrence);
+    public void addCategory(String parent, String name, int icon, double def_budget, int def_recurrence, AppBudgetType type) {
+        AppCategory newCat = new AppCategory(parent, name, icon, def_budget, def_recurrence, type);
         categories.put(name, newCat);
     }
 
@@ -53,9 +57,50 @@ public class AppCategoryList {
         for (String name : categories.keySet()){
             AppCategory cat = categories.get(name);
             if (cat.getParent() != null){
-                res.get(cat.getParent()).add(cat);
+                AppCategory parent = getCategory(cat.getParent());
+                res.get(parent).add(cat);
             }
         }
+        return res;
+    }
+
+    public List<AppCategory> filterCategories( List<String> parentsList,
+                                               List<AppBudgetType> typesList) {
+
+        List<AppCategory> res = new ArrayList<>();
+
+        for(String key : categories.keySet() ) {
+            AppCategory cat = categories.get(key);
+
+            if(parentsList == null || parentsList.contains(cat.getParent())) {
+                if(typesList == null || typesList.contains(cat.getType())){
+                    res.add(cat);
+                }
+            }
+        }
+
+        return res;
+    }
+
+    public List<AppCategory> allCatTypeOrdered(AppBudgetType type){
+        List<AppCategory> res = new ArrayList<>();
+
+        List<String> parentsList = new ArrayList<>();
+        parentsList.add(null);
+        List<AppBudgetType> typesList = new ArrayList<>();
+        typesList.add(type);
+
+        List<AppCategory> parentCatList =  Home.app.filterCategories(parentsList, typesList);
+        Map<AppCategory,List<AppCategory>> catSubMap = Home.app.getCategoriesAndSubCategoriesDict();
+
+        for(AppCategory category : parentCatList){
+            res.add(category);
+            List<AppCategory> subcatList = catSubMap.get(category);
+            for( AppCategory subcat : subcatList ){
+                res.add(subcat);
+            }
+        }
+
         return res;
     }
 

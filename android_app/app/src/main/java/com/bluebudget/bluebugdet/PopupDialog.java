@@ -15,7 +15,7 @@ public class PopupDialog extends AppCompatDialogFragment {
     private EditText nameET;
     private EditText amountET;
     private PopupDialogListener listener;
-
+    private static final String TAG = "PopupDialog";
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
@@ -34,9 +34,16 @@ public class PopupDialog extends AppCompatDialogFragment {
                 .setPositiveButton("ok", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        String username = nameET.getText().toString();
-                        String password = amountET.getText().toString();
-                        listener.applyTexts(username, password);
+
+                        try {
+                            String name = nameET.getText().toString();
+                            Double amount = Double.parseDouble(amountET.getText().toString());
+                            listener.applyTexts(name, amount);
+                        } catch (NumberFormatException e) {
+                            e.printStackTrace();
+                        }
+
+
                     }
                 });
 
@@ -59,6 +66,6 @@ public class PopupDialog extends AppCompatDialogFragment {
     }
 
     public interface PopupDialogListener {
-        void applyTexts(String username, String password);
+        void applyTexts(String name, Double amount);
     }
 }
