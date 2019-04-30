@@ -31,7 +31,32 @@ namespace BlueBudget_DB
 
         private void Login_btn_Click(object sender, EventArgs e)
         {
-            var frm = new user_menu
+
+            string user = CURRENT_USER.Equals("") ? userfindme_textbox.Text : CURRENT_USER;
+            
+            if (user.Equals(""))
+            {
+                notifications_textbox.Text = "ERROR:\nEmail field is mandatory!";
+                return;
+            }
+
+            string account_name = account_textbox.ForeColor == Color.Black ? account_textbox.Text : "";
+
+            if (account_name.Equals(""))
+            {
+                notifications_textbox.Text = "ERROR:\nAccount must be selected!";
+                return;
+            }
+
+            int account_id = CURRENT_USER_ACCOUNTS[account_name];
+            var exists = DB_API.ExistsMoneyAccount(account_id);
+            if (!exists)
+            {
+                notifications_textbox.Text = "ERROR:\nAccount does not exist!";
+                return;
+            }
+
+            var frm = new user_menu(user, account_id)
             {
                 Location = this.Location,
                 StartPosition = FormStartPosition.Manual
