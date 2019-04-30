@@ -59,6 +59,7 @@
       <DependentUpon>budget.cs</DependentUpon>
     </Compile>
     <Compile Include="DB_API.cs" />
+    <Compile Include="DB_IO.cs" />
     <Compile Include="MainForm.cs">
       <SubType>Form</SubType>
     </Compile>

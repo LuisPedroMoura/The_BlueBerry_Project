@@ -1,366 +1,210 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.Diagnostics;
 
 namespace BlueBudget_DB
 {
     class DB_API
     {
 
-        //Instance Fields
-        private static String dbServer = "tcp:mednat.ieeta.pt\\SQLSERVER,8101";
-        private static String dbName = "p1g2";
-        private static String dbUserName = "p1g2";
-        private static String dbUserPass = "bananas@Bd";
-
-
-        private static SqlConnection DBconnect()
+        public enum UserEnt
         {
-
-            SqlConnection cnx = new SqlConnection("Data Source = " + dbServer + " ;" + "Initial Catalog = " + dbName +
-                                                        "; uid = " + dbUserName + ";" + "password = " + dbUserPass);
-
-            try
-            {
-                cnx.Open();
-                if (cnx.State == ConnectionState.Open)
-                {
-                }
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine("An error has ocurred connecting to the DB: " + ex.ToString());
-            }
-
-            return cnx;
+            user_name,
+            email,
+            fname,
+            mname,
+            lname,
+            card_number,
+            periodicity,
+            term,
+            active
+        };
+        public enum RecurrenceEnt
+        {
+            periodicity,
+            designation
+        };
+        public enum MoneyAccountEnt
+        {
+            user_email,
+            account_id,
+            id,
+            account_name,
+            balance,
+            patrimony,
+        };
+        public enum WalletEnt
+        {
+            id,
+            account_id,
+            name,
+            balance
         }
 
-        private static Boolean DBdisconnect(SqlConnection cnx)
-        {
-            if (cnx.State == ConnectionState.Open)
-                cnx.Close();
-            return true;
-        }
+
+        // ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+        // API METHODS ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+        // ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
 
         // ----------------------------------------------------------------------------------------------
-        // VERY COMMON QUERIES ENCAPSULATED BY METHODS --------------------------------------------------
+        // USERS ----------------------------------------------------------------------------------------
         // ----------------------------------------------------------------------------------------------
 
-        public static bool Exists(String tableName, String columnName, String attrName)
+        public static bool ExistsUser(string email)
         {
-            var where = DB_API.where();
-            where[columnName] = attrName;
-            var rdr = DB_API.DBselect(tableName, new string[] { "*" }, where);
-            if (!rdr.HasRows)
-            {
-                return false;
-            }
-            return true;
+            return DB_IO.Exists(DB_IO.DB_Interface.pr_exists_user, DB_API.UserEnt.email, email);
         }
+
+        public static void InsertUser(string username, string email, string fname, string mname, string lname,
+            string cardNo, int periodicity, DateTime term, bool active)
+        {
+            var attrValue = new Dictionary<System.Enum, Object>
+            {
+                { DB_API.UserEnt.user_name, username },
+                { DB_API.UserEnt.email, email },
+                { DB_API.UserEnt.fname, fname },
+                { DB_API.UserEnt.mname, mname },
+                { DB_API.UserEnt.lname, lname },
+                { DB_API.UserEnt.card_number, cardNo },
+                { DB_API.UserEnt.periodicity, periodicity },
+                { DB_API.UserEnt.term, term },
+                { DB_API.UserEnt.active, active }
+            };
+            DB_IO.Insert(DB_IO.DB_Interface.pr_insert_user, attrValue);
+        }
+
+        public static void UpdateUser(string username, string email, string fname = null, string mname = null,
+            string lname = null, string cardNo = null, int periodicity = 1, DateTime term = new DateTime(), bool? active = null)
+        {
+            var attrValue = new Dictionary<System.Enum, Object>
+            {
+                { DB_API.UserEnt.user_name, username },
+                { DB_API.UserEnt.email, email },
+                { DB_API.UserEnt.fname, fname },
+                { DB_API.UserEnt.mname, mname },
+                { DB_API.UserEnt.lname, lname },
+                { DB_API.UserEnt.card_number, cardNo },
+                { DB_API.UserEnt.periodicity, periodicity },
+                { DB_API.UserEnt.term, term },
+                { DB_API.UserEnt.active, active }
+            };
+            DB_IO.Update(DB_IO.DB_Interface.pr_update_user, attrValue);
+        }
+
+        public static void DeleteUser(string email)
+        {
+            var attrValue = DB_IO.AttrValue();
+            attrValue[DB_API.UserEnt.email] = email;
+            DB_IO.Delete(DB_IO.DB_Interface.pr_delete_user, attrValue);
+        }
+
+        public static DataTableReader SelectUserByEmail(string email)
+        {
+            var attrValue = DB_IO.AttrValue();
+            attrValue[DB_API.UserEnt.email] = email;
+            return DB_IO.SelectReader(DB_IO.DB_Interface.pr_select_users, attrValue);
+        }
+
+        public static DataTableReader SelectAllUsers()
+        {
+            return DB_IO.SelectReader(DB_IO.DB_Interface.pr_select_users, DB_IO.AttrValue());
+        }
+
 
         // ----------------------------------------------------------------------------------------------
-        // SQL QUERY GENERIC METHODS --------------------------------------------------------------------
+        // RECURRENCE -----------------------------------------------------------------------------------
         // ----------------------------------------------------------------------------------------------
 
-
-        public static int DBexecProc(String procName, IDictionary<String, String> attrValue)
+        public static DataTableReader SelectAllRecurrences()
         {
-            SqlConnection cnx = DBconnect();
-
-            // step 1: create sql query and assign it to sql cmd
-            SqlCommand cmd = cnx.CreateCommand();
-            cmd.CommandText = procParser(procName, attrValue);
-
-            // step 2: parameterize cmd
-            cmdParameterizer(cmd, attrValue);
-
-            Console.WriteLine("################################################");
-            Console.WriteLine(cmd.CommandText);
-            Console.WriteLine("################################################");
-
-            // step 2: execute
-            int rows = 0;
-            try
-            {
-                rows = cmd.ExecuteNonQuery();
-                Console.WriteLine("Query executed successfully");
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine("Error executing query: " + ex.ToString());
-            }
-            finally
-            {
-                DBdisconnect(cnx);
-            }
-            return rows;
+            return DB_IO.SelectReader(DB_IO.DB_Interface.pr_select_recurrences, DB_IO.AttrValue());
         }
 
-        public static DataTableReader DBselect(String functionName, String[] collumns,
-            IDictionary<String,String> where)
+        public static String SelectRecurrenceById(int id)
         {
-            SqlConnection cnx = DBconnect();
-
-            // step 1: create sql query and assign it to sql cmd
-            SqlCommand cmd = cnx.CreateCommand();
-            cmd.CommandText = functionParser(functionName, where);
-
-            // step 2: parameterize cmd
-            cmdParameterizer(cmd, where);
-
-            Console.WriteLine("################################################");
-            Console.WriteLine(cmd.CommandText);
-            Console.WriteLine("################################################");
-
-            // execute SQL and return
-            SqlDataReader rdr = cmd.ExecuteReader();
-            DataTable dt = new DataTable();
-            dt.Load(rdr);
-            return dt.CreateDataReader();
+            var attrValue = DB_IO.AttrValue();
+            attrValue[DB_API.RecurrenceEnt.periodicity] = id;
+            var rdr = DB_IO.SelectReader(DB_IO.DB_Interface.pr_select_recurrences, attrValue);
+            rdr.Read();
+            return rdr[DB_API.RecurrenceEnt.designation.ToString()].ToString();
         }
 
-        public static DataTableReader DBselect(String sql)
+        public static int SelectRecurenceIdbyDesignation(string designation)
         {
-            Console.WriteLine("################################################");
-            Console.WriteLine(sql);
-            Console.WriteLine("################################################");
-
-            return ExecuteReader(sql);
+            var attrValue = DB_IO.AttrValue();
+            attrValue[DB_API.RecurrenceEnt.designation] = designation;
+            Console.WriteLine(DB_IO.SelectScalar(DB_IO.DB_Interface.pr_select_recurrences, attrValue));
+            return (int) DB_IO.SelectScalar(DB_IO.DB_Interface.pr_select_recurrence_id, attrValue);
         }
+
 
         // ----------------------------------------------------------------------------------------------
-        // GETTERS FOR DATA TYPES THAT ARE BORING TO INSTANTIATE ----------------------------------------
+        // MONEY ACCOUNTS -------------------------------------------------------------------------------
         // ----------------------------------------------------------------------------------------------
 
-        public static IDictionary<String, String> where()
+        public static bool ExistsMoneyAccount(int account_id)
         {
-            return new Dictionary<String, String>();
+            return DB_IO.Exists(DB_IO.DB_Interface.pr_exists_money_account, DB_API.MoneyAccountEnt.account_id, account_id);
         }
 
-        public static IDictionary<String, String> set()
+        public static void InsertMoneyAccount(string user_email, string account_name, Decimal? balance = null, Decimal? patrimony = null)
         {
-            return new Dictionary<String, String>();
+            var attrValue = new Dictionary<System.Enum, Object>
+            {
+                { DB_API.MoneyAccountEnt.user_email, user_email },
+                { DB_API.MoneyAccountEnt.account_name, account_name },
+                { DB_API.MoneyAccountEnt.balance, balance },
+                { DB_API.MoneyAccountEnt.patrimony, patrimony }
+            };
+            DB_IO.Insert(DB_IO.DB_Interface.pr_insert_money_account, attrValue);
         }
 
-        public static IDictionary<String, String> attrValue()
+        public static void DeleteMoneyAccount(int account_id)
         {
-            return set();
+            var attrValue = DB_IO.AttrValue();
+            attrValue[DB_API.MoneyAccountEnt.account_id] = account_id;
+            DB_IO.Delete(DB_IO.DB_Interface.pr_delete_money_account, attrValue);
         }
 
-        // ----------------------------------------------------------------------------------------------
-        // QUERY EXECUTION METHODS ----------------------------------------------------------------------
-        // ----------------------------------------------------------------------------------------------
-
-        private static int ExecuteNonQuery(String query)
+        public static DataTableReader SelectMoneyAccountById(int account_id)
         {
-            SqlConnection cnx = DBconnect();
-            SqlCommand cmd = new SqlCommand(query, cnx);
-            int rows = 0;
-            try
-            {
-                rows = cmd.ExecuteNonQuery();
-                Console.WriteLine("Query executed successfully");
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine("Error executing query: " + ex.ToString());
-            }
-            finally
-            {
-                DBdisconnect(cnx);
-            }
-            return rows;
+            var attrValue = DB_IO.AttrValue();
+            attrValue[DB_API.MoneyAccountEnt.account_id] = account_id;
+            return DB_IO.SelectReader(DB_IO.DB_Interface.pr_select_money_accounts, attrValue);
         }
 
-        private static DataTableReader ExecuteReader(String query)
+        public static DataTableReader SelectUserMoneyAccounts(string email)
         {
-            SqlConnection cnx = DBconnect();
-            DataTable dt = new DataTable();
-            try
-            {
-                SqlCommand cmd = new SqlCommand(query, cnx);
-                SqlDataReader rdr = cmd.ExecuteReader();
-                dt.Load(rdr);
-                rdr.Close();
-                
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine("Error executing query: " + ex.ToString());
-            }
-            finally
-            {
-                DBdisconnect(cnx);
-            }
-            return dt.CreateDataReader();
+            var attrValue = DB_IO.AttrValue();
+            attrValue[DB_API.MoneyAccountEnt.user_email] = email;
+            return DB_IO.SelectReader(DB_IO.DB_Interface.pr_select_user_money_accounts, attrValue);
         }
 
-        private static object ExecuteScalar(String query)
+        public static DataTableReader SelectMoneyAccountUsers(int account_id)
         {
-            SqlConnection cnx = DBconnect();
-            try
-            {
-                SqlCommand cmd = new SqlCommand(query, cnx);
-                return cmd.ExecuteScalar();
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine("Error executing query: " + ex.ToString());
-            }
-            finally
-            {
-                DBdisconnect(cnx);
-            }
-            return null;
+            var attrValue = DB_IO.AttrValue();
+            attrValue[DB_API.MoneyAccountEnt.account_id] = account_id;
+            return DB_IO.SelectReader(DB_IO.DB_Interface.pr_select_user_money_accounts, attrValue);
         }
 
-        // ----------------------------------------------------------------------------------------------
-        // AUXILAR PARSING METHODS ----------------------------------------------------------------------
-        // ----------------------------------------------------------------------------------------------
-
-
-
-
-        private static String procParser(String procName, IDictionary<String, String> attrValue)
+        public static void MoneyAccountAddUser(int account_id, string user_email)
         {
-            string sql = "EXEC " + procName + " ";
-
-            foreach (KeyValuePair<String, String> entry in attrValue)
-            {
-                sql += "@" + entry.Key + ", ";
-            }
-            sql = sql.Substring(0, sql.Length - 2);
-
-            return sql;
+            var attrValue = DB_IO.AttrValue();
+            attrValue[DB_API.MoneyAccountEnt.account_id] = account_id;
+            attrValue[DB_API.MoneyAccountEnt.user_email] = user_email;
+            DB_IO.Insert(DB_IO.DB_Interface.pr_money_account_add_user, attrValue);
         }
 
-        private static String functionParser(String functionName, IDictionary<String, String> attrValue)
+        public static void MoneyAccountRemoveUser(int account_id, string user_email)
         {
-            string sql = "SELECT * FROM " + functionName + " (";
-
-            foreach (KeyValuePair<String, String> entry in attrValue)
-            {
-                sql += "@" + entry.Key + ", ";
-            }
-            sql = sql.Substring(0, sql.Length - 2);
-            sql += ")";
-
-            return sql;
-        }
-
-        private static void cmdParameterizer(SqlCommand cmd, IDictionary<String, String> attrValue)
-        {
-            foreach (KeyValuePair<String, String> entry in attrValue)
-            {
-                cmd.Parameters.AddWithValue("@" + entry.Key, entry.Value);
-            }
-        }
-
-
-
-
-        private static String AttrValueParser(List<IDictionary<String, String>> attrValue, String separator1,
-            String separator2, String nullSeparator, String parenthesis)
-        {
-            if (attrValue.Count == 0)
-            {
-                return "";
-            }
-
-            string sql = "";
-            bool hasLastSep = false;
-            foreach (IDictionary<String, String> dict in attrValue)
-            {
-                if (dict.Count > 0)
-                {
-                    sql += parenthesis[0];
-
-                    foreach (KeyValuePair<string, string> entry in dict)
-                    {
-
-                        if (entry.Value.Equals("null"))
-                        {
-                            sql += entry.Key + " " + nullSeparator + entry.Value;
-                        }
-                        else
-                        {
-                            sql += entry.Key + "=" + entry.Value;
-                        }
-                        sql += " " + separator1 + " ";
-                    }
-                    sql = sql.Substring(0, sql.Length - 1 - (separator1.Length + 1)); // removes last separator1
-                    sql += parenthesis[1] + " " + separator2 + " ";
-                    hasLastSep = true;
-                }
-                
-            }
-            if (hasLastSep) {
-                sql = sql.Substring(0, sql.Length - 1 - (separator2.Length + 1)); // removes last separator2
-            }
-
-            return sql;
-        }
-
-        public static String AttrParser(IDictionary<String, String> attrValue, String separator1,
-            String parenthesis)
-        {
-
-            string sql = "";
-            sql += parenthesis[0];
-            foreach (KeyValuePair<string, string> entry in attrValue)
-            {
-                sql += entry.Key + separator1 + " ";
-            }
-            sql = sql.Substring(0, sql.Length - (separator1.Length + 1)); // removes last separator1
-            sql += parenthesis[1];
-
-            return sql;
-        }
-
-        private static String ValuesParser(IDictionary<String, String> attrValue, String separator1,
-            String parenthesis)
-        {
-
-            string sql = "";
-            sql += parenthesis[0];
-
-            foreach (KeyValuePair<string, string> entry in attrValue)
-            {
-                sql += entry.Value + separator1 + " ";
-            }
-            sql = sql.Substring(0, sql.Length - (separator1.Length + 1)); // removes last separator1
-            sql += parenthesis[1];
-
-            return sql;
-        }
-
-        public static IDictionary<String,String> CleanDict(IDictionary<String,String> dict)
-        {
-            foreach (KeyValuePair<String,String> entry in dict)
-            {
-                if (entry.Value.Equals("")){
-                    dict.Remove(entry.Key);
-
-                }
-            }
-            return dict;
-        }
-
-        public static IDictionary<String, String> nullifyDict(IDictionary<String, String> dict)
-        {
-            foreach (KeyValuePair<String, String> entry in dict)
-            {
-                if (entry.Value.Equals(""))
-                {
-                    dict[entry.Key] = "null";
-                }
-            }
-            return dict;
+            var attrValue = DB_IO.AttrValue();
+            attrValue[DB_API.MoneyAccountEnt.account_id] = account_id;
+            attrValue[DB_API.MoneyAccountEnt.user_email] = user_email;
+            DB_IO.Delete(DB_IO.DB_Interface.pr_money_account_remove_user, attrValue);
         }
 
     }
