@@ -40,19 +40,22 @@
             // stock_btn
             // 
             this.stock_btn.Font = new System.Drawing.Font("Microsoft Sans Serif", 16.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.stock_btn.Location = new System.Drawing.Point(59, 207);
+            this.stock_btn.Location = new System.Drawing.Point(47, 166);
+            this.stock_btn.Margin = new System.Windows.Forms.Padding(2);
             this.stock_btn.Name = "stock_btn";
-            this.stock_btn.Size = new System.Drawing.Size(205, 100);
+            this.stock_btn.Size = new System.Drawing.Size(164, 80);
             this.stock_btn.TabIndex = 0;
             this.stock_btn.Text = "Stocks";
             this.stock_btn.UseVisualStyleBackColor = true;
+            this.stock_btn.Click += new System.EventHandler(this.stock_btn_Click);
             // 
             // loans_btn
             // 
             this.loans_btn.Font = new System.Drawing.Font("Microsoft Sans Serif", 16.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.loans_btn.Location = new System.Drawing.Point(297, 207);
+            this.loans_btn.Location = new System.Drawing.Point(238, 166);
+            this.loans_btn.Margin = new System.Windows.Forms.Padding(2);
             this.loans_btn.Name = "loans_btn";
-            this.loans_btn.Size = new System.Drawing.Size(205, 100);
+            this.loans_btn.Size = new System.Drawing.Size(164, 80);
             this.loans_btn.TabIndex = 1;
             this.loans_btn.Text = "Loans";
             this.loans_btn.UseVisualStyleBackColor = true;
@@ -61,9 +64,10 @@
             // budget_btn
             // 
             this.budget_btn.Font = new System.Drawing.Font("Microsoft Sans Serif", 16.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.budget_btn.Location = new System.Drawing.Point(59, 61);
+            this.budget_btn.Location = new System.Drawing.Point(47, 49);
+            this.budget_btn.Margin = new System.Windows.Forms.Padding(2);
             this.budget_btn.Name = "budget_btn";
-            this.budget_btn.Size = new System.Drawing.Size(205, 100);
+            this.budget_btn.Size = new System.Drawing.Size(164, 80);
             this.budget_btn.TabIndex = 2;
             this.budget_btn.Text = "Budget";
             this.budget_btn.UseVisualStyleBackColor = true;
@@ -72,29 +76,34 @@
             // goal_btn
             // 
             this.goal_btn.Font = new System.Drawing.Font("Microsoft Sans Serif", 16.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.goal_btn.Location = new System.Drawing.Point(536, 61);
+            this.goal_btn.Location = new System.Drawing.Point(429, 49);
+            this.goal_btn.Margin = new System.Windows.Forms.Padding(2);
             this.goal_btn.Name = "goal_btn";
-            this.goal_btn.Size = new System.Drawing.Size(205, 100);
+            this.goal_btn.Size = new System.Drawing.Size(164, 80);
             this.goal_btn.TabIndex = 3;
             this.goal_btn.Text = "Goals";
             this.goal_btn.UseVisualStyleBackColor = true;
+            this.goal_btn.Click += new System.EventHandler(this.goal_btn_Click);
             // 
             // transactions_btn
             // 
             this.transactions_btn.Font = new System.Drawing.Font("Microsoft Sans Serif", 16.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.transactions_btn.Location = new System.Drawing.Point(297, 61);
+            this.transactions_btn.Location = new System.Drawing.Point(238, 49);
+            this.transactions_btn.Margin = new System.Windows.Forms.Padding(2);
             this.transactions_btn.Name = "transactions_btn";
-            this.transactions_btn.Size = new System.Drawing.Size(205, 100);
+            this.transactions_btn.Size = new System.Drawing.Size(164, 80);
             this.transactions_btn.TabIndex = 4;
             this.transactions_btn.Text = "Transactions";
             this.transactions_btn.UseVisualStyleBackColor = true;
+            this.transactions_btn.Click += new System.EventHandler(this.transactions_btn_Click);
             // 
             // settings_btn
             // 
             this.settings_btn.Font = new System.Drawing.Font("Microsoft Sans Serif", 16.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.settings_btn.Location = new System.Drawing.Point(536, 207);
+            this.settings_btn.Location = new System.Drawing.Point(429, 166);
+            this.settings_btn.Margin = new System.Windows.Forms.Padding(2);
             this.settings_btn.Name = "settings_btn";
-            this.settings_btn.Size = new System.Drawing.Size(205, 100);
+            this.settings_btn.Size = new System.Drawing.Size(164, 80);
             this.settings_btn.TabIndex = 5;
             this.settings_btn.Text = "Settings";
             this.settings_btn.UseVisualStyleBackColor = true;
@@ -102,9 +111,10 @@
             // back_btn
             // 
             this.back_btn.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.back_btn.Location = new System.Drawing.Point(648, 385);
+            this.back_btn.Location = new System.Drawing.Point(518, 308);
+            this.back_btn.Margin = new System.Windows.Forms.Padding(2);
             this.back_btn.Name = "back_btn";
-            this.back_btn.Size = new System.Drawing.Size(93, 34);
+            this.back_btn.Size = new System.Drawing.Size(74, 27);
             this.back_btn.TabIndex = 6;
             this.back_btn.Text = "back";
             this.back_btn.UseVisualStyleBackColor = true;
@@ -112,10 +122,10 @@
             // 
             // user_menu
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(120F, 120F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
             this.AutoSize = true;
-            this.ClientSize = new System.Drawing.Size(800, 450);
+            this.ClientSize = new System.Drawing.Size(640, 360);
             this.Controls.Add(this.back_btn);
             this.Controls.Add(this.settings_btn);
             this.Controls.Add(this.transactions_btn);
@@ -123,9 +133,11 @@
             this.Controls.Add(this.budget_btn);
             this.Controls.Add(this.loans_btn);
             this.Controls.Add(this.stock_btn);
+            this.Margin = new System.Windows.Forms.Padding(2);
             this.Name = "user_menu";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "user_menu";
+            this.Load += new System.EventHandler(this.user_menu_Load);
             this.ResumeLayout(false);
 
         }

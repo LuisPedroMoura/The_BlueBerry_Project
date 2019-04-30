@@ -12,14 +12,25 @@ namespace BlueBudget_DB
 {
     public partial class user_menu : Form
     {
-        public user_menu()
+
+        string user_email;
+        int account_id;
+
+        public user_menu(string user_email, int account_id)
         {
             InitializeComponent();
+            this.user_email = user_email;
+            this.account_id = account_id;
         }
 
         private void loans_btn_Click(object sender, EventArgs e)
         {
-
+            var frm = new loans();
+            frm.Location = this.Location;
+            frm.StartPosition = FormStartPosition.Manual;
+            frm.FormClosing += delegate { this.Show(); };
+            frm.Show();
+            this.Hide();
         }
 
         private void back_btn_Click(object sender, EventArgs e)
@@ -35,6 +46,41 @@ namespace BlueBudget_DB
             frm.FormClosing += delegate { this.Show(); };
             frm.Show();
             this.Hide();
+        }
+
+        private void transactions_btn_Click(object sender, EventArgs e)
+        {
+            var frm = new transactions();
+            frm.Location = this.Location;
+            frm.StartPosition = FormStartPosition.Manual;
+            frm.FormClosing += delegate { this.Show(); };
+            frm.Show();
+            this.Hide();
+        }
+
+        private void goal_btn_Click(object sender, EventArgs e)
+        {
+            var frm = new goals();
+            frm.Location = this.Location;
+            frm.StartPosition = FormStartPosition.Manual;
+            frm.FormClosing += delegate { this.Show(); };
+            frm.Show();
+            this.Hide();
+        }
+
+        private void stock_btn_Click(object sender, EventArgs e)
+        {
+            var frm = new stocks();
+            frm.Location = this.Location;
+            frm.StartPosition = FormStartPosition.Manual;
+            frm.FormClosing += delegate { this.Show(); };
+            frm.Show();
+            this.Hide();
+        }
+
+        private void user_menu_Load(object sender, EventArgs e)
+        {
+
         }
     }
 }
