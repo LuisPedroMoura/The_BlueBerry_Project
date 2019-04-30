@@ -69,6 +69,7 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
 
     @Override
     public View getGroupView(int groupPosition, boolean isExpanded, View convertView, ViewGroup parent) {
+
         List<String> headerList = (List<String>) getGroup(groupPosition);
 
         int icon = Integer.parseInt(headerList.get(0));
@@ -103,42 +104,34 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
 
         Log.i(TAG, "-------------------getChildView");
 
-        if(convertView==null){
-            LayoutInflater inflater = (LayoutInflater) this.context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-
-            convertView = inflater.inflate(R.layout.layout_expandablelistview_child, null);
-
-        }
-
         List<String> childList = (List<String>)  getChild(groupPosition, childPosition);
 
 
-        LinearLayout linearLayout = convertView.findViewById(R.id.childLinearLayout);
-        TextView addTV = convertView.findViewById(R.id.childAddSubCatTextView);
-        ImageView iconIV = convertView.findViewById(R.id.childIconImageView);
+        LayoutInflater inflater = (LayoutInflater) this.context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        if(childList.size()==2){
+            Log.i(TAG, "Inflate -> childList.size()==2");
+            convertView = inflater.inflate(R.layout.layout_expandablelistview_child, null);
+        }
+        else{
+            Log.i(TAG, "Inflate -> else");
+            convertView = inflater.inflate(R.layout.layout_expandablelistview_textview, null);
+        }
+
+
+
+
+        TextView addSubCatTV = convertView.findViewById(R.id.textviewTextView);
         TextView descriptionTV = convertView.findViewById(R.id.childDescriptionTextView);
         TextView amountTV = convertView.findViewById(R.id.childAmountTextView);
-        ImageView moreIV = convertView.findViewById(R.id.childMoreImageView);
 
         if(childList.size()==2){
 
             Log.i(TAG, "childList.size()==2");
 
-            /*   iconIV.setVisibility(View.VISIBLE);
-            descriptionTV.setVisibility(View.VISIBLE);
-            amountTV.setVisibility(View.VISIBLE);
-            moreIV.setVisibility(View.VISIBLE);
-            addTV.setVisibility(View.INVISIBLE);
-            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-            params.setMargins(0,0,0,0);
-            addTV.setLayoutParams(params);
-            LinearLayout.LayoutParams lp = (LinearLayout.LayoutParams) linearLayout.getLayoutParams();
-            lp.height = LinearLayout.LayoutParams.MATCH_PARENT;
-*/
-
             String description = childList.get(0);
-            String amount = childList.get(1);
+            Log.i(TAG, "description " + description);
             descriptionTV.setText(description);
+            String amount = childList.get(1);
             amountTV.setText(amount);
 
             Log.i(TAG, "description = " + description);
@@ -147,15 +140,9 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
         else if(childList.size()==1){ //add sub category
             Log.i(TAG, "childList.size()==1");
 
-            iconIV.setVisibility(View.INVISIBLE);
-            descriptionTV.setVisibility(View.INVISIBLE);
-            amountTV.setVisibility(View.INVISIBLE);
-            moreIV.setVisibility(View.INVISIBLE);
-            addTV.setVisibility(View.VISIBLE);
-
             String text = childList.get(0);
-            addTV.setText(text);
-            addTV.setPadding(100,0,0,0);
+            addSubCatTV.setText(text);
+            addSubCatTV.setPadding(100,0,0,0);
 
             Log.i(TAG, "text = " + text);
 
