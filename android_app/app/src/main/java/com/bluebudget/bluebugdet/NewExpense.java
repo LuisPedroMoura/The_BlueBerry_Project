@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.List;
+import java.util.Map;
 
 public class NewExpense extends AppCompatActivity {
 
@@ -82,12 +83,13 @@ public class NewExpense extends AppCompatActivity {
     //////////////////////
     private ArrayList<SpinnerItem> initCategoryList(){
 
-        List<AppCategory> categoriesList = Home.app.getCategoriesList();
         ArrayList<SpinnerItem> categoryItemList = new ArrayList<>();
 
+        List<AppCategory> categoriesList = Home.app.allCatTypeOrdered(AppBudgetType.EXPENSE);
         for(AppCategory category : categoriesList){
             categoryItemList.add(new SpinnerItem(category.getName(), category.getIcon()));
         }
+
 
         return categoryItemList;
     }

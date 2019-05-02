@@ -24,7 +24,7 @@
 
         <TextView
             android:id="@+id/descriptionBudgetTextView"
-            android:layout_width="wrap_content"
+            android:layout_width="75dp"
             android:layout_height="match_parent"
             android:layout_gravity="start|left|center_vertical"
             android:layout_marginLeft="10dp"
@@ -77,6 +77,8 @@
             <ProgressBar
                 android:id="@+id/budgetProgressBar"
                 style="?android:attr/progressBarStyleHorizontal"
+                android:layout_width="120dp"
+                android:layout_height="wrap_content"
                 app:layout_columnSpan="2"
                 app:layout_gravity="fill" />
 

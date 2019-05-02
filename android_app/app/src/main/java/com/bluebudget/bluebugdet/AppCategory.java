@@ -9,9 +9,10 @@ public class AppCategory {
     private int defRecurrence;
     private double monthlyBudget;
     private double yearlyBudget;
+    private AppBudgetType type;
 
 
-    public AppCategory(String parent, String name, int icon, double defBudget, int defRecurrence) {
+    public AppCategory(String parent, String name, int icon, double defBudget, int defRecurrence, AppBudgetType type) {
         this.parent = parent;
         this.name = name;
         this.icon = icon;
@@ -19,6 +20,7 @@ public class AppCategory {
         this.defRecurrence = defRecurrence;
         this.monthlyBudget = defBudget/defRecurrence;
         this.yearlyBudget = this.monthlyBudget*12;
+        this.type = type;
     }
 
     public String getParent() {
@@ -68,6 +70,14 @@ public class AppCategory {
     }
     public void setYearlyBudget(double yearlyBudget) {
         this.yearlyBudget = yearlyBudget;
+    }
+
+    public AppBudgetType getType() {
+        return type;
+    }
+
+    public void setType(AppBudgetType type) {
+        this.type = type;
     }
 
     public void update(double defBudget, int defRecurrence){
