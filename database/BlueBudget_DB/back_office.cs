@@ -31,7 +31,6 @@ namespace BlueBudget_DB
             this.Close();
         }
 
-
         private void Add_btn_Click(object sender, EventArgs e)
         {
             // get values from text boxes if they were inserted by user
@@ -76,7 +75,6 @@ namespace BlueBudget_DB
             // upadte listBox with new user
             Populate_listBox();
         }
-
 
         private void Update_btn_Click(object sender, EventArgs e)
         {
@@ -123,7 +121,6 @@ namespace BlueBudget_DB
             Populate_listBox();
             notifications_textbox.Text = "SUCCESS:\n User " + email + " was updated!";
         }
-
 
         private void Delete_btn_Click(object sender, EventArgs e)
         {

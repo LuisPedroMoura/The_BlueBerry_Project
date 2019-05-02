@@ -47,7 +47,7 @@
             this.stock_btn.TabIndex = 0;
             this.stock_btn.Text = "Stocks";
             this.stock_btn.UseVisualStyleBackColor = true;
-            this.stock_btn.Click += new System.EventHandler(this.stock_btn_Click);
+            this.stock_btn.Click += new System.EventHandler(this.Stock_btn_Click);
             // 
             // loans_btn
             // 
@@ -59,7 +59,7 @@
             this.loans_btn.TabIndex = 1;
             this.loans_btn.Text = "Loans";
             this.loans_btn.UseVisualStyleBackColor = true;
-            this.loans_btn.Click += new System.EventHandler(this.loans_btn_Click);
+            this.loans_btn.Click += new System.EventHandler(this.Loans_btn_Click);
             // 
             // budget_btn
             // 
@@ -71,7 +71,7 @@
             this.budget_btn.TabIndex = 2;
             this.budget_btn.Text = "Budget";
             this.budget_btn.UseVisualStyleBackColor = true;
-            this.budget_btn.Click += new System.EventHandler(this.budget_btn_Click);
+            this.budget_btn.Click += new System.EventHandler(this.Budget_btn_Click);
             // 
             // goal_btn
             // 
@@ -83,7 +83,7 @@
             this.goal_btn.TabIndex = 3;
             this.goal_btn.Text = "Goals";
             this.goal_btn.UseVisualStyleBackColor = true;
-            this.goal_btn.Click += new System.EventHandler(this.goal_btn_Click);
+            this.goal_btn.Click += new System.EventHandler(this.Goal_btn_Click);
             // 
             // transactions_btn
             // 
@@ -95,7 +95,7 @@
             this.transactions_btn.TabIndex = 4;
             this.transactions_btn.Text = "Transactions";
             this.transactions_btn.UseVisualStyleBackColor = true;
-            this.transactions_btn.Click += new System.EventHandler(this.transactions_btn_Click);
+            this.transactions_btn.Click += new System.EventHandler(this.Transactions_btn_Click);
             // 
             // settings_btn
             // 
@@ -118,7 +118,7 @@
             this.back_btn.TabIndex = 6;
             this.back_btn.Text = "back";
             this.back_btn.UseVisualStyleBackColor = true;
-            this.back_btn.Click += new System.EventHandler(this.back_btn_Click);
+            this.back_btn.Click += new System.EventHandler(this.Back_btn_Click);
             // 
             // user_menu
             // 
@@ -137,7 +137,6 @@
             this.Name = "user_menu";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "user_menu";
-            this.Load += new System.EventHandler(this.user_menu_Load);
             this.ResumeLayout(false);
 
         }

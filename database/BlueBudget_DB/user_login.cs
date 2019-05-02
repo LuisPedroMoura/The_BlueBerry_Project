@@ -66,11 +66,6 @@ namespace BlueBudget_DB
             this.Hide();
         }
 
-        private void User_login_Load(object sender, EventArgs e)
-        {
-
-        }
-
         // -------------------------------------------------------------------
         // LIST BOXES --------------------------------------------------------
         // -------------------------------------------------------------------
@@ -148,9 +143,11 @@ namespace BlueBudget_DB
             // UNFINISHED!
         }
 
+
         // -------------------------------------------------------------------
         // BUTTONS -----------------------------------------------------------
         // -------------------------------------------------------------------
+
         private void Findme_btn_Click(object sender, EventArgs e)
         {
             // read value from textbox
@@ -371,7 +368,9 @@ namespace BlueBudget_DB
             }
         }
 
+        private void user_login_Load(object sender, EventArgs e)
+        {
 
-        
+        }
     }
 }

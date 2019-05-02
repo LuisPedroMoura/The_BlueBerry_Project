@@ -28,138 +28,136 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.categories_listbox = new System.Windows.Forms.ListBox();
-            this.back_btn = new System.Windows.Forms.Button();
+            this.Categories_listbox = new System.Windows.Forms.ListBox();
+            this.Back_btn = new System.Windows.Forms.Button();
             this.budget_label = new System.Windows.Forms.Label();
-            this.save_btn = new System.Windows.Forms.Button();
+            this.Save_btn = new System.Windows.Forms.Button();
             this.cat_listbox_label = new System.Windows.Forms.Label();
-            this.newsubcategory_btn = new System.Windows.Forms.Button();
-            this.newcategory_btn = new System.Windows.Forms.Button();
-            this.textBox1 = new System.Windows.Forms.TextBox();
-            this.comboBox1 = new System.Windows.Forms.ComboBox();
-            this.textBox2 = new System.Windows.Forms.TextBox();
-            this.textBox3 = new System.Windows.Forms.TextBox();
+            this.Newsubcategory_btn = new System.Windows.Forms.Button();
+            this.Newcategory_btn = new System.Windows.Forms.Button();
+            this.Subcategory_textBox = new System.Windows.Forms.TextBox();
+            this.Category_textBox = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
-            this.label4 = new System.Windows.Forms.Label();
-            this.comboBox2 = new System.Windows.Forms.ComboBox();
+            this.Type_comboBox = new System.Windows.Forms.ComboBox();
             this.label5 = new System.Windows.Forms.Label();
+            this.Budgets_listBox = new System.Windows.Forms.ListBox();
+            this.label6 = new System.Windows.Forms.Label();
+            this.StartMonth_comboBox = new System.Windows.Forms.ComboBox();
+            this.EndMonth_comboBox = new System.Windows.Forms.ComboBox();
+            this.label4 = new System.Windows.Forms.Label();
+            this.label7 = new System.Windows.Forms.Label();
+            this.StartYear_numericBox = new System.Windows.Forms.NumericUpDown();
+            this.EndYear_numericBox = new System.Windows.Forms.NumericUpDown();
+            this.richTextBox1 = new System.Windows.Forms.RichTextBox();
+            this.Notifications = new System.Windows.Forms.RichTextBox();
+            this.label8 = new System.Windows.Forms.Label();
+            this.Budget_textBox = new System.Windows.Forms.TextBox();
+            ((System.ComponentModel.ISupportInitialize)(this.StartYear_numericBox)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.EndYear_numericBox)).BeginInit();
             this.SuspendLayout();
             // 
-            // categories_listbox
+            // Categories_listbox
             // 
-            this.categories_listbox.FormattingEnabled = true;
-            this.categories_listbox.Location = new System.Drawing.Point(31, 46);
-            this.categories_listbox.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
-            this.categories_listbox.Name = "categories_listbox";
-            this.categories_listbox.Size = new System.Drawing.Size(222, 238);
-            this.categories_listbox.TabIndex = 38;
+            this.Categories_listbox.FormattingEnabled = true;
+            this.Categories_listbox.Location = new System.Drawing.Point(30, 82);
+            this.Categories_listbox.Margin = new System.Windows.Forms.Padding(2);
+            this.Categories_listbox.Name = "Categories_listbox";
+            this.Categories_listbox.Size = new System.Drawing.Size(204, 186);
+            this.Categories_listbox.TabIndex = 38;
+            this.Categories_listbox.SelectedIndexChanged += new System.EventHandler(this.Categories_listbox_SelectedIndexChanged);
             // 
-            // back_btn
+            // Back_btn
             // 
-            this.back_btn.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.back_btn.Location = new System.Drawing.Point(506, 311);
-            this.back_btn.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
-            this.back_btn.Name = "back_btn";
-            this.back_btn.Size = new System.Drawing.Size(64, 24);
-            this.back_btn.TabIndex = 37;
-            this.back_btn.Text = "back";
-            this.back_btn.UseVisualStyleBackColor = true;
-            this.back_btn.Click += new System.EventHandler(this.back_btn_Click);
+            this.Back_btn.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.Back_btn.Location = new System.Drawing.Point(571, 397);
+            this.Back_btn.Margin = new System.Windows.Forms.Padding(2);
+            this.Back_btn.Name = "Back_btn";
+            this.Back_btn.Size = new System.Drawing.Size(64, 24);
+            this.Back_btn.TabIndex = 37;
+            this.Back_btn.Text = "back";
+            this.Back_btn.UseVisualStyleBackColor = true;
+            this.Back_btn.Click += new System.EventHandler(this.Back_btn_Click);
             // 
             // budget_label
             // 
             this.budget_label.AutoSize = true;
             this.budget_label.Font = new System.Drawing.Font("Microsoft Sans Serif", 16.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.budget_label.Location = new System.Drawing.Point(361, 9);
+            this.budget_label.Location = new System.Drawing.Point(251, 9);
             this.budget_label.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.budget_label.Name = "budget_label";
             this.budget_label.Size = new System.Drawing.Size(109, 26);
             this.budget_label.TabIndex = 26;
             this.budget_label.Text = "BUDGET";
-            this.budget_label.Click += new System.EventHandler(this.user_info_label_Click);
             // 
-            // save_btn
+            // Save_btn
             // 
-            this.save_btn.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.save_btn.Location = new System.Drawing.Point(419, 311);
-            this.save_btn.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
-            this.save_btn.Name = "save_btn";
-            this.save_btn.Size = new System.Drawing.Size(64, 24);
-            this.save_btn.TabIndex = 24;
-            this.save_btn.Text = "save";
-            this.save_btn.UseVisualStyleBackColor = true;
+            this.Save_btn.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.Save_btn.Location = new System.Drawing.Point(480, 397);
+            this.Save_btn.Margin = new System.Windows.Forms.Padding(2);
+            this.Save_btn.Name = "Save_btn";
+            this.Save_btn.Size = new System.Drawing.Size(64, 24);
+            this.Save_btn.TabIndex = 24;
+            this.Save_btn.Text = "save";
+            this.Save_btn.UseVisualStyleBackColor = true;
+            this.Save_btn.Click += new System.EventHandler(this.Save_btn_Click);
             // 
             // cat_listbox_label
             // 
             this.cat_listbox_label.AutoSize = true;
-            this.cat_listbox_label.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.cat_listbox_label.Location = new System.Drawing.Point(27, 23);
+            this.cat_listbox_label.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.cat_listbox_label.Location = new System.Drawing.Point(27, 67);
             this.cat_listbox_label.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.cat_listbox_label.Name = "cat_listbox_label";
-            this.cat_listbox_label.Size = new System.Drawing.Size(86, 20);
+            this.cat_listbox_label.Size = new System.Drawing.Size(57, 13);
             this.cat_listbox_label.TabIndex = 39;
             this.cat_listbox_label.Text = "Categories";
-            this.cat_listbox_label.Click += new System.EventHandler(this.label1_Click);
             // 
-            // newsubcategory_btn
+            // Newsubcategory_btn
             // 
-            this.newsubcategory_btn.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.newsubcategory_btn.Location = new System.Drawing.Point(144, 288);
-            this.newsubcategory_btn.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
-            this.newsubcategory_btn.Name = "newsubcategory_btn";
-            this.newsubcategory_btn.Size = new System.Drawing.Size(109, 47);
-            this.newsubcategory_btn.TabIndex = 40;
-            this.newsubcategory_btn.Text = "New Sub-category";
-            this.newsubcategory_btn.UseVisualStyleBackColor = true;
+            this.Newsubcategory_btn.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.Newsubcategory_btn.Location = new System.Drawing.Point(134, 272);
+            this.Newsubcategory_btn.Margin = new System.Windows.Forms.Padding(2);
+            this.Newsubcategory_btn.Name = "Newsubcategory_btn";
+            this.Newsubcategory_btn.Size = new System.Drawing.Size(100, 47);
+            this.Newsubcategory_btn.TabIndex = 40;
+            this.Newsubcategory_btn.Text = "New Sub-category";
+            this.Newsubcategory_btn.UseVisualStyleBackColor = true;
+            this.Newsubcategory_btn.Click += new System.EventHandler(this.Newsubcategory_btn_Click);
             // 
-            // newcategory_btn
+            // Newcategory_btn
             // 
-            this.newcategory_btn.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.newcategory_btn.Location = new System.Drawing.Point(31, 288);
-            this.newcategory_btn.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
-            this.newcategory_btn.Name = "newcategory_btn";
-            this.newcategory_btn.Size = new System.Drawing.Size(109, 47);
-            this.newcategory_btn.TabIndex = 41;
-            this.newcategory_btn.Text = "New Category";
-            this.newcategory_btn.UseVisualStyleBackColor = true;
+            this.Newcategory_btn.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.Newcategory_btn.Location = new System.Drawing.Point(30, 272);
+            this.Newcategory_btn.Margin = new System.Windows.Forms.Padding(2);
+            this.Newcategory_btn.Name = "Newcategory_btn";
+            this.Newcategory_btn.Size = new System.Drawing.Size(100, 47);
+            this.Newcategory_btn.TabIndex = 41;
+            this.Newcategory_btn.Text = "New Category";
+            this.Newcategory_btn.UseVisualStyleBackColor = true;
+            this.Newcategory_btn.Click += new System.EventHandler(this.Newcategory_btn_Click);
             // 
-            // textBox1
+            // Subcategory_textBox
             // 
-            this.textBox1.Location = new System.Drawing.Point(419, 161);
-            this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(121, 20);
-            this.textBox1.TabIndex = 44;
+            this.Subcategory_textBox.Location = new System.Drawing.Point(514, 132);
+            this.Subcategory_textBox.Name = "Subcategory_textBox";
+            this.Subcategory_textBox.ReadOnly = true;
+            this.Subcategory_textBox.Size = new System.Drawing.Size(121, 20);
+            this.Subcategory_textBox.TabIndex = 46;
             // 
-            // comboBox1
+            // Category_textBox
             // 
-            this.comboBox1.FormattingEnabled = true;
-            this.comboBox1.Location = new System.Drawing.Point(419, 249);
-            this.comboBox1.Name = "comboBox1";
-            this.comboBox1.Size = new System.Drawing.Size(121, 21);
-            this.comboBox1.TabIndex = 45;
-            // 
-            // textBox2
-            // 
-            this.textBox2.Location = new System.Drawing.Point(419, 116);
-            this.textBox2.Name = "textBox2";
-            this.textBox2.ReadOnly = true;
-            this.textBox2.Size = new System.Drawing.Size(121, 20);
-            this.textBox2.TabIndex = 46;
-            // 
-            // textBox3
-            // 
-            this.textBox3.Location = new System.Drawing.Point(419, 70);
-            this.textBox3.Name = "textBox3";
-            this.textBox3.ReadOnly = true;
-            this.textBox3.Size = new System.Drawing.Size(121, 20);
-            this.textBox3.TabIndex = 47;
+            this.Category_textBox.Location = new System.Drawing.Point(514, 86);
+            this.Category_textBox.Name = "Category_textBox";
+            this.Category_textBox.ReadOnly = true;
+            this.Category_textBox.Size = new System.Drawing.Size(121, 20);
+            this.Category_textBox.TabIndex = 47;
             // 
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(364, 70);
+            this.label1.Location = new System.Drawing.Point(459, 86);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(49, 13);
             this.label1.TabIndex = 48;
@@ -168,7 +166,7 @@
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(343, 116);
+            this.label2.Location = new System.Drawing.Point(438, 132);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(70, 13);
             this.label2.TabIndex = 49;
@@ -177,64 +175,167 @@
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(372, 161);
+            this.label3.Location = new System.Drawing.Point(467, 263);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(41, 13);
             this.label3.TabIndex = 50;
             this.label3.Text = "Budget";
             // 
-            // label4
+            // Type_comboBox
             // 
-            this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(350, 249);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(63, 13);
-            this.label4.TabIndex = 51;
-            this.label4.Text = "Recurrence";
-            // 
-            // comboBox2
-            // 
-            this.comboBox2.FormattingEnabled = true;
-            this.comboBox2.Location = new System.Drawing.Point(419, 207);
-            this.comboBox2.Name = "comboBox2";
-            this.comboBox2.Size = new System.Drawing.Size(121, 21);
-            this.comboBox2.TabIndex = 52;
+            this.Type_comboBox.Enabled = false;
+            this.Type_comboBox.FormattingEnabled = true;
+            this.Type_comboBox.Location = new System.Drawing.Point(514, 175);
+            this.Type_comboBox.Name = "Type_comboBox";
+            this.Type_comboBox.Size = new System.Drawing.Size(121, 21);
+            this.Type_comboBox.TabIndex = 52;
             // 
             // label5
             // 
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(382, 207);
+            this.label5.Location = new System.Drawing.Point(477, 175);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(31, 13);
             this.label5.TabIndex = 53;
             this.label5.Text = "Type";
             // 
+            // Budgets_listBox
+            // 
+            this.Budgets_listBox.FormattingEnabled = true;
+            this.Budgets_listBox.Location = new System.Drawing.Point(238, 82);
+            this.Budgets_listBox.Margin = new System.Windows.Forms.Padding(2);
+            this.Budgets_listBox.Name = "Budgets_listBox";
+            this.Budgets_listBox.Size = new System.Drawing.Size(122, 186);
+            this.Budgets_listBox.TabIndex = 54;
+            this.Budgets_listBox.SelectedIndexChanged += new System.EventHandler(this.Budgets_listBox_SelectedIndexChanged);
+            // 
+            // label6
+            // 
+            this.label6.AutoSize = true;
+            this.label6.Location = new System.Drawing.Point(235, 67);
+            this.label6.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(46, 13);
+            this.label6.TabIndex = 55;
+            this.label6.Text = "Budgets";
+            // 
+            // StartMonth_comboBox
+            // 
+            this.StartMonth_comboBox.FormattingEnabled = true;
+            this.StartMonth_comboBox.Location = new System.Drawing.Point(462, 299);
+            this.StartMonth_comboBox.Name = "StartMonth_comboBox";
+            this.StartMonth_comboBox.Size = new System.Drawing.Size(81, 21);
+            this.StartMonth_comboBox.TabIndex = 56;
+            // 
+            // EndMonth_comboBox
+            // 
+            this.EndMonth_comboBox.FormattingEnabled = true;
+            this.EndMonth_comboBox.Location = new System.Drawing.Point(462, 326);
+            this.EndMonth_comboBox.Name = "EndMonth_comboBox";
+            this.EndMonth_comboBox.Size = new System.Drawing.Size(81, 21);
+            this.EndMonth_comboBox.TabIndex = 59;
+            // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Location = new System.Drawing.Point(429, 299);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(27, 13);
+            this.label4.TabIndex = 60;
+            this.label4.Text = "start";
+            // 
+            // label7
+            // 
+            this.label7.AutoSize = true;
+            this.label7.Location = new System.Drawing.Point(431, 326);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(25, 13);
+            this.label7.TabIndex = 61;
+            this.label7.Text = "end";
+            // 
+            // StartYear_numericBox
+            // 
+            this.StartYear_numericBox.Location = new System.Drawing.Point(554, 299);
+            this.StartYear_numericBox.Name = "StartYear_numericBox";
+            this.StartYear_numericBox.Size = new System.Drawing.Size(81, 20);
+            this.StartYear_numericBox.TabIndex = 62;
+            // 
+            // EndYear_numericBox
+            // 
+            this.EndYear_numericBox.Location = new System.Drawing.Point(554, 326);
+            this.EndYear_numericBox.Name = "EndYear_numericBox";
+            this.EndYear_numericBox.Size = new System.Drawing.Size(81, 20);
+            this.EndYear_numericBox.TabIndex = 63;
+            // 
+            // richTextBox1
+            // 
+            this.richTextBox1.Location = new System.Drawing.Point(-308, 22);
+            this.richTextBox1.Name = "richTextBox1";
+            this.richTextBox1.Size = new System.Drawing.Size(204, 77);
+            this.richTextBox1.TabIndex = 64;
+            this.richTextBox1.Text = "";
+            // 
+            // Notifications
+            // 
+            this.Notifications.Location = new System.Drawing.Point(30, 353);
+            this.Notifications.Name = "Notifications";
+            this.Notifications.Size = new System.Drawing.Size(204, 68);
+            this.Notifications.TabIndex = 65;
+            this.Notifications.Text = "";
+            // 
+            // label8
+            // 
+            this.label8.AutoSize = true;
+            this.label8.Location = new System.Drawing.Point(27, 337);
+            this.label8.Name = "label8";
+            this.label8.Size = new System.Drawing.Size(65, 13);
+            this.label8.TabIndex = 66;
+            this.label8.Text = "Notifications";
+            // 
+            // Budget_textBox
+            // 
+            this.Budget_textBox.Location = new System.Drawing.Point(514, 263);
+            this.Budget_textBox.Name = "Budget_textBox";
+            this.Budget_textBox.Size = new System.Drawing.Size(121, 20);
+            this.Budget_textBox.TabIndex = 67;
+            // 
             // budget
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(600, 366);
-            this.Controls.Add(this.label5);
-            this.Controls.Add(this.comboBox2);
+            this.ClientSize = new System.Drawing.Size(673, 433);
+            this.Controls.Add(this.Budget_textBox);
+            this.Controls.Add(this.label8);
+            this.Controls.Add(this.Notifications);
+            this.Controls.Add(this.richTextBox1);
+            this.Controls.Add(this.EndYear_numericBox);
+            this.Controls.Add(this.StartYear_numericBox);
+            this.Controls.Add(this.label7);
             this.Controls.Add(this.label4);
+            this.Controls.Add(this.EndMonth_comboBox);
+            this.Controls.Add(this.StartMonth_comboBox);
+            this.Controls.Add(this.label6);
+            this.Controls.Add(this.Budgets_listBox);
+            this.Controls.Add(this.label5);
+            this.Controls.Add(this.Type_comboBox);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.label1);
-            this.Controls.Add(this.textBox3);
-            this.Controls.Add(this.textBox2);
-            this.Controls.Add(this.comboBox1);
-            this.Controls.Add(this.textBox1);
-            this.Controls.Add(this.newcategory_btn);
-            this.Controls.Add(this.newsubcategory_btn);
+            this.Controls.Add(this.Category_textBox);
+            this.Controls.Add(this.Subcategory_textBox);
+            this.Controls.Add(this.Newcategory_btn);
+            this.Controls.Add(this.Newsubcategory_btn);
             this.Controls.Add(this.cat_listbox_label);
-            this.Controls.Add(this.categories_listbox);
-            this.Controls.Add(this.back_btn);
+            this.Controls.Add(this.Categories_listbox);
+            this.Controls.Add(this.Back_btn);
             this.Controls.Add(this.budget_label);
-            this.Controls.Add(this.save_btn);
-            this.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.Controls.Add(this.Save_btn);
+            this.Margin = new System.Windows.Forms.Padding(2);
             this.Name = "budget";
             this.Text = "budget";
             this.Load += new System.EventHandler(this.budget_Load);
+            ((System.ComponentModel.ISupportInitialize)(this.StartYear_numericBox)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.EndYear_numericBox)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -242,22 +343,31 @@
 
         #endregion
 
-        private System.Windows.Forms.ListBox categories_listbox;
-        private System.Windows.Forms.Button back_btn;
+        private System.Windows.Forms.ListBox Categories_listbox;
+        private System.Windows.Forms.Button Back_btn;
         private System.Windows.Forms.Label budget_label;
-        private System.Windows.Forms.Button save_btn;
+        private System.Windows.Forms.Button Save_btn;
         private System.Windows.Forms.Label cat_listbox_label;
-        private System.Windows.Forms.Button newsubcategory_btn;
-        private System.Windows.Forms.Button newcategory_btn;
-        private System.Windows.Forms.TextBox textBox1;
-        private System.Windows.Forms.ComboBox comboBox1;
-        private System.Windows.Forms.TextBox textBox2;
-        private System.Windows.Forms.TextBox textBox3;
+        private System.Windows.Forms.Button Newsubcategory_btn;
+        private System.Windows.Forms.Button Newcategory_btn;
+        private System.Windows.Forms.TextBox Subcategory_textBox;
+        private System.Windows.Forms.TextBox Category_textBox;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label label3;
-        private System.Windows.Forms.Label label4;
-        private System.Windows.Forms.ComboBox comboBox2;
+        private System.Windows.Forms.ComboBox Type_comboBox;
         private System.Windows.Forms.Label label5;
+        private System.Windows.Forms.ListBox Budgets_listBox;
+        private System.Windows.Forms.Label label6;
+        private System.Windows.Forms.ComboBox StartMonth_comboBox;
+        private System.Windows.Forms.ComboBox EndMonth_comboBox;
+        private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.Label label7;
+        private System.Windows.Forms.NumericUpDown StartYear_numericBox;
+        private System.Windows.Forms.NumericUpDown EndYear_numericBox;
+        private System.Windows.Forms.RichTextBox richTextBox1;
+        private System.Windows.Forms.RichTextBox Notifications;
+        private System.Windows.Forms.Label label8;
+        private System.Windows.Forms.TextBox Budget_textBox;
     }
 }

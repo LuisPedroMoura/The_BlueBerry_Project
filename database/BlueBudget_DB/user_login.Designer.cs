@@ -302,7 +302,7 @@
             this.Name = "user_login";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "user_login";
-            this.Load += new System.EventHandler(this.User_login_Load);
+            this.Load += new System.EventHandler(this.user_login_Load);
             this.ResumeLayout(false);
             this.PerformLayout();
 

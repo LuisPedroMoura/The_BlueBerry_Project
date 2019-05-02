@@ -23,64 +23,70 @@ namespace BlueBudget_DB
             this.account_id = account_id;
         }
 
-        private void loans_btn_Click(object sender, EventArgs e)
+        private void Loans_btn_Click(object sender, EventArgs e)
         {
-            var frm = new loans();
-            frm.Location = this.Location;
-            frm.StartPosition = FormStartPosition.Manual;
+            var frm = new loans(user_email, account_id)
+            {
+                Location = this.Location,
+                StartPosition = FormStartPosition.Manual
+            };
             frm.FormClosing += delegate { this.Show(); };
             frm.Show();
             this.Hide();
         }
 
-        private void back_btn_Click(object sender, EventArgs e)
+        private void Back_btn_Click(object sender, EventArgs e)
         {
             this.Close();
         }
 
-        private void budget_btn_Click(object sender, EventArgs e)
+        private void Budget_btn_Click(object sender, EventArgs e)
         {
-            var frm = new budget();
-            frm.Location = this.Location;
-            frm.StartPosition = FormStartPosition.Manual;
+            var frm = new budget(user_email, account_id)
+            {
+                Location = this.Location,
+                StartPosition = FormStartPosition.Manual
+            };
             frm.FormClosing += delegate { this.Show(); };
             frm.Show();
             this.Hide();
         }
 
-        private void transactions_btn_Click(object sender, EventArgs e)
+        private void Transactions_btn_Click(object sender, EventArgs e)
         {
-            var frm = new transactions();
-            frm.Location = this.Location;
-            frm.StartPosition = FormStartPosition.Manual;
+            var frm = new transactions
+            {
+                Location = this.Location,
+                StartPosition = FormStartPosition.Manual
+            };
             frm.FormClosing += delegate { this.Show(); };
             frm.Show();
             this.Hide();
         }
 
-        private void goal_btn_Click(object sender, EventArgs e)
+        private void Goal_btn_Click(object sender, EventArgs e)
         {
-            var frm = new goals();
-            frm.Location = this.Location;
-            frm.StartPosition = FormStartPosition.Manual;
+            var frm = new goals
+            {
+                Location = this.Location,
+                StartPosition = FormStartPosition.Manual
+            };
             frm.FormClosing += delegate { this.Show(); };
             frm.Show();
             this.Hide();
         }
 
-        private void stock_btn_Click(object sender, EventArgs e)
+        private void Stock_btn_Click(object sender, EventArgs e)
         {
-            var frm = new stocks();
-            frm.Location = this.Location;
-            frm.StartPosition = FormStartPosition.Manual;
+            var frm = new stocks
+            {
+                Location = this.Location,
+                StartPosition = FormStartPosition.Manual
+            };
             frm.FormClosing += delegate { this.Show(); };
             frm.Show();
             this.Hide();
         }
 
-        private void user_menu_Load(object sender, EventArgs e)
-        {
-
-        }
     }
 }

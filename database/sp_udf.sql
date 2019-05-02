@@ -1,146 +1,60 @@
--- INSERT USERS
-CREATE PROC pr_insert_user (
-	@email varchar(50),
-	@card_number varchar(20),
-	@term DATETIME,
-	@fname VARCHAR(20),	
-	@lname VARCHAR(20),
-	@periodicity INT,
-	@user_name varchar(20) = NULL,
-	@mname VARCHAR(20) = NULL,
-	@active BIT = 0
-) AS
-BEGIN
-	
-	IF @active=1 AND (ISNULL(@term, '')='' OR ISNULL(@fname, '')='' OR ISNULL(@lname, '')='' OR ISNULL(@periodicity, '')='' OR ISNULL(@card_number, '')='')
-		RETURN 1
+---------------------------------------------------------------
+--- RETURN ERROR RULES ----------------------------------------
+---------------------------------------------------------------
+/*
+-1 : Missing Argument
+-2 : Row to insert already exists
+-3 : Row to update does not exist
+-4 : Row to delete does not exist
+-5 : Argument to select does not exist
+*/
 
-	INSERT INTO Project.users(email, [user_name])
-	VALUES (@email, @user_name);
+---------------------------------------------------------------
+--- CREATE CLEAN PROCEDURE and CLEAN FUNCTIONS AND PROCEDURES -
+---------------------------------------------------------------
 
-	IF @active=1
-	BEGIN
-		INSERT INTO Project.subscriptions(card_number, email, term, fname, mname, lname, active, periodicity)
-		VALUES (@card_number, @email, @term, @fname, @mname, @lname, @active, @periodicity);
-	END
-
-END
-GO
-
-
-CREATE PROC pr_update_user (
-	@email varchar(50),
-	@card_number varchar(20),
-	@term DATETIME,
-	@fname VARCHAR(20),	
-	@lname VARCHAR(20),
-	@periodicity INT,
-	@user_name varchar(20) = NULL,
-	@mname VARCHAR(20) = NULL,
-	@active BIT = 0
-) AS
-BEGIN
-	
-	-- verify if user exists
-	IF (SELECT email FROM Project.users WHERE email=@email) IS NULL
-		RETURN 1
-
-	-- update 'users' table
-	UPDATE Project.users SET [user_name]=@user_name WHERE email=@email;
-
-	-- verify if user was subscribed
-	DECLARE @subscribed BIT;
-	SET @subscribed = ISNULL((SELECT card_number FROM Project.subscriptions WHERE email=@email), 0);
-	
-	IF @active=1
-	BEGIN
-		
-		IF @subscribed=1
-		BEGIN
-			UPDATE Project.subscriptions
-			SET card_number=@card_number, term=@term, fname=@fname, mname=@mname, lname=@lname, periodicity=@periodicity, active=@active
-			WHERE email=@email;
-		END
-
-		ELSE
-		BEGIN
-			INSERT INTO Project.subscriptions (card_number, term, fname, mname, lname, periodicity, active)
-			VALUES (@card_number, @term, @fname, @mname, @lname, @periodicity, @active);
-		END
-	END
-
-	ELSE
-	BEGIN
-		IF @subscribed=1
-		BEGIN
-			EXEC pr_delete_subscription @email;
-		END
-	END
-END
-GO
-
-
-CREATE PROC pr_delete_subscription (
-	@email varchar(50)
-) AS
-BEGIN
-	DELETE FROM Project.subscriptions WHERE email=@email;
-END
-GO
-
-
-CREATE PROC pr_delete_user (
-	@email varchar(50)
-) AS
-BEGIN
-	
-	EXEC pr_delete_subscription @email;
-	DELETE FROM Project.users WHERE email=@email;
-END
-GO
-
-
-CREATE FUNCTION udf_select_user ()
-RETURNS TABLE
+CREATE PROC clean_procedures_and_functions
 AS
-	RETURN (
-		SELECT * FROM Project.users
-	);
-GO
-	
-
-
--- INSERT MONEY ACCOUNTS
-CREATE PROC pr_insert_money_account (
-	@user_email varchar(50),
-	@account_name varchar(20),
-	@patrimony MONEY = 0.0
-) AS
 BEGIN
-	-- insert new money_account
-	INSERT INTO Project.money_accounts(account_name, patrimony)
-	VALUES (@account_name, @patrimony);
-	-- get new money_account id
-	DECLARE @account_id INT;
-	SET @account_id = SCOPE_IDENTITY();
-	-- create relation between money account and user
-	INSERT INTO Project.users_money_accounts([user_email], account_id)
-	VALUES (@user_email, @account_id);
+	DROP PROC pr_insert_user;
+	DROP PROC pr_update_user;
+	DROP PROC pr_delete_subscription;
+	DROP PROC pr_delete_user;
+	DROP PROC pr_select_users;
+	DROP PROC pr_exists_user;
+
+	DROP PROC pr_select_recurrences;
+	DROP PROC pr_select_recurrence_id;
+
+	DROP PROC pr_insert_money_account;
+	DROP PROC pr_delete_money_account;
+	DROP PROC pr_select_money_accounts;
+	DROP PROC pr_select_user_money_accounts;
+	DROP PROC pr_money_account_add_user;
+	DROP PROC pr_money_account_remove_user;
+	DROP PROC pr_exists_money_account;
+
+	DROP PROC pr_insert_wallet;
 END
 GO
 
--- INSERT WALLETS
-CREATE PROC pr_insert_wallets (
-	@account_id varchar(50),
-	@name varchar(20),
-	@balance MONEY = 0.0
-) AS
-BEGIN
-
-	INSERT INTO Project.wallets(account_id, [name], balance)
-	VALUES (@account_id, @name, @balance);
-END
+EXEC clean_procedures_and_functions;
 GO
+
+DROP PROC clean_procedures_and_functions;
+GO
+
+---------------------------------------------------------------
+--- CREATE PROCEDURES AND FUNCTIONS ---------------------------
+---------------------------------------------------------------
+
+---------------------------------------------------------------
+--- USERS -----------------------------------------------------
+---------------------------------------------------------------
+
+
+
+
 
 -------------------------------
 --- EXECUTED TILL THIS POINT! -------------------------
