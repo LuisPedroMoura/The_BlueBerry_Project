@@ -27,20 +27,32 @@ namespace BlueBudget_DB
             pr_delete_user,
             pr_select_users,
             pr_exists_user,
+            //---
             pr_select_recurrences,
             pr_select_recurrence_id,
+            //---
             pr_insert_money_account,
-            //pr_update_money_account,
             pr_delete_money_account,
             pr_select_money_accounts,
             pr_select_user_money_accounts,
             pr_exists_money_account,
             pr_money_account_add_user,
-            pr_money_account_remove_user
-            //pr_insert_wallet
+            pr_money_account_remove_user,
+            //---
+            pr_select_categories,
+            pr_insert_category,
+            pr_insert_subcategory,
+            pr_delete_category,
+            pr_select_category_type_by_designation,
+            //---
+            pr_select_loans,
+            pr_exists_loan,
+            pr_insert_loan,
+            //---
+            pr_select_budgets,
+            pr_insert_budget
+            
         }
-        
-
 
         // ----------------------------------------------------------------------------------------------
         // SQL SERVER AND DATABASE CONNECTION -----------------------------------------------------------
@@ -104,10 +116,8 @@ namespace BlueBudget_DB
             return ExecProcScalar(proc.ToString(), attrValue);
         }
 
-        public static bool Exists(System.Enum proc, System.Enum column, Object value)
+        public static bool Exists(System.Enum proc, IDictionary<System.Enum, Object> attrValue)
         {
-            var attrValue = AttrValue();
-            attrValue[column] = value;
             return ExecProcExists(proc.ToString(), attrValue);
         }
 
@@ -205,10 +215,10 @@ namespace BlueBudget_DB
                 rows = cmd.ExecuteNonQuery();
                 Console.WriteLine("Query executed successfully");
             }
-            catch (Exception ex)
-            {
-                Console.WriteLine("Error executing query: " + ex.ToString());
-            }
+            //catch (Exception ex)
+            //{
+            //    Console.WriteLine("Error executing query: " + ex.ToString());
+            //}
             finally
             {
                 DBdisconnect(cnx);

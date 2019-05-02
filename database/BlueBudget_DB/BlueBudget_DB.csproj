@@ -60,6 +60,10 @@
     </Compile>
     <Compile Include="DB_API.cs" />
     <Compile Include="DB_IO.cs" />
+    <Compile Include="ErrorMessenger.cs" />
+    <Compile Include="NumericTextBox.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="stocks.cs">
       <SubType>Form</SubType>
     </Compile>
