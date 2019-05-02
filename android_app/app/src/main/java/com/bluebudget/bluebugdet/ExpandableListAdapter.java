@@ -69,29 +69,40 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
 
         List<String> headerList = (List<String>) getGroup(groupPosition);
 
-        int icon = Integer.parseInt(headerList.get(0));
-        String description = headerList.get(1);
-        String amount = headerList.get(2);
-
-
-        if(convertView==null){
-            LayoutInflater inflater = (LayoutInflater) this.context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-
+        LayoutInflater inflater = (LayoutInflater) this.context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        if(headerList.size()==3){
+            //Log.i(TAG, "Inflate -> headerList.size()==3");
             convertView = inflater.inflate(R.layout.layout_expandablelistview_header, null);
-
+        }
+        else{
+            //Log.i(TAG, "Inflate -> else");
+            convertView = inflater.inflate(R.layout.layout_expandablelistview_textview, null);
         }
 
 
         ImageView iconIV = convertView.findViewById(R.id.headerIconImageView);
-        iconIV.setImageResource(icon);
-
         TextView descriptionTV = convertView.findViewById(R.id.headerDescriptionTextView);
-        descriptionTV.setTypeface(null, Typeface.BOLD);
-        descriptionTV.setText(description);
-
         TextView amountTV = convertView.findViewById(R.id.headerAmountTextView);
-        amountTV.setTypeface(null, Typeface.BOLD);
-        amountTV.setText(amount);
+        TextView addSubCatTV = convertView.findViewById(R.id.textviewTextView);
+
+        if(headerList.size()==3){
+            int icon = Integer.parseInt(headerList.get(0));
+            String description = headerList.get(1);
+            String amount = headerList.get(2);
+
+            iconIV.setImageResource(icon);
+            descriptionTV.setTypeface(null, Typeface.BOLD);
+            descriptionTV.setText(description);
+            amountTV.setTypeface(null, Typeface.BOLD);
+            amountTV.setText(amount);
+        }
+        else{
+            String text = headerList.get(0);
+            addSubCatTV.setText(text);
+            addSubCatTV.setPadding(100,0,0,0);
+
+            //Log.i(TAG, "text = " + text);
+        }
 
         return convertView;
     }
@@ -99,7 +110,7 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
     @Override
     public View getChildView(int groupPosition, int childPosition, boolean isLastChild, View convertView, ViewGroup parent) {
 
-        Log.i(TAG, "-------------------getChildView");
+        //Log.i(TAG, "getChildView");
 
         List<String> childList = (List<String>)  getChild(groupPosition, childPosition);
 
@@ -118,36 +129,36 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
 
 
         TextView addSubCatTV = convertView.findViewById(R.id.textviewTextView);
-        ImageView iconIV = convertView.findViewById(R.id.childIconImageView);
+        //ImageView iconIV = convertView.findViewById(R.id.childIconImageView);
         TextView descriptionTV = convertView.findViewById(R.id.childDescriptionTextView);
         TextView amountTV = convertView.findViewById(R.id.childAmountTextView);
 
 
         if(childList.size()==3){
 
-            Log.i(TAG, "childList.size()==3");
-            int icon = Integer.parseInt(childList.get(0));
-            iconIV.setImageResource(icon);
+            //Log.i(TAG, "childList.size()==3");
+            //int icon = Integer.parseInt(childList.get(0));
+            //iconIV.setImageResource(icon);
             String description = childList.get(1);
             descriptionTV.setText(description);
             String amount = childList.get(2);
             amountTV.setText(amount);
 
-            Log.i(TAG, "description = " + description);
-            Log.i(TAG, "amount = " + amount);
+            //Log.i(TAG, "description = " + description);
+            //Log.i(TAG, "amount = " + amount);
         }
         else if(childList.size()==1){ //add sub category
-            Log.i(TAG, "childList.size()==1");
+            //Log.i(TAG, "childList.size()==1");
 
             String text = childList.get(0);
             addSubCatTV.setText(text);
             addSubCatTV.setPadding(100,0,0,0);
 
-            Log.i(TAG, "text = " + text);
+            //Log.i(TAG, "text = " + text);
 
         }
 
-        Log.i(TAG, "-------------------getChildView----------------------------");
+        //Log.i(TAG, "-------------------getChildView----------------------------");
 
         return convertView;
     }

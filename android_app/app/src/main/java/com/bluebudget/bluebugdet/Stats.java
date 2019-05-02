@@ -9,7 +9,39 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.github.mikephil.charting.charts.PieChart;
+import com.github.mikephil.charting.components.Description;
+import com.github.mikephil.charting.data.PieData;
+import com.github.mikephil.charting.data.PieDataSet;
+import com.github.mikephil.charting.data.PieEntry;
+import com.github.mikephil.charting.utils.ColorTemplate;
+
+import java.util.ArrayList;
+import java.util.List;
+
 public class Stats extends AppCompatActivity {
+
+    private PieChart pie;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_stats);
+
+        //get the icon selected and go to the respective activity
+        BottomNavigationView navigation = findViewById(R.id.navigation);
+        navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
+
+        //highlight the selected icon
+        Menu menu = navigation.getMenu();
+        MenuItem menuItem = menu.getItem(3);
+        menuItem.setChecked(true);
+
+        pie = findViewById(R.id.piechart);
+        initPieChart();
+
+
+    }
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -40,18 +72,28 @@ public class Stats extends AppCompatActivity {
         }
     };
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_stats);
 
-        //get the icon selected and go to the respective activity
-        BottomNavigationView navigation = findViewById(R.id.navigation);
-        navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
+    public void initPieChart(){
+        List<PieEntry> pieEntries = new ArrayList<>();
 
-        //highlight the selected icon
-        Menu menu = navigation.getMenu();
-        MenuItem menuItem = menu.getItem(3);
-        menuItem.setChecked(true);
+        pieEntries.add(new PieEntry(10));
+
+        pie.animateX(5000);
+        pie.animateY(5000);
+
+        PieDataSet pieDataSet = new PieDataSet(pieEntries, "cenas");
+        pieDataSet.setColors(ColorTemplate.COLORFUL_COLORS);
+
+        PieData pieData = new PieData(pieDataSet);
+        pie.setData(pieData);
+
+
+        Description description = new Description();
+        description.setText("description");
+        pie.setDescription(description);
+        pie.invalidate();
+
+
+
     }
 }

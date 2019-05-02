@@ -61,7 +61,7 @@ public class NewIncome extends AppCompatActivity {
         categorySpinner.setAdapter(categoryAdapter);
         categorySpinner.setOnItemSelectedListener(av);
 
-        //Category Spinner
+        //wallet Spinner
         walletSpinner = findViewById(R.id.walletNewIncomeSpinner);
 
         ArrayList<SpinnerItem> walletItemList = initWalletList();
@@ -168,7 +168,7 @@ public class NewIncome extends AppCompatActivity {
             transactions.putExtra("date", dateTV.getText().toString());
 
             SpinnerItem csi = (SpinnerItem) categorySpinner.getSelectedItem();
-            transactions.putExtra("category", csi.getName() );
+            transactions.putExtra("category",csi.getName());
             transactions.putExtra("location", locationET.getText().toString());
             transactions.putExtra("notes", notesET.getText().toString());
             SpinnerItem wsi = (SpinnerItem) walletSpinner.getSelectedItem();

@@ -15,16 +15,18 @@ public class PopupDialog extends AppCompatDialogFragment {
     private EditText nameET;
     private EditText amountET;
     private PopupDialogListener listener;
+    private String title = "";
     private static final String TAG = "PopupDialog";
+
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 
         LayoutInflater inflater = getActivity().getLayoutInflater();
-        View view = inflater.inflate(R.layout.layout_popup_new_income_sub_cat, null);
+        View view = inflater.inflate(R.layout.layout_popup, null);
 
         builder.setView(view)
-                .setTitle("New sub-category")
+                .setTitle(title)
                 .setNegativeButton("cancel", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
@@ -51,6 +53,10 @@ public class PopupDialog extends AppCompatDialogFragment {
         amountET = view.findViewById(R.id.newSubCatAmountEditText);
 
         return builder.create();
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
     }
 
     @Override

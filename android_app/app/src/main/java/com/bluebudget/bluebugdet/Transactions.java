@@ -115,17 +115,19 @@ public class Transactions extends AppCompatActivity {
             Log.i(TAG, transactionType + " " + amount + " " + date + " " + category + " " + notes + " " + location + " " + wallet + " " + recipientWallet);
 
             //add transactions
-            if(transactionType.equals("NewExpense")){
-                Home.app.addExpense(amount, calendar, Home.app.getCategory(category), notes, location, wallet);
-            }
-            else if(transactionType.equals("NewIncome")){
-                Home.app.addIncome(amount, calendar, Home.app.getCategory(category), notes, location, wallet);
-            }
-            else if(transactionType.equals("NewTransfer")){
-                Home.app.addTransfer(amount, calendar, notes, location, wallet, recipientWallet);
-                Log.i(TAG, "added new transfer");
-                List<AppTransaction> allTransactions = Home.app.getTransactions(null, null, null, null, null , null);
-                Log.i(TAG, allTransactions.size()+"");
+            if(amount>0) {
+                if(transactionType.equals("NewExpense")){
+                    Home.app.addExpense(amount, calendar, Home.app.getCategory(category), notes, location, wallet);
+                }
+                else if(transactionType.equals("NewIncome")){
+                    Home.app.addIncome(amount, calendar, Home.app.getCategory(category), notes, location, wallet);
+                }
+                else if(transactionType.equals("NewTransfer")){
+                    Home.app.addTransfer(amount, calendar, notes, location, wallet, recipientWallet);
+                    Log.i(TAG, "added new transfer");
+                    List<AppTransaction> allTransactions = Home.app.getTransactions(null, null, null, null, null , null);
+                    Log.i(TAG, allTransactions.size()+"");
+                }
             }
         }
     }

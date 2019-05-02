@@ -1,5 +1,7 @@
 package com.bluebudget.bluebugdet;
 
+import android.util.Log;
+
 import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
@@ -27,9 +29,9 @@ public class App {
         addWallet("Savings",R.drawable.ic_account_balance_wallet_black_24dp, -1.0);
 
         addCategory(null, "Income", R.drawable.ic_trending_up_black_24dp, 0.0, 1, AppBudgetType.INCOME);
-        addCategory("Income", "Gifts", R.drawable.ic_subdirectory_arrow_right_black_24dp, 0.0, 1, AppBudgetType.INCOME);
+        addCategory("Income", "Income: gifts", R.drawable.ic_trending_up_black_24dp, 0.0, 1, AppBudgetType.INCOME);
         addCategory(null, "Home", R.drawable.ic_home_black_24dp, 0.0, 1, AppBudgetType.EXPENSE);
-        addCategory("Home", "cleaning products", R.drawable.ic_subdirectory_arrow_right_black_24dp, 0.0, 1, AppBudgetType.EXPENSE);
+        addCategory("Home", "Home: cleaning products", R.drawable.ic_home_black_24dp, 0.0, 1, AppBudgetType.EXPENSE);
         addCategory(null, "Food", R.drawable.ic_shopping_cart_black_24dp, 0.0, 1, AppBudgetType.EXPENSE);
         addCategory(null, "Transports", R.drawable.ic_directions_car_black_24dp, 0.0, 1, AppBudgetType.EXPENSE);
     }
@@ -69,6 +71,24 @@ public class App {
 
     public List<AppCategory> allCatTypeOrdered(AppBudgetType type){
         return categories.allCatTypeOrdered(type);
+    }
+
+    public String getCategoryFirstName(String originalName){
+        String newName=originalName;
+        if(getCategory(originalName)==null){
+            return newName;
+        }
+        else if(getCategory(originalName).getParent()!=null){
+            Log.i(TAG, originalName);
+            String [] s = originalName.split(": ");
+            newName=s[1];
+            Log.i(TAG, newName);
+        }
+        return newName;
+    }
+
+    public String newSubCategoryFullName(String parentName, String subcatName){
+        return parentName+": "+subcatName;
     }
 
 
