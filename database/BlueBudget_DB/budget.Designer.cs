@@ -175,11 +175,11 @@
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(467, 263);
+            this.label3.Location = new System.Drawing.Point(427, 263);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(41, 13);
+            this.label3.Size = new System.Drawing.Size(81, 13);
             this.label3.TabIndex = 50;
-            this.label3.Text = "Budget";
+            this.label3.Text = "Monthly Budget";
             // 
             // Type_comboBox
             // 

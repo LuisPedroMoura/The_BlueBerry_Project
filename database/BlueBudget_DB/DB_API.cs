@@ -47,7 +47,7 @@ namespace BlueBudget_DB
             category_id,
             account_id,
             name,
-            category_type
+            category_type_id
         }
         public enum CategoryTypeEnt
         {
@@ -253,13 +253,20 @@ namespace BlueBudget_DB
             return DB_IO.SelectReader(DB_IO.DB_Interface.pr_select_categories, attrValue);
         }
 
+        public static DataTableReader SelectCategory(int category_id)
+        {
+            var attrValue = DB_IO.AttrValue();
+            attrValue[CategoryEnt.category_id] = category_id;
+            return DB_IO.SelectReader(DB_IO.DB_Interface.pr_select_categories, attrValue);
+        }
+
         public static void AddCategoryToAccount(int account_id, string name, int type_id)
         {
             var attrValue = new Dictionary<System.Enum, Object>
             {
                 { CategoryEnt.account_id, account_id },
                 { CategoryEnt.name, name },
-                { CategoryEnt.category_type, type_id }
+                { CategoryEnt.category_type_id, type_id }
             };
             DB_IO.Insert(DB_IO.DB_Interface.pr_insert_category, attrValue);
         }
@@ -271,7 +278,7 @@ namespace BlueBudget_DB
                 { CategoryEnt.category_id, parentOrSisterCategory_id },
                 { CategoryEnt.account_id, account_id },
                 { CategoryEnt.name, name },
-                { CategoryEnt.category_type, category_type }
+                { CategoryEnt.category_type_id, category_type }
             };
             DB_IO.Insert(DB_IO.DB_Interface.pr_insert_subcategory, attrValue);
         }
@@ -286,11 +293,23 @@ namespace BlueBudget_DB
             DB_IO.Insert(DB_IO.DB_Interface.pr_delete_category, attrValue);
         }
 
-        public static int SelectCategoryTypeByDesignation(string designation)
+        public static int SelectCategoryTypeIdByDesignation(string designation)
         {
             var attrValue = DB_IO.AttrValue();
             attrValue[CategoryTypeEnt.designation] = designation;
-            return (int)DB_IO.SelectScalar(DB_IO.DB_Interface.pr_select_category_type_by_designation, attrValue);
+            return (int)DB_IO.SelectScalar(DB_IO.DB_Interface.pr_select_category_types, attrValue);
+        }
+
+        public static string SelectCategoryDesignationById(int category_type_id)
+        {
+            var attrValue = DB_IO.AttrValue();
+            attrValue[CategoryTypeEnt.category_type_id] = category_type_id;
+            return (string)DB_IO.SelectScalar(DB_IO.DB_Interface.pr_select_category_types, attrValue);
+        }
+
+        public static DataTableReader SelectAllCategoryTypes()
+        {
+            return DB_IO.SelectReader(DB_IO.DB_Interface.pr_select_category_types, DB_IO.AttrValue());
         }
 
         // ----------------------------------------------------------------------------------------------
@@ -350,7 +369,7 @@ namespace BlueBudget_DB
                 { BudgetEnt.account_id, account_id },
                 { BudgetEnt.category_id, category_id }
             };
-            return DB_IO.SelectReader(DB_IO.DB_Interface.pr_select_loans, attrValue);
+            return DB_IO.SelectReader(DB_IO.DB_Interface.pr_select_budgets, attrValue);
         }
 
         public static DataTableReader SelectBudget(int budget_id)

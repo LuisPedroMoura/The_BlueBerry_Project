@@ -43,7 +43,7 @@ namespace BlueBudget_DB
             pr_insert_category,
             pr_insert_subcategory,
             pr_delete_category,
-            pr_select_category_type_by_designation,
+            pr_select_category_types,
             //---
             pr_select_loans,
             pr_exists_loan,

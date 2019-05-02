@@ -31,6 +31,11 @@ namespace BlueBudget_DB
             }
         }
 
+        public static string Warning(string message)
+        {
+            return "WARNING:\n" + message;
+        }
+
 
     }
 }

@@ -44,22 +44,41 @@ namespace BlueBudget_DB
         private void Newcategory_btn_Click(object sender, EventArgs e)
         {
             Category_textBox.ReadOnly = false;
+            Subcategory_textBox.ReadOnly = true;
             Type_comboBox.Enabled = true;
+            Type_comboBox.Enabled = true;
+            Budget_textBox.ReadOnly = true;
+            StartMonth_comboBox.Enabled = false;
+            StartYear_numericBox.Enabled = false;
+            EndMonth_comboBox.Enabled = false;
+            EndYear_numericBox.Enabled = false;
         }
 
         private void Newsubcategory_btn_Click(object sender, EventArgs e)
         {
+            Category_textBox.ReadOnly = true;
             Subcategory_textBox.ReadOnly = false;
+            Type_comboBox.Enabled = false;
+            Budget_textBox.ReadOnly = true;
+            StartMonth_comboBox.Enabled = false;
+            StartYear_numericBox.Enabled = false;
+            EndMonth_comboBox.Enabled = false;
+            EndYear_numericBox.Enabled = false;
         }
 
         private void Save_btn_Click(object sender, EventArgs e)
         {
+            // get values from textboxes
+            string cat_name = Category_textBox.Text;
+            int cat_id;
+            string sub_cat_name = Subcategory_textBox.Text;
+            int sub_cat_id;
+            string type_name = Type_comboBox.SelectedItem.ToString();
+            int type_id = DB_API.SelectCategoryTypeIdByDesignation(type_name);
+
             // save new category
             if (!Category_textBox.ReadOnly)
             {
-                string name = Category_textBox.ForeColor == Color.Black ? Category_textBox.Text : "";
-                int type_id = DB_API.SelectCategoryTypeByDesignation(Type_comboBox.SelectedItem.ToString());
-
                 // verify if field is filled
                 if (Category_textBox.Text.Equals(""))
                 {
@@ -70,7 +89,7 @@ namespace BlueBudget_DB
                 // add new category
                 try
                 {
-                    DB_API.AddCategoryToAccount(account_id, name, type_id);
+                    DB_API.AddCategoryToAccount(account_id, cat_name, type_id);
                 }
                 catch (SqlException ex)
                 {
@@ -81,10 +100,7 @@ namespace BlueBudget_DB
             // save new sub category
             if (!Subcategory_textBox.ReadOnly)
             {
-                string category_name = Category_textBox.ForeColor == Color.Black ? Category_textBox.Text : "";
-                int category_id = this.categories[category_name];
-                string subCategory_name = Subcategory_textBox.ForeColor == Color.Black ? Subcategory_textBox.Text : "";
-                int type_id = DB_API.SelectCategoryTypeByDesignation(Type_comboBox.SelectedItem.ToString());
+                cat_id = this.categories[cat_name];
 
                 // verify if field is filled
                 if (Subcategory_textBox.Text.Equals(""))
@@ -96,7 +112,7 @@ namespace BlueBudget_DB
                 // add new category
                 try
                 {
-                    DB_API.AddSubCategoryToAccount(category_id, account_id, subCategory_name, type_id);
+                    DB_API.AddSubCategoryToAccount(cat_id, account_id, sub_cat_name, type_id);
                 }
                 catch (SqlException ex)
                 {
@@ -107,8 +123,12 @@ namespace BlueBudget_DB
             // save new budget
             if (Category_textBox.ReadOnly && Subcategory_textBox.ReadOnly)
             {
-                string category_name = Category_textBox.ForeColor == Color.Black ? Category_textBox.Text : "";
-                int category_id = this.categories[category_name];
+                cat_id = this.categories[cat_name];
+                if (!sub_cat_name.Equals(""))
+                {
+                    sub_cat_id = this.categories[sub_cat_name];
+                }
+
                 double amount;
                 try
                 {
@@ -125,6 +145,7 @@ namespace BlueBudget_DB
                 int endYear = (int)EndYear_numericBox.Value;
                 DateTime startDate = DateTime.Parse("01/" + startMonth + "/" + startYear);
                 DateTime endDate;
+                
                 if (endMonth == 2)
                 {
                     endDate = DateTime.Parse("28/" + endMonth + "/" + endYear);
@@ -137,18 +158,24 @@ namespace BlueBudget_DB
                 // insert new budget
                 try
                 {
-                    DB_API.InsertBudget(account_id, category_id, amount, startDate, endDate);
+                    DB_API.InsertBudget(account_id, cat_id, amount, startDate, endDate);
                 }
                 catch (SqlException ex)
                 {
                     Notifications.Text = ErrorMessenger.Exception(ex);
                 }
             }
-            
+
             // block fields
             Category_textBox.ReadOnly = true;
             Subcategory_textBox.ReadOnly = true;
             Type_comboBox.Enabled = false;
+            Budget_textBox.ReadOnly = false;
+            StartMonth_comboBox.Enabled = true;
+            StartYear_numericBox.Enabled = true;
+            EndMonth_comboBox.Enabled = true;
+            EndYear_numericBox.Enabled = true;
+            PopulateCategoriesListBox();
         }
 
         // -------------------------------------------------------------------
@@ -158,13 +185,47 @@ namespace BlueBudget_DB
         private void Categories_listbox_SelectedIndexChanged(object sender, EventArgs e)
         {
             // get selected item value
-            string category = (string)Categories_listbox.SelectedItem;
-            Console.WriteLine(category);
-            Console.WriteLine(categories.ToString());
-            int category_id = this.categories[category];
+            string selected = (string)Categories_listbox.SelectedItem;
+            string cat_name = selected;
+            string sub_cat_name = "";
+            int cat_id;
+            int sub_cat_id;
+            int cat_type_id = -1;
+            string cat_type_name;
+
+            try
+            {
+                cat_id = this.categories[selected];
+            }
+            catch (Exception ex)
+            {
+                selected = selected.Substring(5);
+                sub_cat_id = this.categories[selected];
+                sub_cat_name = selected;
+                cat_id = sub_cat_id / 100 * 100;
+                foreach (KeyValuePair<string, int> pair in this.categories)
+                {
+                    if (categories[pair.Key] == cat_id)
+                    {
+                        cat_name = pair.Key;
+                        break;
+                    }
+                }
+            }
+
+            Category_textBox.Text = cat_name;
+            Subcategory_textBox.Text = sub_cat_name;
+            var rdr = DB_API.SelectCategory(cat_id);
+            while (rdr.Read())
+            {
+                cat_type_id = (int)rdr[DB_API.CategoryEnt.category_type_id.ToString()];
+                break;
+            }
+            cat_type_name = DB_API.SelectCategoryDesignationById(cat_type_id);
+            Type_comboBox.Text = cat_type_name;
 
             // search DB for budgets
-            var rdr = DB_API.SelectUserCategoryBudgets(account_id, category_id);
+            rdr = DB_API.SelectUserCategoryBudgets(account_id, cat_id);
             var res = new Dictionary<string, int>();
             while (rdr.Read())
             {
@@ -178,6 +239,8 @@ namespace BlueBudget_DB
 
             Budgets_listBox.DataSource = new List<string>(res.Keys);
             this.budgets = res;
+
+            
         }
 
         private void Budgets_listBox_SelectedIndexChanged(object sender, EventArgs e)
@@ -212,7 +275,7 @@ namespace BlueBudget_DB
             // verify if account has no categories
             if (!rdr.HasRows)
             {
-                //notifications_textbox.Text = "WARNING:\nUser has no accounts.";
+                Notifications.Text = ErrorMessenger.Warning("Account has no categories!");
                 Categories_listbox.DataSource = new List<String>();
                 return;
             }
@@ -223,13 +286,13 @@ namespace BlueBudget_DB
             while (rdr.Read())
             {
                 string cat_name = rdr[DB_API.CategoryEnt.name.ToString()].ToString();
-                double cat_id = (double)(int)rdr[DB_API.CategoryEnt.category_id.ToString()];
+                int cat_id = (int)rdr[DB_API.CategoryEnt.category_id.ToString()];
+                categories[cat_name] = cat_id;
                 if (cat_id % 100 > 0)
                 {
                     cat_name = "  -> " + cat_name;
                 }
-                res[cat_name] = (int)cat_id;
-                categories[cat_name] = (int)cat_id;
+                res[cat_name] = cat_id;
             }
             Categories_listbox.DataSource = new List<string>(res.Keys);
             //this.categories = new Dictionary<string, int>(res);
@@ -238,9 +301,19 @@ namespace BlueBudget_DB
         private void PopulateComboBoxes()
         {
             StartMonth_comboBox.DataSource = months;
-            EndMonth_comboBox.DataSource = months;
+            EndMonth_comboBox.DataSource = new List<string>(months);
+            StartYear_numericBox.Maximum = 2500;
             StartYear_numericBox.Value = 2019;
+            EndYear_numericBox.Maximum = 2500;
             EndYear_numericBox.Value = 2019;
+
+            var rdr = DB_API.SelectAllCategoryTypes();
+            var res = new List<string>();
+            while (rdr.Read())
+            {
+                res.Add(rdr[DB_API.CategoryTypeEnt.designation.ToString()].ToString());
+            }
+            Type_comboBox.DataSource = res;
         }
 
         private void budget_Load(object sender, EventArgs e)

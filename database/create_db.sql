@@ -40,7 +40,7 @@ BEGIN
 	DROP PROC pr_insert_category;
 	DROP PROC pr_insert_subcategory;
 	DROP PROC pr_delete_category;
-	DROP PROC pr_select_category_type_by_designation;
+	DROP PROC pr_select_category_types;
 
 	DROP PROC pr_select_loans;
 	DROP PROC pr_exists_loan;
@@ -552,14 +552,39 @@ BEGIN
 END
 GO
 
-CREATE PROC pr_select_category_type_by_designation 
-	@designation VARCHAR(20),
+CREATE PROC pr_select_category_types (
+	@designation VARCHAR(20) = NULL,
+	@category_type_id INT = NULL
 ) AS
 BEGIN
 	
-	SELECT category_type_id
-	FROM Project.category_types
-	WHERE designation=@designation;
+	IF ((@designation IS NULL) AND (@category_type_id IS NULL))
+	BEGIN
+		
+		SELECT *
+		FROM Project.category_types
+		WHERE
+				(designation=@designation OR @designation IS NULL)
+			AND (category_type_id=@category_type_id or @category_type_id IS NULL)
+	END
+
+	ELSE
+	BEGIN
+
+		IF (@designation IS NULL)
+		BEGIN
+			SELECT designation
+			FROM Project.category_types
+			WHERE category_type_id=@category_type_id
+		END
+
+		IF (@category_type_id IS NULL)
+		BEGIN
+			SELECT category_type_id
+			FROM Project.category_types
+			WHERE designation=@designation
+		END
+	END
 END
 GO
 
@@ -656,11 +681,14 @@ CREATE PROC pr_insert_budget (
 	@category_id INT,
 	@amount MONEY = 0.0,
 	@periodicity INT = 1,
-	@start_date DATETIME GETDATE(),
+	@start_date DATETIME NULL,
 	@end_date DATETIME = NULL
 ) AS
 BEGIN
 	
+	IF @start_date IS NULL
+		SET @start_date = GETDATE();
+
 	INSERT INTO Project.budgets (account_id, category_id, amount, periodicity, [start_date], end_date)
 	VALUES (@account_id, @category_id, @amount, @periodicity, @start_date, @end_date)
 END
