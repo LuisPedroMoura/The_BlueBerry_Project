@@ -91,7 +91,11 @@ public class Budget extends AppCompatActivity {
 
         ArrayList<BudgetProgression> budgetProgressionList = new ArrayList<>();
 
-        List<AppCategory> budgetTypeExpenses = Home.app.allCatTypeOrdered(AppBudgetType.EXPENSE);
+        List<String> parentsList = new ArrayList<>();
+        parentsList.add(null);
+        List<AppBudgetType> typesList = new ArrayList<>();
+        typesList.add(AppBudgetType.EXPENSE);
+        List<AppCategory> budgetTypeExpenses = Home.app.filterCategories(parentsList,typesList);//Home.app.allCatTypeOrdered(AppBudgetType.EXPENSE);
 
         for(AppCategory c : budgetTypeExpenses){
 

@@ -1,22 +1,19 @@
 package com.bluebudget.bluebugdet;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.ExpandableListView;
-import android.widget.GridLayout;
-import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
-public class IncomeWalkthrough extends AppCompatActivity implements PopupDialog.PopupDialogListener{
+public class WalkthroughIncome extends AppCompatActivity implements PopupDialog.PopupDialogListener{
 
     private ExpandableListView expLV;
-
     private ExpandableListAdapter expLA;
     private List<List<String>> headerList;
     private HashMap<String, List<List<String>>> headerChildHash;
@@ -35,7 +32,7 @@ public class IncomeWalkthrough extends AppCompatActivity implements PopupDialog.
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_income_walkthrough);
+        setContentView(R.layout.activity_walkthrough_income);
 
         getIncomeCategories();
 
@@ -43,6 +40,7 @@ public class IncomeWalkthrough extends AppCompatActivity implements PopupDialog.
     }
 
     public void getIncomeCategories(){
+        Log.i(TAG, "getIncomeCategories");
 
         List<String> parentsList = new ArrayList<>();
         parentsList.add(null);
@@ -66,6 +64,8 @@ public class IncomeWalkthrough extends AppCompatActivity implements PopupDialog.
 
         expLV = findViewById(R.id.incomeWalkthroughExpLV);
 
+
+
         headerList = new ArrayList<>();
         headerChildHash = new HashMap<>();
 
@@ -74,6 +74,7 @@ public class IncomeWalkthrough extends AppCompatActivity implements PopupDialog.
 
         updateExpListAdapter();
 
+        expLV.expandGroup(0);
         expLV.setOnChildClickListener(onChildClickListener);
     }
 
@@ -95,7 +96,6 @@ public class IncomeWalkthrough extends AppCompatActivity implements PopupDialog.
     public void initChildELV(){
 
         Log.i(TAG, "initChildELV");
-        addNewSubCatStr = "add new sub category";
 
         List<List<String>> list = new ArrayList<>();
 
@@ -104,25 +104,31 @@ public class IncomeWalkthrough extends AppCompatActivity implements PopupDialog.
             list.add(itemList);
         }
 
-        List<String> itemList = new ArrayList<>();
-        itemList.add(addNewSubCatStr);
+        addNewSubCatStr = "add new sub category";
+        List<String> itemList = strToItemList(addNewSubCatStr);
         list.add(itemList);
 
         headerChildHash.put(key, list);
     }
 
+    public List<String> strToItemList(String s){
+        List<String> itemList = new ArrayList<>();
+        itemList.add(s);
+        return itemList;
+    }
+
     public  List<String> catToItemList(AppCategory cat){
         List<String> itemList = new ArrayList<>();
         itemList.add(cat.getIcon()+"");
-        itemList.add(cat.getName());
+        itemList.add(Home.app.getCategoryFirstName(cat.getName()));
         itemList.add(cat.getDefBudget()+"€");
         return itemList;
     }
 
-    public  List<String> strToItemList(String name, Double amount){
+    public  List<String> argsToItemList(String name, Double amount){
         List<String> itemList = new ArrayList<>();
         itemList.add(R.drawable.ic_subdirectory_arrow_right_black_24dp+"");
-        itemList.add(name);
+        itemList.add(Home.app.getCategoryFirstName(name));
         itemList.add(amount+"€");
         return itemList;
     }
@@ -141,16 +147,17 @@ public class IncomeWalkthrough extends AppCompatActivity implements PopupDialog.
 
             if(childList.size()==1 && childList.get(0).equals(addNewSubCatStr)){
                 Log.i(TAG, addNewSubCatStr+" clicked");
-                openDialog();
+                openDialog("New sub-category");
             }
 
             return false;
         }
     };
 
-    public void openDialog() {
-        PopupDialog exampleDialog = new PopupDialog();
-        exampleDialog.show(getSupportFragmentManager(), TAG+"-> openDialog-> Popup Dialog");
+    public void openDialog(String title) {
+        PopupDialog dialog = new PopupDialog();
+        dialog.setTitle(title);
+        dialog.show(getSupportFragmentManager(), TAG+"-> openDialog-> Popup Dialog");
     }
 
     @Override
@@ -160,7 +167,7 @@ public class IncomeWalkthrough extends AppCompatActivity implements PopupDialog.
 
         List<List<String>> list = headerChildHash.get(key);
 
-        List<String> itemList = strToItemList(name, amount);
+        List<String> itemList = argsToItemList(name, amount);
 
         list.add(0, itemList);
 
@@ -168,7 +175,16 @@ public class IncomeWalkthrough extends AppCompatActivity implements PopupDialog.
 
         expLA.notifyDataSetChanged();
 
-        Home.app.addCategory(incomeCat.getName(), name, R.drawable.ic_subdirectory_arrow_right_black_24dp, amount, 1, AppBudgetType.INCOME);
+        String parentName = incomeCat.getName();
+        String subcatName = Home.app.newSubCategoryFullName(parentName, name);
+
+        Home.app.addCategory(parentName, subcatName, incomeCat.getIcon(), amount, 1, AppBudgetType.INCOME);
+    }
+
+    public void incomeWalkthroughBtnClicked(View view){
+        Log.i(TAG, "next btn clicked");
+        Intent next = new Intent(WalkthroughIncome.this, WalkthroughBudget.class);
+        startActivity(next);
     }
 
 }
