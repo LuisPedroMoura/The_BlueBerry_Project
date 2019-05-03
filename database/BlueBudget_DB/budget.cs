@@ -72,7 +72,6 @@ namespace BlueBudget_DB
             string cat_name = Category_textBox.Text;
             int cat_id;
             string sub_cat_name = Subcategory_textBox.Text;
-            int sub_cat_id;
             string type_name = Type_comboBox.SelectedItem.ToString();
             int type_id = DB_API.SelectCategoryTypeIdByDesignation(type_name);
 
@@ -126,7 +125,7 @@ namespace BlueBudget_DB
                 cat_id = this.categories[cat_name];
                 if (!sub_cat_name.Equals(""))
                 {
-                    sub_cat_id = this.categories[sub_cat_name];
+                    cat_id = this.categories[sub_cat_name];
                 }
 
                 double amount;
@@ -155,6 +154,13 @@ namespace BlueBudget_DB
                     endDate = DateTime.Parse("30/" + endMonth + "/" + endYear);
                 }
 
+                // verify that endaDate is bigger than startDate
+                if (startDate.CompareTo(endDate) > 0)
+                {
+                    Notifications.Text = ErrorMessenger.InvalidData("End date");
+                    return;
+                }
+
                 // insert new budget
                 try
                 {
@@ -175,6 +181,7 @@ namespace BlueBudget_DB
             StartYear_numericBox.Enabled = true;
             EndMonth_comboBox.Enabled = true;
             EndYear_numericBox.Enabled = true;
+
             PopulateCategoriesListBox();
         }
 
@@ -196,6 +203,7 @@ namespace BlueBudget_DB
             try
             {
                 cat_id = this.categories[selected];
+                PopulateBudgetsListBox(account_id, cat_id);
             }
             catch (Exception ex)
             {
@@ -211,8 +219,10 @@ namespace BlueBudget_DB
                         break;
                     }
                 }
+                PopulateBudgetsListBox(account_id, sub_cat_id);
             }
 
+            // update TextBoxes
             Category_textBox.Text = cat_name;
             Subcategory_textBox.Text = sub_cat_name;
             var rdr = DB_API.SelectCategory(cat_id);
@@ -223,24 +233,6 @@ namespace BlueBudget_DB
             }
             cat_type_name = DB_API.SelectCategoryDesignationById(cat_type_id);
             Type_comboBox.Text = cat_type_name;
-
-            // search DB for budgets
-            rdr = DB_API.SelectUserCategoryBudgets(account_id, cat_id);
-            var res = new Dictionary<string, int>();
-            while (rdr.Read())
-            {
-                string start_month = DateTime.Parse(rdr[DB_API.BudgetEnt.start_date.ToString()].ToString()).Month.ToString();
-                string start_year = DateTime.Parse(rdr[DB_API.BudgetEnt.start_date.ToString()].ToString()).Year.ToString();
-                string end_month = DateTime.Parse(rdr[DB_API.BudgetEnt.start_date.ToString()].ToString()).Month.ToString();
-                string end_year = DateTime.Parse(rdr[DB_API.BudgetEnt.start_date.ToString()].ToString()).Year.ToString();
-                string amount = rdr[DB_API.BudgetEnt.amount.ToString()].ToString();
-                res[start_month + "/" + start_year + "-" + end_month + "/" + end_year + " - " + amount] = (int)rdr[DB_API.BudgetEnt.budget_id.ToString()];
-            }
-
-            Budgets_listBox.DataSource = new List<string>(res.Keys);
-            this.budgets = res;
-
-            
         }
 
         private void Budgets_listBox_SelectedIndexChanged(object sender, EventArgs e)
@@ -254,11 +246,11 @@ namespace BlueBudget_DB
             var res = new Dictionary<string, int>();
             while (rdr.Read())
             {
-                StartMonth_comboBox.Text = DateTime.Parse(rdr[DB_API.BudgetEnt.start_date.ToString()].ToString()).Month.ToString();
+                StartMonth_comboBox.Text = months[DateTime.Parse(rdr[DB_API.BudgetEnt.start_date.ToString()].ToString()).Month];
                 StartMonth_comboBox.ForeColor = Color.Black;
                 StartYear_numericBox.Value = DateTime.Parse(rdr[DB_API.BudgetEnt.start_date.ToString()].ToString()).Year;
                 StartYear_numericBox.ForeColor = Color.Black;
-                EndMonth_comboBox.Text = DateTime.Parse(rdr[DB_API.BudgetEnt.start_date.ToString()].ToString()).Month.ToString();
+                EndMonth_comboBox.Text = months[DateTime.Parse(rdr[DB_API.BudgetEnt.start_date.ToString()].ToString()).Month];
                 EndMonth_comboBox.ForeColor = Color.Black;
                 EndYear_numericBox.Value = DateTime.Parse(rdr[DB_API.BudgetEnt.start_date.ToString()].ToString()).Year;
                 EndYear_numericBox.ForeColor = Color.Black;
@@ -295,7 +287,26 @@ namespace BlueBudget_DB
                 res[cat_name] = cat_id;
             }
             Categories_listbox.DataSource = new List<string>(res.Keys);
-            //this.categories = new Dictionary<string, int>(res);
+        }
+
+        private void PopulateBudgetsListBox(int account_id, int cat_id)
+        {
+            // search DB for budgets
+            this.budgets = new Dictionary<string, int>();
+            var rdr = DB_API.SelectUserCategoryBudgets(account_id, cat_id);
+            var res = new Dictionary<string, int>();
+            while (rdr.Read())
+            {
+                string start_month = DateTime.Parse(rdr[DB_API.BudgetEnt.start_date.ToString()].ToString()).Month.ToString();
+                string start_year = DateTime.Parse(rdr[DB_API.BudgetEnt.start_date.ToString()].ToString()).Year.ToString();
+                string end_month = DateTime.Parse(rdr[DB_API.BudgetEnt.start_date.ToString()].ToString()).Month.ToString();
+                string end_year = DateTime.Parse(rdr[DB_API.BudgetEnt.start_date.ToString()].ToString()).Year.ToString();
+                string amount = rdr[DB_API.BudgetEnt.amount.ToString()].ToString();
+                res[start_month + "/" + start_year + "-" + end_month + "/" + end_year + " - " + amount + "$"] = (int)rdr[DB_API.BudgetEnt.budget_id.ToString()];
+                budgets[start_month + "/" + start_year + "-" + end_month + "/" + end_year + " - " + amount + "$"] = (int)rdr[DB_API.BudgetEnt.budget_id.ToString()];
+            }
+
+            Budgets_listBox.DataSource = new List<string>(res.Keys);
         }
 
         private void PopulateComboBoxes()
@@ -318,7 +329,7 @@ namespace BlueBudget_DB
 
         private void budget_Load(object sender, EventArgs e)
         {
-
+            
         }
 
         

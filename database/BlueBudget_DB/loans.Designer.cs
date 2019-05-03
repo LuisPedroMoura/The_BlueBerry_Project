@@ -37,7 +37,7 @@
             this.Save_btn = new System.Windows.Forms.Button();
             this.label1 = new System.Windows.Forms.Label();
             this.Back_btn = new System.Windows.Forms.Button();
-            this.Notifications_textBox = new System.Windows.Forms.RichTextBox();
+            this.Notifications = new System.Windows.Forms.RichTextBox();
             this.label2 = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
@@ -123,14 +123,14 @@
             this.Back_btn.UseVisualStyleBackColor = true;
             this.Back_btn.Click += new System.EventHandler(this.Back_btn_Click);
             // 
-            // Notifications_textBox
+            // Notifications
             // 
-            this.Notifications_textBox.Location = new System.Drawing.Point(38, 265);
-            this.Notifications_textBox.Name = "Notifications_textBox";
-            this.Notifications_textBox.ReadOnly = true;
-            this.Notifications_textBox.Size = new System.Drawing.Size(205, 68);
-            this.Notifications_textBox.TabIndex = 11;
-            this.Notifications_textBox.Text = "";
+            this.Notifications.Location = new System.Drawing.Point(38, 265);
+            this.Notifications.Name = "Notifications";
+            this.Notifications.ReadOnly = true;
+            this.Notifications.Size = new System.Drawing.Size(205, 68);
+            this.Notifications.TabIndex = 11;
+            this.Notifications.Text = "";
             // 
             // label2
             // 
@@ -147,7 +147,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(600, 366);
             this.Controls.Add(this.label2);
-            this.Controls.Add(this.Notifications_textBox);
+            this.Controls.Add(this.Notifications);
             this.Controls.Add(this.Back_btn);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.Save_btn);
@@ -175,7 +175,7 @@
         private System.Windows.Forms.Button Save_btn;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Button Back_btn;
-        private System.Windows.Forms.RichTextBox Notifications_textBox;
+        private System.Windows.Forms.RichTextBox Notifications;
         private System.Windows.Forms.Label label2;
     }
 }

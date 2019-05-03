@@ -46,7 +46,7 @@ namespace BlueBudget_DB
             }
             catch
             {
-                Notifications_textBox.Text = "ERROR:\nLoan Amount value is not correctly formatted";
+                Notifications.Text = ErrorMessenger.WrongFormat("Loan amount");
                 return;
             }
             double interest = 0.0;
@@ -56,7 +56,7 @@ namespace BlueBudget_DB
             }
             catch
             {
-                Notifications_textBox.Text = "ERROR:\nLoan Interest value is not correctly formatted";
+                Notifications.Text = ErrorMessenger.WrongFormat("Interest");
                 return;
             }
             DateTime term = DateTime.Parse(Enddate_dateTimePicker.Value.ToString());
@@ -64,30 +64,19 @@ namespace BlueBudget_DB
             // verify if name and amount fields are filled
             if (loan_name.Equals("") || amount.Equals(""))
             {
-                Notifications_textBox.Text = "ERROR:\nName and Amount are mandatory fields.";
+                Notifications.Text = ErrorMessenger.EmptyField("Name and Amount");
                 return;
             }
-
-            //verify if name already exists, if so, cannot be added
-            //var exists = DB_API.ExistsLoan(account_id, name);
-            //if (exists)
-            //{
-            //    //notifications_textbox.Text = "ERROR:\nUser already exists!";
-            //    return;
-            //}
-
-            // verify that interest is between 0 and 100
-
 
             // add loan
             try
             {
                 DB_API.InsertLoan(account_id, loan_name, amount, term, interest);
-                Notifications_textBox.Text = "SUCCESS:\n New loan was added to database!";
+                Notifications.Text = ErrorMessenger.Success();
             }
             catch (SqlException ex)
             {
-                Notifications_textBox.Text = "ERROR:\n Something went wrong!";
+                Notifications.Text = ErrorMessenger.Exception(ex);
                 return;
             }
 

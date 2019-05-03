@@ -20,6 +20,11 @@ namespace BlueBudget_DB
             return "ERROR:\n" + field + " text is incorrectly formatted";
         }
 
+        public static string InvalidData(string field)
+        {
+            return "ERROR:\n" + field + " data is invalid";
+        }
+
         public static string Exception(SqlException ex)
         {
             switch (ex.Number)
@@ -34,6 +39,11 @@ namespace BlueBudget_DB
         public static string Warning(string message)
         {
             return "WARNING:\n" + message;
+        }
+
+        public static string Success()
+        {
+            return "SUCCESS:\nOperation was successful";
         }
 
 

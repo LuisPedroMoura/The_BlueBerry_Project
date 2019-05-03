@@ -33,12 +33,14 @@
             this.goalname_textBox = new System.Windows.Forms.TextBox();
             this.goalamount_textBox = new System.Windows.Forms.TextBox();
             this.term_dateTimePicker = new System.Windows.Forms.DateTimePicker();
-            this.save_btn = new System.Windows.Forms.Button();
-            this.goalstate_label = new System.Windows.Forms.Label();
-            this.back_btn = new System.Windows.Forms.Button();
-            this.comboBox1 = new System.Windows.Forms.ComboBox();
-            this.comboBox2 = new System.Windows.Forms.ComboBox();
+            this.Save_btn = new System.Windows.Forms.Button();
+            this.Back_btn = new System.Windows.Forms.Button();
+            this.Categories_comboBox = new System.Windows.Forms.ComboBox();
+            this.Subcategories_comboBox = new System.Windows.Forms.ComboBox();
             this.term_label = new System.Windows.Forms.Label();
+            this.Notifications = new System.Windows.Forms.RichTextBox();
+            this.Notifications_label = new System.Windows.Forms.Label();
+            this.label2 = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // Goals_label
@@ -56,8 +58,9 @@
             this.Goals_listBox.FormattingEnabled = true;
             this.Goals_listBox.Location = new System.Drawing.Point(47, 72);
             this.Goals_listBox.Name = "Goals_listBox";
-            this.Goals_listBox.Size = new System.Drawing.Size(207, 173);
+            this.Goals_listBox.Size = new System.Drawing.Size(207, 147);
             this.Goals_listBox.TabIndex = 1;
+            this.Goals_listBox.SelectedIndexChanged += new System.EventHandler(this.Goals_listBox_SelectedIndexChanged);
             // 
             // goalname_textBox
             // 
@@ -80,51 +83,42 @@
             this.term_dateTimePicker.Size = new System.Drawing.Size(200, 20);
             this.term_dateTimePicker.TabIndex = 4;
             // 
-            // save_btn
+            // Save_btn
             // 
-            this.save_btn.Location = new System.Drawing.Point(340, 308);
-            this.save_btn.Name = "save_btn";
-            this.save_btn.Size = new System.Drawing.Size(75, 23);
-            this.save_btn.TabIndex = 5;
-            this.save_btn.Text = "Save New";
-            this.save_btn.UseVisualStyleBackColor = true;
+            this.Save_btn.Location = new System.Drawing.Point(340, 308);
+            this.Save_btn.Name = "Save_btn";
+            this.Save_btn.Size = new System.Drawing.Size(75, 23);
+            this.Save_btn.TabIndex = 5;
+            this.Save_btn.Text = "Save New";
+            this.Save_btn.UseVisualStyleBackColor = true;
+            this.Save_btn.Click += new System.EventHandler(this.Save_btn_Click);
             // 
-            // goalstate_label
+            // Back_btn
             // 
-            this.goalstate_label.AutoSize = true;
-            this.goalstate_label.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.goalstate_label.Location = new System.Drawing.Point(368, 126);
-            this.goalstate_label.Name = "goalstate_label";
-            this.goalstate_label.Size = new System.Drawing.Size(45, 16);
-            this.goalstate_label.TabIndex = 6;
-            this.goalstate_label.Text = "label1";
-            this.goalstate_label.Click += new System.EventHandler(this.label1_Click);
+            this.Back_btn.Location = new System.Drawing.Point(465, 308);
+            this.Back_btn.Name = "Back_btn";
+            this.Back_btn.Size = new System.Drawing.Size(75, 23);
+            this.Back_btn.TabIndex = 7;
+            this.Back_btn.Text = "Back";
+            this.Back_btn.UseVisualStyleBackColor = true;
+            this.Back_btn.Click += new System.EventHandler(this.Back_btn_Click);
             // 
-            // back_btn
+            // Categories_comboBox
             // 
-            this.back_btn.Location = new System.Drawing.Point(465, 308);
-            this.back_btn.Name = "back_btn";
-            this.back_btn.Size = new System.Drawing.Size(75, 23);
-            this.back_btn.TabIndex = 7;
-            this.back_btn.Text = "Back";
-            this.back_btn.UseVisualStyleBackColor = true;
-            this.back_btn.Click += new System.EventHandler(this.back_btn_Click);
+            this.Categories_comboBox.FormattingEnabled = true;
+            this.Categories_comboBox.Location = new System.Drawing.Point(292, 72);
+            this.Categories_comboBox.Name = "Categories_comboBox";
+            this.Categories_comboBox.Size = new System.Drawing.Size(121, 21);
+            this.Categories_comboBox.TabIndex = 8;
+            this.Categories_comboBox.SelectedIndexChanged += new System.EventHandler(this.Categories_comboBox_SelectedIndexChanged);
             // 
-            // comboBox1
+            // Subcategories_comboBox
             // 
-            this.comboBox1.FormattingEnabled = true;
-            this.comboBox1.Location = new System.Drawing.Point(292, 72);
-            this.comboBox1.Name = "comboBox1";
-            this.comboBox1.Size = new System.Drawing.Size(121, 21);
-            this.comboBox1.TabIndex = 8;
-            // 
-            // comboBox2
-            // 
-            this.comboBox2.FormattingEnabled = true;
-            this.comboBox2.Location = new System.Drawing.Point(419, 72);
-            this.comboBox2.Name = "comboBox2";
-            this.comboBox2.Size = new System.Drawing.Size(121, 21);
-            this.comboBox2.TabIndex = 9;
+            this.Subcategories_comboBox.FormattingEnabled = true;
+            this.Subcategories_comboBox.Location = new System.Drawing.Point(419, 72);
+            this.Subcategories_comboBox.Name = "Subcategories_comboBox";
+            this.Subcategories_comboBox.Size = new System.Drawing.Size(121, 21);
+            this.Subcategories_comboBox.TabIndex = 9;
             // 
             // term_label
             // 
@@ -136,17 +130,46 @@
             this.term_label.TabIndex = 10;
             this.term_label.Text = "deadline";
             // 
+            // Notifications
+            // 
+            this.Notifications.Location = new System.Drawing.Point(47, 270);
+            this.Notifications.Name = "Notifications";
+            this.Notifications.Size = new System.Drawing.Size(207, 61);
+            this.Notifications.TabIndex = 11;
+            this.Notifications.Text = "";
+            // 
+            // Notifications_label
+            // 
+            this.Notifications_label.AutoSize = true;
+            this.Notifications_label.Location = new System.Drawing.Point(44, 254);
+            this.Notifications_label.Name = "Notifications_label";
+            this.Notifications_label.Size = new System.Drawing.Size(65, 13);
+            this.Notifications_label.TabIndex = 12;
+            this.Notifications_label.Text = "Notifications";
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label2.Location = new System.Drawing.Point(365, 204);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(146, 24);
+            this.label2.TabIndex = 14;
+            this.label2.Text = "Goal State Label";
+            // 
             // goals
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(600, 366);
+            this.Controls.Add(this.label2);
+            this.Controls.Add(this.Notifications_label);
+            this.Controls.Add(this.Notifications);
             this.Controls.Add(this.term_label);
-            this.Controls.Add(this.comboBox2);
-            this.Controls.Add(this.comboBox1);
-            this.Controls.Add(this.back_btn);
-            this.Controls.Add(this.goalstate_label);
-            this.Controls.Add(this.save_btn);
+            this.Controls.Add(this.Subcategories_comboBox);
+            this.Controls.Add(this.Categories_comboBox);
+            this.Controls.Add(this.Back_btn);
+            this.Controls.Add(this.Save_btn);
             this.Controls.Add(this.term_dateTimePicker);
             this.Controls.Add(this.goalamount_textBox);
             this.Controls.Add(this.goalname_textBox);
@@ -166,11 +189,13 @@
         private System.Windows.Forms.TextBox goalname_textBox;
         private System.Windows.Forms.TextBox goalamount_textBox;
         private System.Windows.Forms.DateTimePicker term_dateTimePicker;
-        private System.Windows.Forms.Button save_btn;
-        private System.Windows.Forms.Label goalstate_label;
-        private System.Windows.Forms.Button back_btn;
-        private System.Windows.Forms.ComboBox comboBox1;
-        private System.Windows.Forms.ComboBox comboBox2;
+        private System.Windows.Forms.Button Save_btn;
+        private System.Windows.Forms.Button Back_btn;
+        private System.Windows.Forms.ComboBox Categories_comboBox;
+        private System.Windows.Forms.ComboBox Subcategories_comboBox;
         private System.Windows.Forms.Label term_label;
+        private System.Windows.Forms.RichTextBox Notifications;
+        private System.Windows.Forms.Label Notifications_label;
+        private System.Windows.Forms.Label label2;
     }
 }

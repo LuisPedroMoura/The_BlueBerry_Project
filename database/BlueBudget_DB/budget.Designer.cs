@@ -279,6 +279,7 @@
             // 
             this.Notifications.Location = new System.Drawing.Point(30, 353);
             this.Notifications.Name = "Notifications";
+            this.Notifications.ReadOnly = true;
             this.Notifications.Size = new System.Drawing.Size(204, 68);
             this.Notifications.TabIndex = 65;
             this.Notifications.Text = "";

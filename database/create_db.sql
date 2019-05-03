@@ -9,6 +9,8 @@
 -5 : Argument to select does not exist
 -6 : Invalid argument
 */
+--select * from Project.budgets;
+--exec pr_select_budgets_by_category_id @account_id=1, @category_id=300;
 
 --------------------------------------------------------------------
 -- CREATE CLEANING PROCEDURE and CLEAN PROJECT ---------------------
@@ -48,8 +50,13 @@ BEGIN
 
 	DROP PROC pr_select_budgets;
 	DROP PROC pr_insert_budget;
+	DROP PROC pr_select_budgets_by_category_id;
 
-	DROP TRIGGER Project.create_basic_categories_on_user_insert;
+	DROP PROC pr_insert_goal;
+	DROP PROC pr_select_goals;
+
+	DROP TRIGGER Project.tr_create_basic_categories_on_user_insert;
+	DROP TRIGGER Project.tr_new_wallet_on_goal_insert
 END
 GO
 
@@ -336,6 +343,8 @@ BEGIN
 	-- create relation between money account and user
 	INSERT INTO Project.users_money_accounts([user_email], account_id)
 	VALUES (@user_email, @account_id);
+
+	-- A trigger (tr_create_basic_categories_on_user_insert) will insert standard categories in the database.
 END
 GO
 
@@ -676,6 +685,31 @@ BEGIN
 END
 GO
 
+CREATE PROC pr_select_budgets_by_category_id (
+	@account_id INT,
+	@category_id INT
+) AS
+BEGIN
+	
+	DECLARE @base_id INT = @category_id/100;
+	PRINT @category_id%100;
+
+	IF (@category_id%100 = 0)
+	BEGIN
+		SELECT *
+		FROM Project.budgets
+		WHERE account_id=@account_id AND category_id/100=@base_id;
+	END
+	
+	ELSE
+	BEGIN
+		SELECT *
+		FROM Project.budgets
+		WHERE account_id=@account_id AND category_id=@category_id;
+	END		
+END
+GO
+
 CREATE PROC pr_insert_budget (
 	@account_id INT,
 	@category_id INT,
@@ -694,6 +728,49 @@ BEGIN
 END
 GO
 
+
+---------------------------------------------------------------
+--- GOALS -----------------------------------------------------
+---------------------------------------------------------------
+
+CREATE PROC pr_insert_goal (
+	@name VARCHAR(20),
+	@category_id INT,
+	@account_id INT,
+	@amount INT = 0.0,
+	@term DATETIME = NULL,
+	@accomplished BIT = 0
+) AS
+BEGIN
+	
+	INSERT INTO Project.goals ([name], category_id, account_id, amount, term, accomplished)
+	VALUES (@name, @category_id, @account_id, @amount, @term, @accomplished)
+
+	-- A trigger (tr_new_wallet_on_goal_insert) will insert same name wallet with 0.0$ balance
+END
+GO
+
+CREATE PROC pr_select_goals (
+	@name VARCHAR(20) = NULL,
+	@category_id INT = NULL,
+	@account_id INT = NULL,
+	@amount INT = NULL,
+	@term DATETIME = NULL,
+	@accomplished BIT = NULL
+) AS
+BEGIN
+	
+	SELECT *
+	FROM Project.goals
+	WHERE
+			([name]=@name OR @name IS NULL)
+		AND (category_id=@category_id OR @category_id IS NULL)
+		AND (account_id=@account_id OR @account_id IS NULL)
+		AND (amount=@amount OR @amount IS NULL)
+		AND (term=@term OR @term IS NULL)
+		AND (accomplished=@accomplished OR @accomplished IS NULL)
+END
+GO
 
 ------------------------------------------------------------------------------------------------------------------------
 -- CREATE DATABASE TABLES ----------------------------------------------------------------------------------------------
@@ -847,7 +924,7 @@ CREATE TABLE Project.goals
 	account_id INT,
 	amount INT DEFAULT 0,
 	term DATETIME,
-	accomplished INT,
+	accomplished BIT,
 	CHECK([name] != ''),
 	CONSTRAINT PK_GOALS PRIMARY KEY ([name], category_id, account_id),
 	CONSTRAINT FK_GOALS_CATEGORIES FOREIGN KEY (category_id, account_id) REFERENCES Project.categories(category_id, account_id)
@@ -936,7 +1013,7 @@ GO
 -- TRIGGERS --------------------------------------------------------
 --------------------------------------------------------------------
 
-CREATE TRIGGER create_basic_categories_on_user_insert
+CREATE TRIGGER tr_create_basic_categories_on_user_insert
 ON Project.money_accounts
 AFTER INSERT
 AS
@@ -968,6 +1045,22 @@ BEGIN
 END
 GO
 
+CREATE TRIGGER tr_new_wallet_on_goal_insert
+ON Project.goals
+AFTER INSERT
+AS
+BEGIN
+
+	SET NOCOUNT ON
+
+	DECLARE @wallet_account_id INT;
+	SET @wallet_account_id = (SELECT account_id FROM INSERTED);
+	DECLARE @wallet_name VARCHAR(20);
+	SET @wallet_name = CONCAT('Goal: ', (SELECT [name] FROM INSERTED));
+
+	EXEC pr_insert_wallet @account_id=@wallet_account_id, @name=@wallet_name
+END
+GO
 
 
 --------------------------------------------------------------------

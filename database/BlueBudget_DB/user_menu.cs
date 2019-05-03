@@ -66,7 +66,7 @@ namespace BlueBudget_DB
 
         private void Goal_btn_Click(object sender, EventArgs e)
         {
-            var frm = new goals
+            var frm = new goals(user_email, account_id)
             {
                 Location = this.Location,
                 StartPosition = FormStartPosition.Manual

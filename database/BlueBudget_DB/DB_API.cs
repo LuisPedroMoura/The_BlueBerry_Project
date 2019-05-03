@@ -75,6 +75,15 @@ namespace BlueBudget_DB
             end_date,
             periodicity
         }
+        public enum GoalEnt
+        {
+            name,
+            account_id,
+            category_id,
+            amount,
+            term,
+            accomplished
+        }
 
         // ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
         // API METHODS ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -369,7 +378,7 @@ namespace BlueBudget_DB
                 { BudgetEnt.account_id, account_id },
                 { BudgetEnt.category_id, category_id }
             };
-            return DB_IO.SelectReader(DB_IO.DB_Interface.pr_select_budgets, attrValue);
+            return DB_IO.SelectReader(DB_IO.DB_Interface.pr_select_budgets_by_category_id, attrValue);
         }
 
         public static DataTableReader SelectBudget(int budget_id)
@@ -391,6 +400,40 @@ namespace BlueBudget_DB
                 { BudgetEnt.end_date, endDate },
             };
             DB_IO.Insert(DB_IO.DB_Interface.pr_insert_budget, attrValue);
+        }
+
+        // ----------------------------------------------------------------------------------------------
+        // GOALS ----------------------------------------------------------------------------------------
+        // ----------------------------------------------------------------------------------------------
+
+        public static void InsertGoal(int account_id, int category_id, string name, double amount, DateTime term)
+        {
+            var attrValue = new Dictionary<System.Enum, Object>
+            {
+                { GoalEnt.account_id, account_id },
+                { GoalEnt.category_id, category_id },
+                { GoalEnt.amount, amount },
+                { GoalEnt.term, term },
+                { GoalEnt.name, name }
+            };
+            DB_IO.Insert(DB_IO.DB_Interface.pr_insert_goal, attrValue);
+        }
+
+        public static DataTableReader SelectAccountGoals(int account_id)
+        {
+            var attrValue = DB_IO.AttrValue();
+            attrValue[DB_API.GoalEnt.account_id] = account_id;
+            return DB_IO.SelectReader(DB_IO.DB_Interface.pr_select_goals, attrValue);
+        }
+
+        public static DataTableReader SelectGoal(int account_id, string goal_name)
+        {
+            var attrValue = new Dictionary<System.Enum, Object>
+            {
+                { GoalEnt.account_id, account_id },
+                { GoalEnt.name, goal_name }
+            };
+            return DB_IO.SelectReader(DB_IO.DB_Interface.pr_select_goals, attrValue);
         }
     }
 }

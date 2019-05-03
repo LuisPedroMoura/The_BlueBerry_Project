@@ -50,8 +50,12 @@ namespace BlueBudget_DB
             pr_insert_loan,
             //---
             pr_select_budgets,
-            pr_insert_budget
-            
+            pr_insert_budget,
+            pr_select_budgets_by_category_id,
+            //---
+            pr_insert_goal,
+            pr_select_goals
+
         }
 
         // ----------------------------------------------------------------------------------------------
