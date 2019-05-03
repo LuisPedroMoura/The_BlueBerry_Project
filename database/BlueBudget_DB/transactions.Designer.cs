@@ -35,26 +35,28 @@
             this.dateTimePicker = new System.Windows.Forms.DateTimePicker();
             this.notes_textBox = new System.Windows.Forms.TextBox();
             this.location_textBox = new System.Windows.Forms.TextBox();
-            this.type_textBox = new System.Windows.Forms.ComboBox();
-            this.recurrence_textBox = new System.Windows.Forms.ComboBox();
+            this.type_comboBox = new System.Windows.Forms.ComboBox();
+            this.wallet_comboBox = new System.Windows.Forms.ComboBox();
             this.Save_btn = new System.Windows.Forms.Button();
             this.Delete_btn = new System.Windows.Forms.Button();
             this.Filter_btn = new System.Windows.Forms.Button();
             this.Back_btn = new System.Windows.Forms.Button();
-            this.Transactions_listbox = new System.Windows.Forms.ListBox();
-            this.textBox1 = new System.Windows.Forms.TextBox();
-            this.textBox2 = new System.Windows.Forms.TextBox();
-            this.dateTimePicker1 = new System.Windows.Forms.DateTimePicker();
-            this.dateTimePicker2 = new System.Windows.Forms.DateTimePicker();
-            this.comboBox1 = new System.Windows.Forms.ComboBox();
-            this.comboBox2 = new System.Windows.Forms.ComboBox();
+            this.Transactions_listBox = new System.Windows.Forms.ListBox();
+            this.filtermaxamount_textBox = new System.Windows.Forms.TextBox();
+            this.filterminamount_textBox = new System.Windows.Forms.TextBox();
+            this.filterstartdate_timePicker = new System.Windows.Forms.DateTimePicker();
+            this.filterendadate_timePicker = new System.Windows.Forms.DateTimePicker();
+            this.filtercategory_comboBox = new System.Windows.Forms.ComboBox();
+            this.filtersubcategory_comboBox = new System.Windows.Forms.ComboBox();
             this.Filter_label = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
-            this.comboBox3 = new System.Windows.Forms.ComboBox();
+            this.filterwallet_comboBox = new System.Windows.Forms.ComboBox();
             this.label3 = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
-            this.comboBox4 = new System.Windows.Forms.ComboBox();
+            this.filtertype_comboBox = new System.Windows.Forms.ComboBox();
+            this.Notifications = new System.Windows.Forms.RichTextBox();
+            this.label5 = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // Transactions_label
@@ -74,6 +76,7 @@
             this.category_comboBox.Name = "category_comboBox";
             this.category_comboBox.Size = new System.Drawing.Size(138, 21);
             this.category_comboBox.TabIndex = 2;
+            this.category_comboBox.SelectedIndexChanged += new System.EventHandler(this.Category_comboBox_SelectedIndexChanged);
             // 
             // subcategory_comboBox
             // 
@@ -89,6 +92,8 @@
             this.amount_textBox.Name = "amount_textBox";
             this.amount_textBox.Size = new System.Drawing.Size(77, 20);
             this.amount_textBox.TabIndex = 4;
+            this.amount_textBox.Enter += new System.EventHandler(this.Amount_textBox_Enter);
+            this.amount_textBox.Leave += new System.EventHandler(this.Amount_textBox_Leave);
             // 
             // dateTimePicker
             // 
@@ -103,29 +108,33 @@
             this.notes_textBox.Name = "notes_textBox";
             this.notes_textBox.Size = new System.Drawing.Size(283, 20);
             this.notes_textBox.TabIndex = 6;
+            this.notes_textBox.Enter += new System.EventHandler(this.Notes_textBox_Enter);
+            this.notes_textBox.Leave += new System.EventHandler(this.Notes_textBox_Leave);
             // 
             // location_textBox
             // 
-            this.location_textBox.Location = new System.Drawing.Point(275, 147);
+            this.location_textBox.Location = new System.Drawing.Point(419, 147);
             this.location_textBox.Name = "location_textBox";
-            this.location_textBox.Size = new System.Drawing.Size(138, 20);
+            this.location_textBox.Size = new System.Drawing.Size(139, 20);
             this.location_textBox.TabIndex = 7;
+            this.location_textBox.Enter += new System.EventHandler(this.Location_textBox_Enter);
+            this.location_textBox.Leave += new System.EventHandler(this.Location_textBox_Leave);
             // 
-            // type_textBox
+            // type_comboBox
             // 
-            this.type_textBox.FormattingEnabled = true;
-            this.type_textBox.Location = new System.Drawing.Point(275, 120);
-            this.type_textBox.Name = "type_textBox";
-            this.type_textBox.Size = new System.Drawing.Size(138, 21);
-            this.type_textBox.TabIndex = 8;
+            this.type_comboBox.FormattingEnabled = true;
+            this.type_comboBox.Location = new System.Drawing.Point(275, 120);
+            this.type_comboBox.Name = "type_comboBox";
+            this.type_comboBox.Size = new System.Drawing.Size(138, 21);
+            this.type_comboBox.TabIndex = 8;
             // 
-            // recurrence_textBox
+            // wallet_comboBox
             // 
-            this.recurrence_textBox.FormattingEnabled = true;
-            this.recurrence_textBox.Location = new System.Drawing.Point(419, 120);
-            this.recurrence_textBox.Name = "recurrence_textBox";
-            this.recurrence_textBox.Size = new System.Drawing.Size(139, 21);
-            this.recurrence_textBox.TabIndex = 9;
+            this.wallet_comboBox.FormattingEnabled = true;
+            this.wallet_comboBox.Location = new System.Drawing.Point(419, 120);
+            this.wallet_comboBox.Name = "wallet_comboBox";
+            this.wallet_comboBox.Size = new System.Drawing.Size(139, 21);
+            this.wallet_comboBox.TabIndex = 9;
             // 
             // Save_btn
             // 
@@ -136,6 +145,7 @@
             this.Save_btn.TabIndex = 10;
             this.Save_btn.Text = "Save";
             this.Save_btn.UseVisualStyleBackColor = true;
+            this.Save_btn.Click += new System.EventHandler(this.Save_btn_Click);
             // 
             // Delete_btn
             // 
@@ -146,6 +156,7 @@
             this.Delete_btn.TabIndex = 11;
             this.Delete_btn.Text = "Delete";
             this.Delete_btn.UseVisualStyleBackColor = true;
+            this.Delete_btn.Click += new System.EventHandler(this.Delete_btn_Click);
             // 
             // Filter_btn
             // 
@@ -156,6 +167,7 @@
             this.Filter_btn.TabIndex = 12;
             this.Filter_btn.Text = "Filter";
             this.Filter_btn.UseVisualStyleBackColor = true;
+            this.Filter_btn.Click += new System.EventHandler(this.Filter_btn_Click);
             // 
             // Back_btn
             // 
@@ -168,57 +180,63 @@
             this.Back_btn.UseVisualStyleBackColor = true;
             this.Back_btn.Click += new System.EventHandler(this.Back_btn_Click);
             // 
-            // Transactions_listbox
+            // Transactions_listBox
             // 
-            this.Transactions_listbox.FormattingEnabled = true;
-            this.Transactions_listbox.Location = new System.Drawing.Point(29, 20);
-            this.Transactions_listbox.Name = "Transactions_listbox";
-            this.Transactions_listbox.Size = new System.Drawing.Size(213, 420);
-            this.Transactions_listbox.TabIndex = 14;
+            this.Transactions_listBox.FormattingEnabled = true;
+            this.Transactions_listBox.Location = new System.Drawing.Point(29, 20);
+            this.Transactions_listBox.Name = "Transactions_listBox";
+            this.Transactions_listBox.Size = new System.Drawing.Size(213, 342);
+            this.Transactions_listBox.TabIndex = 14;
+            this.Transactions_listBox.SelectedIndexChanged += new System.EventHandler(this.Transactions_listBox_SelectedIndexChanged);
             // 
-            // textBox1
+            // filtermaxamount_textBox
             // 
-            this.textBox1.Location = new System.Drawing.Point(419, 377);
-            this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(139, 20);
-            this.textBox1.TabIndex = 15;
+            this.filtermaxamount_textBox.Location = new System.Drawing.Point(419, 377);
+            this.filtermaxamount_textBox.Name = "filtermaxamount_textBox";
+            this.filtermaxamount_textBox.Size = new System.Drawing.Size(139, 20);
+            this.filtermaxamount_textBox.TabIndex = 15;
+            this.filtermaxamount_textBox.Enter += new System.EventHandler(this.Filtermaxamount_textBox_Enter);
+            this.filtermaxamount_textBox.Leave += new System.EventHandler(this.Filtermaxamount_textBox_Leave);
             // 
-            // textBox2
+            // filterminamount_textBox
             // 
-            this.textBox2.Location = new System.Drawing.Point(419, 350);
-            this.textBox2.Name = "textBox2";
-            this.textBox2.Size = new System.Drawing.Size(139, 20);
-            this.textBox2.TabIndex = 16;
+            this.filterminamount_textBox.Location = new System.Drawing.Point(419, 350);
+            this.filterminamount_textBox.Name = "filterminamount_textBox";
+            this.filterminamount_textBox.Size = new System.Drawing.Size(139, 20);
+            this.filterminamount_textBox.TabIndex = 16;
+            this.filterminamount_textBox.Enter += new System.EventHandler(this.Filterminamount_textBox_Enter);
+            this.filterminamount_textBox.Leave += new System.EventHandler(this.Filterminamount_textBox_Leave);
             // 
-            // dateTimePicker1
+            // filterstartdate_timePicker
             // 
-            this.dateTimePicker1.Location = new System.Drawing.Point(358, 271);
-            this.dateTimePicker1.Name = "dateTimePicker1";
-            this.dateTimePicker1.Size = new System.Drawing.Size(200, 20);
-            this.dateTimePicker1.TabIndex = 17;
+            this.filterstartdate_timePicker.Location = new System.Drawing.Point(358, 271);
+            this.filterstartdate_timePicker.Name = "filterstartdate_timePicker";
+            this.filterstartdate_timePicker.Size = new System.Drawing.Size(200, 20);
+            this.filterstartdate_timePicker.TabIndex = 17;
             // 
-            // dateTimePicker2
+            // filterendadate_timePicker
             // 
-            this.dateTimePicker2.Location = new System.Drawing.Point(358, 297);
-            this.dateTimePicker2.Name = "dateTimePicker2";
-            this.dateTimePicker2.Size = new System.Drawing.Size(200, 20);
-            this.dateTimePicker2.TabIndex = 18;
+            this.filterendadate_timePicker.Location = new System.Drawing.Point(358, 297);
+            this.filterendadate_timePicker.Name = "filterendadate_timePicker";
+            this.filterendadate_timePicker.Size = new System.Drawing.Size(200, 20);
+            this.filterendadate_timePicker.TabIndex = 18;
             // 
-            // comboBox1
+            // filtercategory_comboBox
             // 
-            this.comboBox1.FormattingEnabled = true;
-            this.comboBox1.Location = new System.Drawing.Point(275, 244);
-            this.comboBox1.Name = "comboBox1";
-            this.comboBox1.Size = new System.Drawing.Size(138, 21);
-            this.comboBox1.TabIndex = 19;
+            this.filtercategory_comboBox.FormattingEnabled = true;
+            this.filtercategory_comboBox.Location = new System.Drawing.Point(275, 244);
+            this.filtercategory_comboBox.Name = "filtercategory_comboBox";
+            this.filtercategory_comboBox.Size = new System.Drawing.Size(138, 21);
+            this.filtercategory_comboBox.TabIndex = 19;
+            this.filtercategory_comboBox.SelectedIndexChanged += new System.EventHandler(this.Category_comboBox_SelectedIndexChanged);
             // 
-            // comboBox2
+            // filtersubcategory_comboBox
             // 
-            this.comboBox2.FormattingEnabled = true;
-            this.comboBox2.Location = new System.Drawing.Point(419, 244);
-            this.comboBox2.Name = "comboBox2";
-            this.comboBox2.Size = new System.Drawing.Size(139, 21);
-            this.comboBox2.TabIndex = 20;
+            this.filtersubcategory_comboBox.FormattingEnabled = true;
+            this.filtersubcategory_comboBox.Location = new System.Drawing.Point(419, 244);
+            this.filtersubcategory_comboBox.Name = "filtersubcategory_comboBox";
+            this.filtersubcategory_comboBox.Size = new System.Drawing.Size(139, 21);
+            this.filtersubcategory_comboBox.TabIndex = 20;
             // 
             // Filter_label
             // 
@@ -247,15 +265,14 @@
             this.label2.Size = new System.Drawing.Size(49, 13);
             this.label2.TabIndex = 23;
             this.label2.Text = "end date";
-            this.label2.Click += new System.EventHandler(this.label2_Click);
             // 
-            // comboBox3
+            // filterwallet_comboBox
             // 
-            this.comboBox3.FormattingEnabled = true;
-            this.comboBox3.Location = new System.Drawing.Point(419, 323);
-            this.comboBox3.Name = "comboBox3";
-            this.comboBox3.Size = new System.Drawing.Size(139, 21);
-            this.comboBox3.TabIndex = 24;
+            this.filterwallet_comboBox.FormattingEnabled = true;
+            this.filterwallet_comboBox.Location = new System.Drawing.Point(419, 323);
+            this.filterwallet_comboBox.Name = "filterwallet_comboBox";
+            this.filterwallet_comboBox.Size = new System.Drawing.Size(139, 21);
+            this.filterwallet_comboBox.TabIndex = 24;
             // 
             // label3
             // 
@@ -274,41 +291,60 @@
             this.label4.Size = new System.Drawing.Size(64, 13);
             this.label4.TabIndex = 26;
             this.label4.Text = "max amount";
-            this.label4.Click += new System.EventHandler(this.label4_Click);
             // 
-            // comboBox4
+            // filtertype_comboBox
             // 
-            this.comboBox4.FormattingEnabled = true;
-            this.comboBox4.Location = new System.Drawing.Point(275, 323);
-            this.comboBox4.Name = "comboBox4";
-            this.comboBox4.Size = new System.Drawing.Size(138, 21);
-            this.comboBox4.TabIndex = 27;
+            this.filtertype_comboBox.FormattingEnabled = true;
+            this.filtertype_comboBox.Location = new System.Drawing.Point(275, 323);
+            this.filtertype_comboBox.Name = "filtertype_comboBox";
+            this.filtertype_comboBox.Size = new System.Drawing.Size(138, 21);
+            this.filtertype_comboBox.TabIndex = 27;
+            // 
+            // Notifications
+            // 
+            this.Notifications.Location = new System.Drawing.Point(29, 390);
+            this.Notifications.Name = "Notifications";
+            this.Notifications.ReadOnly = true;
+            this.Notifications.Size = new System.Drawing.Size(213, 59);
+            this.Notifications.TabIndex = 28;
+            this.Notifications.Text = "";
+            // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.Location = new System.Drawing.Point(29, 371);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(65, 13);
+            this.label5.TabIndex = 29;
+            this.label5.Text = "Notifications";
             // 
             // transactions
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(600, 461);
-            this.Controls.Add(this.comboBox4);
+            this.Controls.Add(this.label5);
+            this.Controls.Add(this.Notifications);
+            this.Controls.Add(this.filtertype_comboBox);
             this.Controls.Add(this.label4);
             this.Controls.Add(this.label3);
-            this.Controls.Add(this.comboBox3);
+            this.Controls.Add(this.filterwallet_comboBox);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.Filter_label);
-            this.Controls.Add(this.comboBox2);
-            this.Controls.Add(this.comboBox1);
-            this.Controls.Add(this.dateTimePicker2);
-            this.Controls.Add(this.dateTimePicker1);
-            this.Controls.Add(this.textBox2);
-            this.Controls.Add(this.textBox1);
-            this.Controls.Add(this.Transactions_listbox);
+            this.Controls.Add(this.filtersubcategory_comboBox);
+            this.Controls.Add(this.filtercategory_comboBox);
+            this.Controls.Add(this.filterendadate_timePicker);
+            this.Controls.Add(this.filterstartdate_timePicker);
+            this.Controls.Add(this.filterminamount_textBox);
+            this.Controls.Add(this.filtermaxamount_textBox);
+            this.Controls.Add(this.Transactions_listBox);
             this.Controls.Add(this.Back_btn);
             this.Controls.Add(this.Filter_btn);
             this.Controls.Add(this.Delete_btn);
             this.Controls.Add(this.Save_btn);
-            this.Controls.Add(this.recurrence_textBox);
-            this.Controls.Add(this.type_textBox);
+            this.Controls.Add(this.wallet_comboBox);
+            this.Controls.Add(this.type_comboBox);
             this.Controls.Add(this.location_textBox);
             this.Controls.Add(this.notes_textBox);
             this.Controls.Add(this.dateTimePicker);
@@ -318,6 +354,7 @@
             this.Controls.Add(this.Transactions_label);
             this.Name = "transactions";
             this.Text = "transactions";
+            this.Load += new System.EventHandler(this.transactions_Load);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -332,25 +369,27 @@
         private System.Windows.Forms.DateTimePicker dateTimePicker;
         private System.Windows.Forms.TextBox notes_textBox;
         private System.Windows.Forms.TextBox location_textBox;
-        private System.Windows.Forms.ComboBox type_textBox;
-        private System.Windows.Forms.ComboBox recurrence_textBox;
+        private System.Windows.Forms.ComboBox type_comboBox;
+        private System.Windows.Forms.ComboBox wallet_comboBox;
         private System.Windows.Forms.Button Save_btn;
         private System.Windows.Forms.Button Delete_btn;
         private System.Windows.Forms.Button Filter_btn;
         private System.Windows.Forms.Button Back_btn;
-        private System.Windows.Forms.ListBox Transactions_listbox;
-        private System.Windows.Forms.TextBox textBox1;
-        private System.Windows.Forms.TextBox textBox2;
-        private System.Windows.Forms.DateTimePicker dateTimePicker1;
-        private System.Windows.Forms.DateTimePicker dateTimePicker2;
-        private System.Windows.Forms.ComboBox comboBox1;
-        private System.Windows.Forms.ComboBox comboBox2;
+        private System.Windows.Forms.ListBox Transactions_listBox;
+        private System.Windows.Forms.TextBox filtermaxamount_textBox;
+        private System.Windows.Forms.TextBox filterminamount_textBox;
+        private System.Windows.Forms.DateTimePicker filterstartdate_timePicker;
+        private System.Windows.Forms.DateTimePicker filterendadate_timePicker;
+        private System.Windows.Forms.ComboBox filtercategory_comboBox;
+        private System.Windows.Forms.ComboBox filtersubcategory_comboBox;
         private System.Windows.Forms.Label Filter_label;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.ComboBox comboBox3;
+        private System.Windows.Forms.ComboBox filterwallet_comboBox;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Label label4;
-        private System.Windows.Forms.ComboBox comboBox4;
+        private System.Windows.Forms.ComboBox filtertype_comboBox;
+        private System.Windows.Forms.RichTextBox Notifications;
+        private System.Windows.Forms.Label label5;
     }
 }

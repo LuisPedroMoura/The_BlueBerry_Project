@@ -54,7 +54,13 @@ namespace BlueBudget_DB
             pr_select_budgets_by_category_id,
             //---
             pr_insert_goal,
-            pr_select_goals
+            pr_select_goals,
+            //---
+            pr_select_wallets,
+            //---
+            pr_select_transactions,
+            pr_insert_transaction,
+            pr_select_transaction_type
 
         }
 

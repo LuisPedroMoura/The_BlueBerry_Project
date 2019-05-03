@@ -35,13 +35,6 @@ namespace BlueBudget_DB
             balance,
             patrimony,
         };
-        public enum WalletEnt
-        {
-            wallet_id,
-            account_id,
-            name,
-            balance
-        }
         public enum CategoryEnt
         {
             category_id,
@@ -83,6 +76,34 @@ namespace BlueBudget_DB
             amount,
             term,
             accomplished
+        }
+        public enum WalletEnt
+        {
+            name,
+            wallet_id,
+            account_id,
+            balance
+        }
+        public enum TransactionEnt
+        {
+            account_id,
+            category_id,
+            wallet_id,
+            transaction_id,
+            transaction_type_id,
+            amount,
+            min_amount,
+            max_amount,
+            date,
+            start_date,
+            end_date,
+            notes,
+            location
+        }
+        public enum TransactionTypeEnt
+        {
+            transaction_type_id,
+            designation
         }
 
         // ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -435,5 +456,96 @@ namespace BlueBudget_DB
             };
             return DB_IO.SelectReader(DB_IO.DB_Interface.pr_select_goals, attrValue);
         }
+        
+        // ----------------------------------------------------------------------------------------------
+        // WALLETS --------------------------------------------------------------------------------------
+        // ----------------------------------------------------------------------------------------------
+
+        public static DataTableReader SelectAccountWallets(int account_id)
+        {
+            var attrValue = DB_IO.AttrValue();
+            attrValue[DB_API.WalletEnt.account_id] = account_id;
+            return DB_IO.SelectReader(DB_IO.DB_Interface.pr_select_wallets, attrValue);
+        }
+
+        public static DataTableReader SelectWallet(int wallet_id)
+        {
+            var attrValue = DB_IO.AttrValue();
+            attrValue[DB_API.WalletEnt.wallet_id] = wallet_id;
+            return DB_IO.SelectReader(DB_IO.DB_Interface.pr_select_wallets, attrValue);
+        }
+
+        public static DataTableReader SelectWalletByName(int account_id, string name)
+        {
+            var attrValue = DB_IO.AttrValue();
+            attrValue[DB_API.WalletEnt.account_id] = account_id;
+            attrValue[DB_API.WalletEnt.name] = name;
+            return DB_IO.SelectReader(DB_IO.DB_Interface.pr_select_wallets, attrValue);
+        }
+
+        // ----------------------------------------------------------------------------------------------
+        // TRANSACTIONS ---------------------------------------------------------------------------------
+        // ----------------------------------------------------------------------------------------------
+
+        public static DataTableReader SelectAccountTransactions(int account_id)
+        {
+            var attrValue = DB_IO.AttrValue();
+            attrValue[DB_API.TransactionEnt.account_id] = account_id;
+            return DB_IO.SelectReader(DB_IO.DB_Interface.pr_select_transactions, attrValue);
+        }
+
+        public static DataTableReader SelectFilteredTransactions(int? account_id = null, int? category_id = null,
+            int? wallet_id = null, int? transaction_id = null, int? transaction_type_id = null, double? min_amount = null,
+            double? max_amount = null, DateTime? start_date = null, DateTime? end_date = null, string location = null)
+        {
+            var attrValue = new Dictionary<System.Enum, Object>
+            {
+                { DB_API.TransactionEnt.account_id, account_id },
+                { DB_API.TransactionEnt.category_id, category_id },
+                { DB_API.TransactionEnt.wallet_id, wallet_id },
+                { DB_API.TransactionEnt.transaction_id, transaction_id },
+                { DB_API.TransactionEnt.transaction_type_id, transaction_type_id },
+                { DB_API.TransactionEnt.account_id, min_amount },
+                { DB_API.TransactionEnt.max_amount, max_amount },
+                { DB_API.TransactionEnt.start_date, start_date },
+                { DB_API.TransactionEnt.end_date, end_date },
+                { DB_API.TransactionEnt.location, location }
+            };
+            return DB_IO.SelectReader(DB_IO.DB_Interface.pr_select_transactions, attrValue);
+        }
+
+        public static void InsertTransaction(int account_id, int category_id, int wallet_id, int transaction_id,
+            int transaction_type_id, double amount, DateTime date, string location, string notes)
+        {
+            var attrValue = new Dictionary<System.Enum, Object>
+            {
+                { TransactionEnt.account_id, account_id },
+                { TransactionEnt.category_id, category_id },
+                { TransactionEnt.wallet_id, wallet_id },
+                { TransactionEnt.transaction_id, transaction_id },
+                { TransactionEnt.transaction_type_id, transaction_type_id },
+                { TransactionEnt.amount, amount },
+                { TransactionEnt.date, date },
+                { TransactionEnt.location, location },
+                { TransactionEnt.notes, notes },
+            };
+            DB_IO.Insert(DB_IO.DB_Interface.pr_insert_transaction, attrValue);
+        }
+
+        public static string SelectTransactionTypeNameById(int transaction_tpe_id)
+        {
+            var attrValue = DB_IO.AttrValue();
+            attrValue[TransactionTypeEnt.transaction_type_id] = transaction_tpe_id;
+            return (string)DB_IO.SelectScalar(DB_IO.DB_Interface.pr_select_transaction_type, attrValue);
+        }
+
+        public static int SelectTransactionTypeIdByName(string designation)
+        {
+            var attrValue = DB_IO.AttrValue();
+            attrValue[TransactionTypeEnt.designation] = designation;
+            return (int)DB_IO.SelectScalar(DB_IO.DB_Interface.pr_select_transaction_type, attrValue);
+        }
+
+        
     }
 }

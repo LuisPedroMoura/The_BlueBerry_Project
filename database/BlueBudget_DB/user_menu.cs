@@ -54,7 +54,7 @@ namespace BlueBudget_DB
 
         private void Transactions_btn_Click(object sender, EventArgs e)
         {
-            var frm = new transactions
+            var frm = new transactions(user_email, account_id)
             {
                 Location = this.Location,
                 StartPosition = FormStartPosition.Manual
