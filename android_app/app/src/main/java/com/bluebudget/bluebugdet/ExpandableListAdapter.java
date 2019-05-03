@@ -83,6 +83,7 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
         ImageView iconIV = convertView.findViewById(R.id.headerIconImageView);
         TextView descriptionTV = convertView.findViewById(R.id.headerDescriptionTextView);
         TextView amountTV = convertView.findViewById(R.id.headerAmountTextView);
+        ImageView moreIV = convertView.findViewById(R.id.headerMoreImageView);
         TextView addSubCatTV = convertView.findViewById(R.id.textviewTextView);
 
         if(headerList.size()==3){
@@ -95,6 +96,7 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
             descriptionTV.setText(description);
             amountTV.setTypeface(null, Typeface.BOLD);
             amountTV.setText(amount);
+            moreIV.setOnClickListener(moreIVListener);
         }
         else{
             String text = headerList.get(0);
@@ -132,6 +134,7 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
         //ImageView iconIV = convertView.findViewById(R.id.childIconImageView);
         TextView descriptionTV = convertView.findViewById(R.id.childDescriptionTextView);
         TextView amountTV = convertView.findViewById(R.id.childAmountTextView);
+        ImageView moreIV = convertView.findViewById(R.id.childMoreImageView);
 
 
         if(childList.size()==3){
@@ -143,7 +146,7 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
             descriptionTV.setText(description);
             String amount = childList.get(2);
             amountTV.setText(amount);
-
+            moreIV.setOnClickListener(moreIVListener);
             //Log.i(TAG, "description = " + description);
             //Log.i(TAG, "amount = " + amount);
         }
@@ -167,4 +170,11 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
     public boolean isChildSelectable(int groupPosition, int childPosition) {
         return true;
     }
+
+    View.OnClickListener moreIVListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            Log.i(TAG, "more icon clicked");
+        }
+    };
 }

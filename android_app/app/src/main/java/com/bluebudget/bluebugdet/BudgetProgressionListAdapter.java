@@ -49,7 +49,7 @@ public class BudgetProgressionListAdapter extends ArrayAdapter<BudgetProgression
         TextView spentAmountTV = convertView.findViewById(R.id.spentAmountBudgetTextView);
         TextView leftAmountTV = convertView.findViewById(R.id.leftAmountBudgetTextView);
         ProgressBar budgetProgressBar = convertView.findViewById(R.id.budgetProgressBar);
-        //ImageView moreIconIV = convertView.findViewById(R.id.moreIconImageView);
+        ImageView moreIconIV = convertView.findViewById(R.id.moreIconImageView);
 
         if(catIconIV!=null && descriptionTV!=null && spentAmountTV!=null && leftAmountTV!=null && budgetProgressBar!=null ){
             catIconIV.setImageResource(catIcon);
@@ -57,6 +57,8 @@ public class BudgetProgressionListAdapter extends ArrayAdapter<BudgetProgression
             spentAmountTV.setText(spentAmount);
             leftAmountTV.setText(leftAmount);
             budgetProgressBar.setProgress(budgetProgress);
+
+            moreIconIV.setOnClickListener(moreIconListener);
         }
 
 
@@ -64,5 +66,12 @@ public class BudgetProgressionListAdapter extends ArrayAdapter<BudgetProgression
 
         return convertView;
     }
+
+    View.OnClickListener moreIconListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            Log.i(TAG, "more icon clicked");
+        }
+    };
 
 }
