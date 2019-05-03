@@ -75,6 +75,8 @@ public class Transactions extends AppCompatActivity {
                     return true;
                 case R.id.navigation_transactions:
                     Log.d(TAG, "transactions clicked");
+                    Intent test = new Intent(Transactions.this, test_transactions_scroll.class);
+                    startActivity(test);
                     return true;
                 case R.id.navigation_budget:
                     Log.d(TAG, "budget clicked");

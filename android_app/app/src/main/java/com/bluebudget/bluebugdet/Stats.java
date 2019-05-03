@@ -1,6 +1,7 @@
 package com.bluebudget.bluebugdet;
 
 import android.content.Intent;
+import android.graphics.Canvas;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v7.app.AppCompatActivity;
@@ -76,10 +77,12 @@ public class Stats extends AppCompatActivity {
     public void initPieChart(){
         List<PieEntry> pieEntries = new ArrayList<>();
 
-        pieEntries.add(new PieEntry(10));
+        pieEntries.add(new PieEntry(1000));
+        pieEntries.add(new PieEntry(500, Integer.toString(2000)));
+        pieEntries.add(new PieEntry(6000, Integer.toString(1000)));
 
-        pie.animateX(5000);
-        pie.animateY(5000);
+        pie.animateX(500);
+        pie.animateY(500);
 
         PieDataSet pieDataSet = new PieDataSet(pieEntries, "cenas");
         pieDataSet.setColors(ColorTemplate.COLORFUL_COLORS);
@@ -92,8 +95,6 @@ public class Stats extends AppCompatActivity {
         description.setText("description");
         pie.setDescription(description);
         pie.invalidate();
-
-
 
     }
 }
