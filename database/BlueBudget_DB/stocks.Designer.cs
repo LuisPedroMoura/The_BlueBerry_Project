@@ -33,22 +33,22 @@
             this.Mystocks_listBox = new System.Windows.Forms.ListBox();
             this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
-            this.textBox1 = new System.Windows.Forms.TextBox();
-            this.textBox2 = new System.Windows.Forms.TextBox();
-            this.textBox3 = new System.Windows.Forms.TextBox();
+            this.company_textBox = new System.Windows.Forms.TextBox();
+            this.bidprice_textBox = new System.Windows.Forms.TextBox();
+            this.askprice_textBox = new System.Windows.Forms.TextBox();
             this.label3 = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
             this.label5 = new System.Windows.Forms.Label();
-            this.textBox4 = new System.Windows.Forms.TextBox();
-            this.numericUpDown1 = new System.Windows.Forms.NumericUpDown();
+            this.purchased_textBox = new System.Windows.Forms.TextBox();
+            this.quantity_numericupdown = new System.Windows.Forms.NumericUpDown();
             this.label6 = new System.Windows.Forms.Label();
             this.label7 = new System.Windows.Forms.Label();
-            this.textBox5 = new System.Windows.Forms.TextBox();
+            this.stocktype_textBox = new System.Windows.Forms.TextBox();
             this.label8 = new System.Windows.Forms.Label();
-            this.button1 = new System.Windows.Forms.Button();
-            this.button2 = new System.Windows.Forms.Button();
-            this.button3 = new System.Windows.Forms.Button();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown1)).BeginInit();
+            this.buy_btn = new System.Windows.Forms.Button();
+            this.sell_btn = new System.Windows.Forms.Button();
+            this.back_btn = new System.Windows.Forms.Button();
+            ((System.ComponentModel.ISupportInitialize)(this.quantity_numericupdown)).BeginInit();
             this.SuspendLayout();
             // 
             // Stocks_label
@@ -68,6 +68,7 @@
             this.Stockmarket_listBox.Name = "Stockmarket_listBox";
             this.Stockmarket_listBox.Size = new System.Drawing.Size(155, 264);
             this.Stockmarket_listBox.TabIndex = 1;
+            this.Stockmarket_listBox.SelectedIndexChanged += new System.EventHandler(this.Stockmarket_listBox_SelectedIndexChanged);
             // 
             // Mystocks_listBox
             // 
@@ -95,29 +96,29 @@
             this.label2.TabIndex = 4;
             this.label2.Text = "My Stocks";
             // 
-            // textBox1
+            // company_textBox
             // 
-            this.textBox1.Location = new System.Drawing.Point(362, 71);
-            this.textBox1.Name = "textBox1";
-            this.textBox1.ReadOnly = true;
-            this.textBox1.Size = new System.Drawing.Size(206, 20);
-            this.textBox1.TabIndex = 5;
+            this.company_textBox.Location = new System.Drawing.Point(362, 71);
+            this.company_textBox.Name = "company_textBox";
+            this.company_textBox.ReadOnly = true;
+            this.company_textBox.Size = new System.Drawing.Size(206, 20);
+            this.company_textBox.TabIndex = 5;
             // 
-            // textBox2
+            // bidprice_textBox
             // 
-            this.textBox2.Location = new System.Drawing.Point(362, 113);
-            this.textBox2.Name = "textBox2";
-            this.textBox2.ReadOnly = true;
-            this.textBox2.Size = new System.Drawing.Size(100, 20);
-            this.textBox2.TabIndex = 6;
+            this.bidprice_textBox.Location = new System.Drawing.Point(362, 113);
+            this.bidprice_textBox.Name = "bidprice_textBox";
+            this.bidprice_textBox.ReadOnly = true;
+            this.bidprice_textBox.Size = new System.Drawing.Size(100, 20);
+            this.bidprice_textBox.TabIndex = 6;
             // 
-            // textBox3
+            // askprice_textBox
             // 
-            this.textBox3.Location = new System.Drawing.Point(468, 113);
-            this.textBox3.Name = "textBox3";
-            this.textBox3.ReadOnly = true;
-            this.textBox3.Size = new System.Drawing.Size(100, 20);
-            this.textBox3.TabIndex = 7;
+            this.askprice_textBox.Location = new System.Drawing.Point(468, 113);
+            this.askprice_textBox.Name = "askprice_textBox";
+            this.askprice_textBox.ReadOnly = true;
+            this.askprice_textBox.Size = new System.Drawing.Size(100, 20);
+            this.askprice_textBox.TabIndex = 7;
             // 
             // label3
             // 
@@ -146,20 +147,20 @@
             this.label5.TabIndex = 10;
             this.label5.Text = "Ask Price";
             // 
-            // textBox4
+            // purchased_textBox
             // 
-            this.textBox4.Location = new System.Drawing.Point(362, 193);
-            this.textBox4.Name = "textBox4";
-            this.textBox4.ReadOnly = true;
-            this.textBox4.Size = new System.Drawing.Size(100, 20);
-            this.textBox4.TabIndex = 12;
+            this.purchased_textBox.Location = new System.Drawing.Point(362, 193);
+            this.purchased_textBox.Name = "purchased_textBox";
+            this.purchased_textBox.ReadOnly = true;
+            this.purchased_textBox.Size = new System.Drawing.Size(100, 20);
+            this.purchased_textBox.TabIndex = 12;
             // 
-            // numericUpDown1
+            // quantity_numericupdown
             // 
-            this.numericUpDown1.Location = new System.Drawing.Point(468, 193);
-            this.numericUpDown1.Name = "numericUpDown1";
-            this.numericUpDown1.Size = new System.Drawing.Size(100, 20);
-            this.numericUpDown1.TabIndex = 14;
+            this.quantity_numericupdown.Location = new System.Drawing.Point(468, 193);
+            this.quantity_numericupdown.Name = "quantity_numericupdown";
+            this.quantity_numericupdown.Size = new System.Drawing.Size(100, 20);
+            this.quantity_numericupdown.TabIndex = 14;
             // 
             // label6
             // 
@@ -179,13 +180,13 @@
             this.label7.TabIndex = 16;
             this.label7.Text = "Quantity";
             // 
-            // textBox5
+            // stocktype_textBox
             // 
-            this.textBox5.Location = new System.Drawing.Point(362, 152);
-            this.textBox5.Name = "textBox5";
-            this.textBox5.ReadOnly = true;
-            this.textBox5.Size = new System.Drawing.Size(206, 20);
-            this.textBox5.TabIndex = 17;
+            this.stocktype_textBox.Location = new System.Drawing.Point(362, 152);
+            this.stocktype_textBox.Name = "stocktype_textBox";
+            this.stocktype_textBox.ReadOnly = true;
+            this.stocktype_textBox.Size = new System.Drawing.Size(206, 20);
+            this.stocktype_textBox.TabIndex = 17;
             // 
             // label8
             // 
@@ -196,54 +197,53 @@
             this.label8.TabIndex = 18;
             this.label8.Text = "Stock Type";
             // 
-            // button1
+            // buy_btn
             // 
-            this.button1.Location = new System.Drawing.Point(362, 233);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(75, 23);
-            this.button1.TabIndex = 19;
-            this.button1.Text = "Buy";
-            this.button1.UseVisualStyleBackColor = true;
+            this.buy_btn.Location = new System.Drawing.Point(362, 233);
+            this.buy_btn.Name = "buy_btn";
+            this.buy_btn.Size = new System.Drawing.Size(75, 23);
+            this.buy_btn.TabIndex = 19;
+            this.buy_btn.Text = "Buy";
+            this.buy_btn.UseVisualStyleBackColor = true;
             // 
-            // button2
+            // sell_btn
             // 
-            this.button2.Location = new System.Drawing.Point(442, 233);
-            this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(75, 23);
-            this.button2.TabIndex = 20;
-            this.button2.Text = "Sell";
-            this.button2.UseVisualStyleBackColor = true;
+            this.sell_btn.Location = new System.Drawing.Point(442, 233);
+            this.sell_btn.Name = "sell_btn";
+            this.sell_btn.Size = new System.Drawing.Size(75, 23);
+            this.sell_btn.TabIndex = 20;
+            this.sell_btn.Text = "Sell";
+            this.sell_btn.UseVisualStyleBackColor = true;
             // 
-            // button3
+            // back_btn
             // 
-            this.button3.Location = new System.Drawing.Point(493, 312);
-            this.button3.Name = "button3";
-            this.button3.Size = new System.Drawing.Size(75, 23);
-            this.button3.TabIndex = 21;
-            this.button3.Text = "Back";
-            this.button3.UseVisualStyleBackColor = true;
-            this.button3.Click += new System.EventHandler(this.button3_Click);
+            this.back_btn.Location = new System.Drawing.Point(493, 312);
+            this.back_btn.Name = "back_btn";
+            this.back_btn.Size = new System.Drawing.Size(75, 23);
+            this.back_btn.TabIndex = 21;
+            this.back_btn.Text = "Back";
+            this.back_btn.UseVisualStyleBackColor = true;
             // 
             // stocks
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(600, 366);
-            this.Controls.Add(this.button3);
-            this.Controls.Add(this.button2);
-            this.Controls.Add(this.button1);
+            this.Controls.Add(this.back_btn);
+            this.Controls.Add(this.sell_btn);
+            this.Controls.Add(this.buy_btn);
             this.Controls.Add(this.label8);
-            this.Controls.Add(this.textBox5);
+            this.Controls.Add(this.stocktype_textBox);
             this.Controls.Add(this.label7);
             this.Controls.Add(this.label6);
-            this.Controls.Add(this.numericUpDown1);
-            this.Controls.Add(this.textBox4);
+            this.Controls.Add(this.quantity_numericupdown);
+            this.Controls.Add(this.purchased_textBox);
             this.Controls.Add(this.label5);
             this.Controls.Add(this.label4);
             this.Controls.Add(this.label3);
-            this.Controls.Add(this.textBox3);
-            this.Controls.Add(this.textBox2);
-            this.Controls.Add(this.textBox1);
+            this.Controls.Add(this.askprice_textBox);
+            this.Controls.Add(this.bidprice_textBox);
+            this.Controls.Add(this.company_textBox);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.Mystocks_listBox);
@@ -251,7 +251,7 @@
             this.Controls.Add(this.Stocks_label);
             this.Name = "stocks";
             this.Text = "Stocks";
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.quantity_numericupdown)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -264,20 +264,20 @@
         private System.Windows.Forms.ListBox Mystocks_listBox;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.TextBox textBox1;
-        private System.Windows.Forms.TextBox textBox2;
-        private System.Windows.Forms.TextBox textBox3;
+        private System.Windows.Forms.TextBox company_textBox;
+        private System.Windows.Forms.TextBox bidprice_textBox;
+        private System.Windows.Forms.TextBox askprice_textBox;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.Label label5;
-        private System.Windows.Forms.TextBox textBox4;
-        private System.Windows.Forms.NumericUpDown numericUpDown1;
+        private System.Windows.Forms.TextBox purchased_textBox;
+        private System.Windows.Forms.NumericUpDown quantity_numericupdown;
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.Label label7;
-        private System.Windows.Forms.TextBox textBox5;
+        private System.Windows.Forms.TextBox stocktype_textBox;
         private System.Windows.Forms.Label label8;
-        private System.Windows.Forms.Button button1;
-        private System.Windows.Forms.Button button2;
-        private System.Windows.Forms.Button button3;
+        private System.Windows.Forms.Button buy_btn;
+        private System.Windows.Forms.Button sell_btn;
+        private System.Windows.Forms.Button back_btn;
     }
 }

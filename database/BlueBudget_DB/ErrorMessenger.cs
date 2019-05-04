@@ -41,7 +41,17 @@ namespace BlueBudget_DB
             return "WARNING:\n" + message;
         }
 
-        public static string Success()
+        public static string Error(string message)
+        {
+            return "ERROR:\n" + message;
+        }
+
+        public static string Success(string message)
+        {
+            return "SUCCESS:\n" + message;
+        }
+
+        public static string SuccessfulOperation()
         {
             return "SUCCESS:\nOperation was successful";
         }

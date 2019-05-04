@@ -37,6 +37,7 @@ BEGIN
 	DROP PROC pr_exists_money_account;
 
 	DROP PROC pr_insert_wallet;
+	DROP PROC pr_select_wallets;
 
 	DROP PROC pr_select_categories;
 	DROP PROC pr_insert_category;
@@ -55,8 +56,14 @@ BEGIN
 	DROP PROC pr_insert_goal;
 	DROP PROC pr_select_goals;
 
-	DROP TRIGGER Project.tr_create_basic_categories_on_user_insert;
-	DROP TRIGGER Project.tr_new_wallet_on_goal_insert
+	DROP PROC pr_select_transactions;
+	DROP PROC pr_insert_transaction;
+	DROP PROC pr_select_transaction_types;
+	DROP PROC pr_delete_transaction;
+
+	DROP TRIGGER Project.tr_insert_base_categories_on_new_money_account_insert;
+	DROP TRIGGER Project.tr_insert_base_wallets_on_new_money_account_insert;
+	DROP TRIGGER Project.tr_insert_new_wallet_on_goal_insert;
 END
 GO
 
@@ -466,7 +473,7 @@ GO
 ---------------------------------------------------------------
 
 CREATE PROC pr_insert_wallet (
-	@account_id varchar(50),
+	@account_id INT,
 	@name varchar(20),
 	@balance MONEY = 0.0
 ) AS
@@ -478,6 +485,22 @@ BEGIN
 
 	INSERT INTO Project.wallets(account_id, [name], balance)
 	VALUES (@account_id, @name, @balance);
+END
+GO
+
+CREATE PROC pr_select_wallets (
+	@account_id INT = NULL,
+	@name VARCHAR(20) = NULL,
+	@wallet_id INT = NULL
+) AS
+BEGIN
+	
+	SELECT *
+	FROM Project.wallets
+	WHERE
+			(account_id=@account_id OR @account_id IS NULL)
+		AND ([name]=@name OR @name IS NULL)
+		AND (wallet_id=@wallet_id OR @wallet_id IS NULL)
 END
 GO
 
@@ -772,6 +795,142 @@ BEGIN
 END
 GO
 
+---------------------------------------------------------------
+--- TRANSACTION -----------------------------------------------
+---------------------------------------------------------------
+
+CREATE PROC pr_select_transactions (
+	@account_id INT = NULL,
+	@category_id INT = NULL,
+	@wallet_id INT = NULL,
+	@transaction_id INT = NULL,
+	@transaction_type_id INT = NULL,
+	@min_amount MONEY = NULL,
+	@max_amount MONEY = NULL,
+	@start_date DATETIME = NULL,
+	@end_date DATETIME = NULL,
+	@location VARCHAR(50) = NULL
+) AS
+BEGIN
+	
+	SET @start_date = CONVERT(DATE, @start_date)
+	SET @end_date = CONVERT(DATE, @end_date)
+	IF @start_date = @end_date
+	BEGIN
+		SET @end_date = DATEADD(day,1,@end_date)
+		SET @end_date = DATEADD(second,-1,@end_date)
+
+	PRINT CONCAT(@start_date, ' <-> ', @end_date) 
+	/*
+	IF @category_id%100 = 0
+	BEGIN
+	
+		SELECT *
+		FROM Project.transactions
+		WHERE
+				(account_id=@account_id OR @account_id IS NULL)
+			AND (category_id=@category_id OR @category_id IS NULL)
+			AND (wallet_id=@wallet_id OR @wallet_id IS NULL)
+			AND (transaction_id=@transaction_id OR @transaction_id IS NULL)
+			AND (transaction_type_id=@transaction_type_id OR @transaction_type_id IS NULL)
+			AND (amount>=@min_amount OR @min_amount IS NULL)
+			AND (amount<=@max_amount OR @max_amount IS NULL)
+			AND ([date]>=@start_date OR @start_date IS NULL)
+			AND ([date]<=@end_date OR @end_date IS NULL)
+			AND ([location]=@location OR @location IS NULL)
+	END
+
+	ELSE
+	BEGIN
+	
+		DECLARE @cat_id INT;
+		SET @cat_id = @category_id/100;
+				
+		SELECT *
+		FROM Project.transactions
+		WHERE
+				(account_id=@account_id OR @account_id IS NULL)
+			AND (category_id/100=@cat_id OR @category_id IS NULL)
+			AND (wallet_id=@wallet_id OR @wallet_id IS NULL)
+			AND (transaction_id=@transaction_id OR @transaction_id IS NULL)
+			AND (transaction_type_id=@transaction_type_id OR @transaction_type_id IS NULL)
+			AND (amount>=@min_amount OR @min_amount IS NULL)
+			AND (amount<=@max_amount OR @max_amount IS NULL)
+			AND ([date]>=@start_date OR @start_date IS NULL)
+			AND ([date]<=@end_date OR @end_date IS NULL)
+			AND ([location]=@location OR @location IS NULL)
+
+	END
+	*/
+END
+GO
+exec pr_select_transactions @start_date='05/04/2019 00:00:00', @end_date='05/05/2019 15:32:00';
+CREATE PROC pr_insert_transaction (
+	@account_id INT,
+	@category_id INT,
+	@wallet_id INT,
+	@transaction_type_id INT,
+	@amount MONEY = 0.0,
+	@date DATETIME = NULL,
+	@notes VARCHAR(50) = NULL,
+	@location VARCHAR(50) = NULL
+) AS
+BEGIN
+
+	IF @date IS NULL
+	SET @date = GETDATE();
+
+	INSERT INTO Project.transactions (account_id, category_id, wallet_id, transaction_type_id, amount, [date], notes, [location])
+	VALUES (@account_id, @category_id, @wallet_id, @transaction_type_id, @amount, @date, @notes, @location)
+END
+GO
+
+CREATE PROC pr_select_transaction_types (
+	@transaction_type_id INT = NULL,
+	@designation VARCHAR(20) = NULL
+) AS
+BEGIN
+
+	IF ((@designation IS NULL) AND (@transaction_type_id IS NULL))
+	BEGIN
+		
+		SELECT *
+		FROM Project.transaction_types
+		WHERE
+				(designation=@designation OR @designation IS NULL)
+			AND (transaction_type_id=@transaction_type_id or @transaction_type_id IS NULL)
+	END
+
+	ELSE
+	BEGIN
+
+		IF (@designation IS NULL)
+		BEGIN
+			SELECT designation
+			FROM Project.transaction_types
+			WHERE transaction_type_id=@transaction_type_id
+		END
+
+		IF (@transaction_type_id IS NULL)
+		BEGIN
+			SELECT transaction_type_id
+			FROM Project.transaction_types
+			WHERE designation=@designation
+		END
+	END
+END
+GO
+
+CREATE PROC pr_delete_transaction (
+	@transaction_id INT
+) AS
+BEGIN
+	
+	DELETE FROM Project.transactions
+	WHERE transaction_id=@transaction_id;
+END
+GO
+
 ------------------------------------------------------------------------------------------------------------------------
 -- CREATE DATABASE TABLES ----------------------------------------------------------------------------------------------
 ------------------------------------------------------------------------------------------------------------------------
@@ -872,8 +1031,8 @@ CREATE TABLE Project.transaction_types
 CREATE TABLE Project.transactions
 (
 	transaction_id INT IDENTITY(1,1),
-	amount INT,
-	[date] DATETIME,
+	amount INT NOT NULL,
+	[date] DATETIME NOT NULL,
 	notes VARCHAR(50),
 	[location] VARCHAR(50),
 	category_id INT,
@@ -1013,7 +1172,7 @@ GO
 -- TRIGGERS --------------------------------------------------------
 --------------------------------------------------------------------
 
-CREATE TRIGGER tr_create_basic_categories_on_user_insert
+CREATE TRIGGER tr_insert_base_categories_on_new_money_account_insert
 ON Project.money_accounts
 AFTER INSERT
 AS
@@ -1045,7 +1204,27 @@ BEGIN
 END
 GO
 
-CREATE TRIGGER tr_new_wallet_on_goal_insert
+CREATE TRIGGER tr_insert_base_wallets_on_new_money_account_insert
+ON Project.money_accounts
+AFTER INSERT
+AS
+BEGIN
+	
+	SET NOCOUNT ON
+
+	DECLARE @account_id INT;
+	SET @account_id = (SELECT account_id FROM INSERTED);
+
+	INSERT INTO Project.wallets (account_id, [name])
+	VALUES (@account_id, 'Current')
+	INSERT INTO Project.wallets (account_id, [name])
+	VALUES (@account_id, 'Irregular Expenses')
+	INSERT INTO Project.wallets (account_id, [name])
+	VALUES (@account_id, 'Savings')
+END
+GO
+
+CREATE TRIGGER tr_insert_new_wallet_on_goal_insert
 ON Project.goals
 AFTER INSERT
 AS

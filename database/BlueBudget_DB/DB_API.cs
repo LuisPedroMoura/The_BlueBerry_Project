@@ -505,7 +505,7 @@ namespace BlueBudget_DB
                 { DB_API.TransactionEnt.wallet_id, wallet_id },
                 { DB_API.TransactionEnt.transaction_id, transaction_id },
                 { DB_API.TransactionEnt.transaction_type_id, transaction_type_id },
-                { DB_API.TransactionEnt.account_id, min_amount },
+                { DB_API.TransactionEnt.min_amount, min_amount },
                 { DB_API.TransactionEnt.max_amount, max_amount },
                 { DB_API.TransactionEnt.start_date, start_date },
                 { DB_API.TransactionEnt.end_date, end_date },
@@ -514,7 +514,7 @@ namespace BlueBudget_DB
             return DB_IO.SelectReader(DB_IO.DB_Interface.pr_select_transactions, attrValue);
         }
 
-        public static void InsertTransaction(int account_id, int category_id, int wallet_id, int transaction_id,
+        public static void InsertTransaction(int account_id, int category_id, int wallet_id,
             int transaction_type_id, double amount, DateTime date, string location, string notes)
         {
             var attrValue = new Dictionary<System.Enum, Object>
@@ -522,7 +522,6 @@ namespace BlueBudget_DB
                 { TransactionEnt.account_id, account_id },
                 { TransactionEnt.category_id, category_id },
                 { TransactionEnt.wallet_id, wallet_id },
-                { TransactionEnt.transaction_id, transaction_id },
                 { TransactionEnt.transaction_type_id, transaction_type_id },
                 { TransactionEnt.amount, amount },
                 { TransactionEnt.date, date },
@@ -536,16 +535,27 @@ namespace BlueBudget_DB
         {
             var attrValue = DB_IO.AttrValue();
             attrValue[TransactionTypeEnt.transaction_type_id] = transaction_tpe_id;
-            return (string)DB_IO.SelectScalar(DB_IO.DB_Interface.pr_select_transaction_type, attrValue);
+            return (string)DB_IO.SelectScalar(DB_IO.DB_Interface.pr_select_transaction_types, attrValue);
         }
 
         public static int SelectTransactionTypeIdByName(string designation)
         {
             var attrValue = DB_IO.AttrValue();
             attrValue[TransactionTypeEnt.designation] = designation;
-            return (int)DB_IO.SelectScalar(DB_IO.DB_Interface.pr_select_transaction_type, attrValue);
+            return (int)DB_IO.SelectScalar(DB_IO.DB_Interface.pr_select_transaction_types, attrValue);
         }
 
+        public static DataTableReader SelectAllTransactionTypes()
+        {
+            return DB_IO.SelectReader(DB_IO.DB_Interface.pr_select_transaction_types, DB_IO.AttrValue());
+        }
+
+        public static void DeleteTransaction(int transaction_id)
+        {
+            var attrValue = DB_IO.AttrValue();
+            attrValue[DB_API.TransactionEnt.transaction_id] = transaction_id;
+            DB_IO.Delete(DB_IO.DB_Interface.pr_delete_transaction, attrValue);
+        }
         
     }
 }
