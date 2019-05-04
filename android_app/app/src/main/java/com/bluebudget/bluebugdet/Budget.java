@@ -113,13 +113,20 @@ public class Budget extends AppCompatActivity {
             List<String> catList = new ArrayList<>();
             catList.add(catName);
 
-            List<AppTransaction> allTransactions = Home.app.getTransactions(null, null, catList, null, null , null);
-
+            List<AppTransaction> totalExpenses = Home.app.getTransactions(null, null, catList, null, null , AppTransactionType.EXPENSE);
             int categoryIcon = c.getIcon();
             String description = catName;
-            Double spentAmount = Home.app.calculateBalance(allTransactions);
-            Double leftAmount  = Home.app.calculateBalance(allTransactions);
-            int progressBar = (int)((spentAmount*100)/(spentAmount+leftAmount));
+            Double spentAmount = Home.app.calculateBalance(totalExpenses);
+            spentAmount = spentAmount==-0? 0: -spentAmount;
+            Double budgetAmount = c.getDefBudget();
+            Double leftAmount  = budgetAmount - spentAmount;
+            int progressBar = (int)((spentAmount*100)/budgetAmount);
+
+            Log.i(TAG, description+"");
+            Log.i(TAG, "spentAmount "+spentAmount);
+            Log.i(TAG, "budgetAmount "+budgetAmount);
+            Log.i(TAG, "leftAmount "+leftAmount);
+            Log.i(TAG, "progressBar "+progressBar);
 
             BudgetProgression bp = new BudgetProgression(categoryIcon, description, spentAmount+"", leftAmount+"", progressBar);
             budgetProgressionList.add(bp);

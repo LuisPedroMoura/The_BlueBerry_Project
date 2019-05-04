@@ -9,6 +9,8 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ListView;
 
 import com.github.mikephil.charting.charts.PieChart;
@@ -19,7 +21,10 @@ import com.github.mikephil.charting.data.PieEntry;
 import com.github.mikephil.charting.utils.ColorTemplate;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 public class Stats extends AppCompatActivity {
 
@@ -27,7 +32,9 @@ public class Stats extends AppCompatActivity {
     private Toolbar toolbar;
     private PieChart pie;
     private ListView statsLV;
+    private ArrayList<BudgetProgression> budgetProgressionList;
     private BottomNavigationView navigation;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,7 +45,6 @@ public class Stats extends AppCompatActivity {
         setSupportActionBar(toolbar); //to personalize
 
         pie = findViewById(R.id.piechart);
-        initPieChart();
 
         initStatsCategoriesListView();
 
@@ -101,17 +107,19 @@ public class Stats extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    public void initPieChart(){
+    public void initPieChart(Map<String, Float> spents){
+
         List<PieEntry> pieEntries = new ArrayList<>();
 
-        pieEntries.add(new PieEntry(1000));
-        pieEntries.add(new PieEntry(500, Integer.toString(2000)));
-        pieEntries.add(new PieEntry(6000, Integer.toString(1000)));
+        for(String cat : spents.keySet()){
+            pieEntries.add(new PieEntry(spents.get(cat), cat));
+        }
+
 
         pie.animateX(1000);
         pie.animateY(1000);
 
-        PieDataSet pieDataSet = new PieDataSet(pieEntries, "cenas");
+        PieDataSet pieDataSet = new PieDataSet(pieEntries, "");
         pieDataSet.setColors(ColorTemplate.COLORFUL_COLORS);
 
         PieData pieData = new PieData(pieDataSet);
@@ -119,9 +127,10 @@ public class Stats extends AppCompatActivity {
 
 
         Description description = new Description();
-        description.setText("description");
+        description.setText("");
         pie.setDescription(description);
         pie.invalidate();
+
 
     }
 
@@ -129,41 +138,34 @@ public class Stats extends AppCompatActivity {
     private void initStatsCategoriesListView(){
         Log.d(TAG, "budget progression initiated");
         statsLV = findViewById(R.id.statsListView);
+        statsLV.setOnItemClickListener(statsLVListener);
 
         Intent incomingIntent = getIntent();
         String fromBudget = incomingIntent.getStringExtra("fromBudget");
 
 
-        ArrayList<BudgetProgression> budgetProgressionList = new ArrayList<>();
+        budgetProgressionList = new ArrayList<>();
 
 
         Log.i(TAG, (fromBudget==null)+"");
         //from budget
         if(fromBudget!=null){
             //show cat and subcat
-
             String parentCatName = incomingIntent.getStringExtra("parentCat");
             AppCategory parent = Home.app.getCategory(parentCatName);
 
-            BudgetProgression bp = getBudgetProgression(parent);
-            budgetProgressionList.add(bp);
-
             List<AppCategory> subCatList = Home.app.filterCategories(parentCatName,AppBudgetType.EXPENSE);//Home.app.allCatTypeOrdered(AppBudgetType.EXPENSE);
 
-            for(AppCategory c : subCatList){
-                BudgetProgression bP = getBudgetProgression(c);
-                budgetProgressionList.add(bP);
-            }
+            List<AppCategory> all = new ArrayList<>();
+            all.add(parent);
+            all.addAll(subCatList);
+            getCategoriesToBudgetProgressionListList(all);
         }
         //from navbar
         else{
             //show parent categories
             List<AppCategory> budgetTypeExpenses = Home.app.filterCategories(null,AppBudgetType.EXPENSE);//Home.app.allCatTypeOrdered(AppBudgetType.EXPENSE);
-
-            for(AppCategory c : budgetTypeExpenses){
-                BudgetProgression bp = getBudgetProgression(c);
-                budgetProgressionList.add(bp);
-            }
+            getCategoriesToBudgetProgressionListList(budgetTypeExpenses);
         }
 
         BudgetStatsListAdapter adapter = new BudgetStatsListAdapter(this, R.layout.layout_budget_stats, budgetProgressionList);
@@ -171,21 +173,63 @@ public class Stats extends AppCompatActivity {
     }
 
 
+    AdapterView.OnItemClickListener statsLVListener = new AdapterView.OnItemClickListener() {
+        @Override
+        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+            Intent stats = new Intent(Stats.this, Stats.class);
+            stats.putExtra("fromBudget", "true");
+            stats.putExtra("parentCat", budgetProgressionList.get(position).getDescription());
+
+            startActivity(stats);
+        }
+    };
+
+    public void getCategoriesToBudgetProgressionListList(List<AppCategory> categoriesList){
+        Map<String, Float> spents = new HashMap<>();
+        boolean hasData = false;
+        for(AppCategory c : categoriesList){
+            BudgetProgression bp = getBudgetProgression(c);
+            budgetProgressionList.add(bp);
+
+            String catName = c.getName();
+            float spentAmount = (float)getSpentAmount(catName);
+            Log.i(TAG, spentAmount+"!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+            if(spentAmount!= (float)0.0){
+                spents.put(catName, spentAmount);
+                hasData=true;
+            }
+        }
+
+        if(hasData) {
+            initPieChart(spents);
+        }
+    }
+
     public BudgetProgression getBudgetProgression(AppCategory c){
         String name = c.getName();
         Log.i(TAG, "category name " + name);
 
         List<String> catList = new ArrayList<>();
         catList.add(name);
-        List<AppTransaction> allTransactions = Home.app.getTransactions(null, null, catList, null, null , null);
+        List<AppTransaction> totalExpenses = Home.app.getTransactions(null, null, catList, null, null , AppTransactionType.EXPENSE);
 
         int icon = c.getIcon();
         String description = name;
-        Double spentAmount = Home.app.calculateBalance(allTransactions);
-        Double leftAmount  = Home.app.calculateBalance(allTransactions);
-        int progressBar = (int)((spentAmount*100)/(spentAmount+leftAmount));
+        double spentAmount = getSpentAmount(name);
+        double budgetAmount = c.getDefBudget();
+        double leftAmount  = budgetAmount - spentAmount;
+        int progressBar = (int)((spentAmount*100)/budgetAmount);
 
         return new BudgetProgression(icon, description, spentAmount+"", leftAmount+"", progressBar);
+    }
+
+    public double getSpentAmount(String catName){
+        List<String> catList = new ArrayList<>();
+        catList.add(catName);
+        List<AppTransaction> totalExpenses = Home.app.getTransactions(null, null, catList, null, null , AppTransactionType.EXPENSE);
+        float spentAmount = (float) Home.app.calculateBalance(totalExpenses);
+        spentAmount = spentAmount==-0? 0: -spentAmount;
+        return spentAmount;
     }
 
 }
