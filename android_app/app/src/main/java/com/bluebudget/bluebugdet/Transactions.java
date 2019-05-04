@@ -53,6 +53,20 @@ public class Transactions extends AppCompatActivity {
         MenuItem menuItem = menu.getItem(1);
         menuItem.setChecked(true);
 
+        Calendar calendar = new GregorianCalendar(1998,9,21);
+        Home.app.addExpense(10.0, calendar, Home.app.getCategory("Income"), "", "", "Current");
+        Home.app.addExpense(10.0, calendar, Home.app.getCategory("Income"), "", "", "Current");
+        Home.app.addExpense(10.0, calendar, Home.app.getCategory("Income"), "", "", "Current");
+        Home.app.addExpense(10.0, calendar, Home.app.getCategory("Income"), "", "", "Current");
+        Home.app.addExpense(10.0, calendar, Home.app.getCategory("Income"), "", "", "Current");
+        Home.app.addExpense(10.0, calendar, Home.app.getCategory("Income"), "", "", "Current");
+        Home.app.addExpense(10.0, calendar, Home.app.getCategory("Income"), "", "", "Current");
+        Home.app.addExpense(10.0, calendar, Home.app.getCategory("Income"), "", "", "Current");
+        Home.app.addExpense(10.0, calendar, Home.app.getCategory("Income"), "", "", "Current");
+        Home.app.addExpense(10.0, calendar, Home.app.getCategory("Income"), "", "", "Current");
+
+
+
         getNewTransactionInfo();
 
         initHistoryListView();
@@ -75,8 +89,6 @@ public class Transactions extends AppCompatActivity {
                     return true;
                 case R.id.navigation_transactions:
                     Log.d(TAG, "transactions clicked");
-                    Intent test = new Intent(Transactions.this, test_transactions_scroll.class);
-                    startActivity(test);
                     return true;
                 case R.id.navigation_budget:
                     Log.d(TAG, "budget clicked");

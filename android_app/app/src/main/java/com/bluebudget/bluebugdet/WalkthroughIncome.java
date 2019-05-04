@@ -49,12 +49,9 @@ public class WalkthroughIncome extends AppCompatActivity implements PopupDialog.
         typesList.add(AppBudgetType.INCOME);
 
         //there is just one parent category of type Income
-        incomeCat = Home.app.filterCategories(parentsList, typesList).get(0);
+        incomeCat = Home.app.filterCategories(null, AppBudgetType.INCOME).get(0);
 
-        parentsList.clear();
-        parentsList.add(incomeCat.getName());
-
-        subCatList = Home.app.filterCategories(parentsList, typesList);
+        subCatList = Home.app.filterCategories(incomeCat.getName(), AppBudgetType.INCOME);
 
     }
 

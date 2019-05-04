@@ -2,6 +2,7 @@ package com.bluebudget.bluebugdet;
 
 import android.util.Log;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
@@ -33,8 +34,29 @@ public class App {
         addCategory(null, "Home", R.drawable.ic_home_black_24dp, 0.0, 1, AppBudgetType.EXPENSE);
         addCategory("Home", "Home: cleaning products", R.drawable.ic_home_black_24dp, 0.0, 1, AppBudgetType.EXPENSE);
         addCategory(null, "Food", R.drawable.ic_shopping_cart_black_24dp, 0.0, 1, AppBudgetType.EXPENSE);
-        addCategory(null, "Transports", R.drawable.ic_directions_car_black_24dp, 0.0, 1, AppBudgetType.EXPENSE);
+        addCategory(null, "Transports", R.drawable.ic_directions_car_black_24dp, 30.0, 1, AppBudgetType.EXPENSE);
+
+
+        addCategory(null, "Home1", R.drawable.ic_home_black_24dp, 0.0, 1, AppBudgetType.EXPENSE);
+        addCategory(null, "Home2", R.drawable.ic_home_black_24dp, 0.0, 1, AppBudgetType.EXPENSE);
+        addCategory(null, "Home3", R.drawable.ic_home_black_24dp, 0.0, 1, AppBudgetType.EXPENSE);
+        addCategory(null, "Home4", R.drawable.ic_home_black_24dp, 0.0, 1, AppBudgetType.EXPENSE);
+        addCategory(null, "Home5", R.drawable.ic_home_black_24dp, 0.0, 1, AppBudgetType.EXPENSE);
+        addCategory(null, "Home6", R.drawable.ic_home_black_24dp, 0.0, 1, AppBudgetType.EXPENSE);
+        addCategory(null, "Home7", R.drawable.ic_home_black_24dp, 0.0, 1, AppBudgetType.EXPENSE);
+        addCategory(null, "Home8", R.drawable.ic_home_black_24dp, 0.0, 1, AppBudgetType.EXPENSE);
+        addCategory(null, "Home9", R.drawable.ic_home_black_24dp, 0.0, 1, AppBudgetType.EXPENSE);
+        addCategory(null, "Home0", R.drawable.ic_home_black_24dp, 0.0, 1, AppBudgetType.EXPENSE);
+        addCategory(null, "Home11", R.drawable.ic_home_black_24dp, 0.0, 1, AppBudgetType.EXPENSE);
+        addCategory(null, "Home22", R.drawable.ic_home_black_24dp, 0.0, 1, AppBudgetType.EXPENSE);
+        addCategory(null, "Home33", R.drawable.ic_home_black_24dp, 0.0, 1, AppBudgetType.EXPENSE);
+
+
+
+
+
     }
+
 
 
     // ---------------------------------------------------------------------------------------------
@@ -68,6 +90,28 @@ public class App {
                                               List<AppBudgetType> typesList){
         return categories.filterCategories(parentsList, typesList);
     }
+
+    public List<AppCategory> filterCategories(String parent,
+                                              AppBudgetType type){
+        List<String> parentsList = new ArrayList<>();
+        parentsList.add(parent);
+        List<AppBudgetType> typesList = new ArrayList<>();
+        typesList.add(type);
+        return categories.filterCategories(parentsList, typesList);
+    }
+
+    public List<AppCategory> filterCategories(String parent){
+        List<String> parentsList = new ArrayList<>();
+        parentsList.add(parent);
+        return categories.filterCategories(parentsList, null);
+    }
+
+    public List<AppCategory> filterCategories(AppBudgetType type){
+        List<AppBudgetType> typesList = new ArrayList<>();
+        typesList.add(type);
+        return categories.filterCategories(null, typesList);
+    }
+
 
     public List<AppCategory> allCatTypeOrdered(AppBudgetType type){
         return categories.allCatTypeOrdered(type);
