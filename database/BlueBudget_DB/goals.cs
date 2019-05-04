@@ -26,8 +26,8 @@ namespace BlueBudget_DB
             this.user_email = user_email;
             this.account_id = account_id;
             UpdateCategories();
-            PopulateGoalsListBox();
             PopulateCategoryComboBox();
+            PopulateGoalsListBox();
             DefaultTextboxes();
         }
 
@@ -50,13 +50,15 @@ namespace BlueBudget_DB
             int cat_id = categories[Categories_comboBox.SelectedItem.ToString()];
             DateTime term = term_dateTimePicker.Value;
 
+            Console.WriteLine("---> " + goal_name + ", " + amount);
+
             // verify if field is filled
-            if (goalname_textBox.Text.Equals(""))
+            if (goal_name.Equals(""))
             {
                 Notifications.Text = ErrorMessenger.EmptyField("Goal name");
                 return;
             }
-            if (goalamount_textBox.Text.Equals(""))
+            if (amount.Equals(""))
             {
                 Notifications.Text = ErrorMessenger.EmptyField("Goal amount");
                 return;
@@ -104,6 +106,28 @@ namespace BlueBudget_DB
                 int cat_id = (int)rdr[DB_API.CategoryEnt.category_id.ToString()];
                 this.categories[cat_name] = cat_id;
             }
+        }
+
+        private void PopulateCategoryComboBox()
+        {
+            var res = new List<string>();
+            foreach (KeyValuePair<string, int> entry in this.categories)
+            {
+                if (entry.Value % 100 == 0)
+                {
+                    res.Add(entry.Key);
+                }
+            }
+            Categories_comboBox.DataSource = res;
+        }
+
+        private void Categories_comboBox_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (Categories_comboBox.SelectedItem.ToString().Equals(this.none))
+            {
+                return;
+            }
+            PopulateSubCategoryComboBox(this.categories[Categories_comboBox.SelectedItem.ToString()]);
         }
 
         private void Goals_listBox_SelectedIndexChanged(object sender, EventArgs e)
@@ -155,9 +179,28 @@ namespace BlueBudget_DB
                 Categories_comboBox.Text = cat_name;
                 Subcategories_comboBox.Text = sub_cat_name;
                 goalname_textBox.Text = goal_name;
-                goalamount_textBox.Text = rdr[DB_API.GoalEnt.amount.ToString()].ToString();
+                goalname_textBox.ForeColor = Color.Black;
+                double goal_amount = Double.Parse(rdr[DB_API.GoalEnt.amount.ToString()].ToString());
+                goalamount_textBox.Text = goal_amount.ToString();
+                goalamount_textBox.ForeColor = Color.Black;
                 term_dateTimePicker.Value = DateTime.Parse(rdr[DB_API.GoalEnt.term.ToString()].ToString());
 
+                // change GoalState Label
+                rdr = DB_API.SelectWalletByName(account_id, goal_name);
+                double balance = 0.0;
+                while (rdr.Read())
+                {
+                    balance = Double.Parse(rdr[DB_API.WalletEnt.balance.ToString()].ToString());
+                }
+
+                if (balance < goal_amount)
+                {
+                    Goalstate_label.Text = "Keep going!\r\n"+(balance/goal_amount*100)+"% complete! "+(goal_amount-balance)+"$ to go!";
+                }
+                if (balance >= goal_amount)
+                {
+                    Goalstate_label.Text = "Congratulations!\r\nGoal reached! Saved " + balance + "!";
+                }
             }
 
         }
@@ -186,36 +229,18 @@ namespace BlueBudget_DB
             Goals_listBox.DataSource = new List<string>(res);
         }
 
-        private void PopulateCategoryComboBox()
-        {
-            var res = new List<string>();
-            foreach (KeyValuePair<string, int> entry in this.categories)
-            {
-                if (entry.Value%100 == 0)
-                {
-                    res.Add(entry.Key);
-                }
-            }
-            Categories_comboBox.DataSource = res;
-        }
-
-        private void Categories_comboBox_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            PopulateSubCategoryComboBox(this.categories[Categories_comboBox.SelectedItem.ToString()]);
-        }
-
         private void PopulateSubCategoryComboBox(int cat_id)
         {
             var res = new List<string>();
             res.Add(this.none);
             foreach (KeyValuePair<string, int> entry in this.categories)
             {
-                if (entry.Value % 100 == cat_id%100 && entry.Value != cat_id)
+                if (entry.Value / 100 == cat_id / 100 && entry.Value != cat_id)
                 {
                     res.Add(entry.Key);
                 }
             }
-            Categories_comboBox.DataSource = res;
+            Subcategories_comboBox.DataSource = res;
         }
 
         // -------------------------------------------------------------------
@@ -224,9 +249,9 @@ namespace BlueBudget_DB
 
         private void DefaultTextboxes()
         {
-            goalname_textBox.Text = "email";
+            goalname_textBox.Text = "goal name";
             goalname_textBox.ForeColor = Color.Gray;
-            goalamount_textBox.Text = "account name";
+            goalamount_textBox.Text = "goal value";
             goalamount_textBox.ForeColor = Color.Gray;
         }
 
@@ -239,7 +264,7 @@ namespace BlueBudget_DB
         {
             if (goalname_textBox.Text.Equals(""))
             {
-                goalname_textBox.Text = "email";
+                goalname_textBox.Text = "goal name";
                 goalname_textBox.ForeColor = Color.Gray;
             }
         }
@@ -253,9 +278,14 @@ namespace BlueBudget_DB
         {
             if (goalamount_textBox.Text.Equals(""))
             {
-                goalamount_textBox.Text = "email";
+                goalamount_textBox.Text = "goal value";
                 goalamount_textBox.ForeColor = Color.Gray;
             }
+        }
+
+        private void goals_Load(object sender, EventArgs e)
+        {
+
         }
     }
 }

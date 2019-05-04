@@ -40,7 +40,7 @@
             this.term_label = new System.Windows.Forms.Label();
             this.Notifications = new System.Windows.Forms.RichTextBox();
             this.Notifications_label = new System.Windows.Forms.Label();
-            this.label2 = new System.Windows.Forms.Label();
+            this.Goalstate_label = new System.Windows.Forms.TextBox();
             this.SuspendLayout();
             // 
             // Goals_label
@@ -68,6 +68,8 @@
             this.goalname_textBox.Name = "goalname_textBox";
             this.goalname_textBox.Size = new System.Drawing.Size(248, 20);
             this.goalname_textBox.TabIndex = 2;
+            this.goalname_textBox.Enter += new System.EventHandler(this.goalname_textBox_Enter);
+            this.goalname_textBox.Leave += new System.EventHandler(this.goalname_textBox_Leave);
             // 
             // goalamount_textBox
             // 
@@ -75,6 +77,8 @@
             this.goalamount_textBox.Name = "goalamount_textBox";
             this.goalamount_textBox.Size = new System.Drawing.Size(121, 20);
             this.goalamount_textBox.TabIndex = 3;
+            this.goalamount_textBox.Enter += new System.EventHandler(this.goalamount_textBox_Enter);
+            this.goalamount_textBox.Leave += new System.EventHandler(this.goalamount_textBox_Leave);
             // 
             // term_dateTimePicker
             // 
@@ -147,22 +151,24 @@
             this.Notifications_label.TabIndex = 12;
             this.Notifications_label.Text = "Notifications";
             // 
-            // label2
+            // Goalstate_label
             // 
-            this.label2.AutoSize = true;
-            this.label2.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label2.Location = new System.Drawing.Point(365, 204);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(146, 24);
-            this.label2.TabIndex = 14;
-            this.label2.Text = "Goal State Label";
+            this.Goalstate_label.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.Goalstate_label.ForeColor = System.Drawing.SystemColors.HotTrack;
+            this.Goalstate_label.Location = new System.Drawing.Point(292, 218);
+            this.Goalstate_label.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.Goalstate_label.Name = "Goalstate_label";
+            this.Goalstate_label.ReadOnly = true;
+            this.Goalstate_label.Size = new System.Drawing.Size(249, 26);
+            this.Goalstate_label.TabIndex = 13;
+            this.Goalstate_label.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // goals
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(600, 366);
-            this.Controls.Add(this.label2);
+            this.Controls.Add(this.Goalstate_label);
             this.Controls.Add(this.Notifications_label);
             this.Controls.Add(this.Notifications);
             this.Controls.Add(this.term_label);
@@ -177,6 +183,7 @@
             this.Controls.Add(this.Goals_label);
             this.Name = "goals";
             this.Text = "goals";
+            this.Load += new System.EventHandler(this.goals_Load);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -196,6 +203,6 @@
         private System.Windows.Forms.Label term_label;
         private System.Windows.Forms.RichTextBox Notifications;
         private System.Windows.Forms.Label Notifications_label;
-        private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.TextBox Goalstate_label;
     }
 }
