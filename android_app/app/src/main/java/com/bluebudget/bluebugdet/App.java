@@ -4,6 +4,7 @@ import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Map;
 
@@ -53,7 +54,17 @@ public class App {
 
 
 
-
+        Calendar calendar = new GregorianCalendar(1998,9,21);
+        addIncome(10.0, calendar, getCategory("Income"), "", "", "Current");
+        addIncome(10.0, calendar, getCategory("Income"), "", "", "Current");
+        addIncome(10.0, calendar, getCategory("Income"), "", "", "Current");
+        addIncome(10.0, calendar, getCategory("Income"), "", "", "Current");
+        addIncome(10.0, calendar, getCategory("Income"), "", "", "Current");
+        addIncome(10.0, calendar, getCategory("Income"), "", "", "Current");
+        addIncome(10.0, calendar, getCategory("Income"), "", "", "Current");
+        addIncome(10.0, calendar, getCategory("Income"), "", "", "Current");
+        addIncome(10.0, calendar, getCategory("Income"), "", "", "Current");
+        addIncome(10.0, calendar, getCategory("Income"), "", "", "Current");
 
     }
 

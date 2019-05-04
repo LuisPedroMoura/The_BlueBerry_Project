@@ -53,20 +53,6 @@ public class Transactions extends AppCompatActivity {
         MenuItem menuItem = menu.getItem(1);
         menuItem.setChecked(true);
 
-        Calendar calendar = new GregorianCalendar(1998,9,21);
-        Home.app.addExpense(10.0, calendar, Home.app.getCategory("Income"), "", "", "Current");
-        Home.app.addExpense(10.0, calendar, Home.app.getCategory("Income"), "", "", "Current");
-        Home.app.addExpense(10.0, calendar, Home.app.getCategory("Income"), "", "", "Current");
-        Home.app.addExpense(10.0, calendar, Home.app.getCategory("Income"), "", "", "Current");
-        Home.app.addExpense(10.0, calendar, Home.app.getCategory("Income"), "", "", "Current");
-        Home.app.addExpense(10.0, calendar, Home.app.getCategory("Income"), "", "", "Current");
-        Home.app.addExpense(10.0, calendar, Home.app.getCategory("Income"), "", "", "Current");
-        Home.app.addExpense(10.0, calendar, Home.app.getCategory("Income"), "", "", "Current");
-        Home.app.addExpense(10.0, calendar, Home.app.getCategory("Income"), "", "", "Current");
-        Home.app.addExpense(10.0, calendar, Home.app.getCategory("Income"), "", "", "Current");
-
-
-
         getNewTransactionInfo();
 
         initHistoryListView();
