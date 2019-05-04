@@ -45,7 +45,7 @@
             this.filtermaxamount_textBox = new System.Windows.Forms.TextBox();
             this.filterminamount_textBox = new System.Windows.Forms.TextBox();
             this.filterstartdate_timePicker = new System.Windows.Forms.DateTimePicker();
-            this.filterendadate_timePicker = new System.Windows.Forms.DateTimePicker();
+            this.filterenddate_timePicker = new System.Windows.Forms.DateTimePicker();
             this.filtercategory_comboBox = new System.Windows.Forms.ComboBox();
             this.filtersubcategory_comboBox = new System.Windows.Forms.ComboBox();
             this.Filter_label = new System.Windows.Forms.Label();
@@ -57,6 +57,7 @@
             this.filtertype_comboBox = new System.Windows.Forms.ComboBox();
             this.Notifications = new System.Windows.Forms.RichTextBox();
             this.label5 = new System.Windows.Forms.Label();
+            this.Refresh_btn = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // Transactions_label
@@ -214,12 +215,12 @@
             this.filterstartdate_timePicker.Size = new System.Drawing.Size(200, 20);
             this.filterstartdate_timePicker.TabIndex = 17;
             // 
-            // filterendadate_timePicker
+            // filterenddate_timePicker
             // 
-            this.filterendadate_timePicker.Location = new System.Drawing.Point(358, 297);
-            this.filterendadate_timePicker.Name = "filterendadate_timePicker";
-            this.filterendadate_timePicker.Size = new System.Drawing.Size(200, 20);
-            this.filterendadate_timePicker.TabIndex = 18;
+            this.filterenddate_timePicker.Location = new System.Drawing.Point(358, 297);
+            this.filterenddate_timePicker.Name = "filterenddate_timePicker";
+            this.filterenddate_timePicker.Size = new System.Drawing.Size(200, 20);
+            this.filterenddate_timePicker.TabIndex = 18;
             // 
             // filtercategory_comboBox
             // 
@@ -228,7 +229,7 @@
             this.filtercategory_comboBox.Name = "filtercategory_comboBox";
             this.filtercategory_comboBox.Size = new System.Drawing.Size(138, 21);
             this.filtercategory_comboBox.TabIndex = 19;
-            this.filtercategory_comboBox.SelectedIndexChanged += new System.EventHandler(this.Category_comboBox_SelectedIndexChanged);
+            this.filtercategory_comboBox.SelectedIndexChanged += new System.EventHandler(this.Filtercategory_comboBox_SelectedIndexChanged);
             // 
             // filtersubcategory_comboBox
             // 
@@ -318,11 +319,23 @@
             this.label5.TabIndex = 29;
             this.label5.Text = "Notifications";
             // 
+            // Refresh_btn
+            // 
+            this.Refresh_btn.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.Refresh_btn.Location = new System.Drawing.Point(485, 173);
+            this.Refresh_btn.Name = "Refresh_btn";
+            this.Refresh_btn.Size = new System.Drawing.Size(73, 23);
+            this.Refresh_btn.TabIndex = 30;
+            this.Refresh_btn.Text = "Refresh";
+            this.Refresh_btn.UseVisualStyleBackColor = true;
+            this.Refresh_btn.Click += new System.EventHandler(this.Refresh_btn_Click);
+            // 
             // transactions
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(600, 461);
+            this.Controls.Add(this.Refresh_btn);
             this.Controls.Add(this.label5);
             this.Controls.Add(this.Notifications);
             this.Controls.Add(this.filtertype_comboBox);
@@ -334,7 +347,7 @@
             this.Controls.Add(this.Filter_label);
             this.Controls.Add(this.filtersubcategory_comboBox);
             this.Controls.Add(this.filtercategory_comboBox);
-            this.Controls.Add(this.filterendadate_timePicker);
+            this.Controls.Add(this.filterenddate_timePicker);
             this.Controls.Add(this.filterstartdate_timePicker);
             this.Controls.Add(this.filterminamount_textBox);
             this.Controls.Add(this.filtermaxamount_textBox);
@@ -379,7 +392,7 @@
         private System.Windows.Forms.TextBox filtermaxamount_textBox;
         private System.Windows.Forms.TextBox filterminamount_textBox;
         private System.Windows.Forms.DateTimePicker filterstartdate_timePicker;
-        private System.Windows.Forms.DateTimePicker filterendadate_timePicker;
+        private System.Windows.Forms.DateTimePicker filterenddate_timePicker;
         private System.Windows.Forms.ComboBox filtercategory_comboBox;
         private System.Windows.Forms.ComboBox filtersubcategory_comboBox;
         private System.Windows.Forms.Label Filter_label;
@@ -391,5 +404,6 @@
         private System.Windows.Forms.ComboBox filtertype_comboBox;
         private System.Windows.Forms.RichTextBox Notifications;
         private System.Windows.Forms.Label label5;
+        private System.Windows.Forms.Button Refresh_btn;
     }
 }

@@ -72,7 +72,7 @@ namespace BlueBudget_DB
             try
             {
                 DB_API.InsertLoan(account_id, loan_name, amount, term, interest);
-                Notifications.Text = ErrorMessenger.Success();
+                Notifications.Text = ErrorMessenger.SuccessfulOperation();
             }
             catch (SqlException ex)
             {

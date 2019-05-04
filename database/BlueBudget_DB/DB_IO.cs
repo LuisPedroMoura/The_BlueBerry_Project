@@ -60,7 +60,8 @@ namespace BlueBudget_DB
             //---
             pr_select_transactions,
             pr_insert_transaction,
-            pr_select_transaction_type
+            pr_select_transaction_types,
+            pr_delete_transaction
 
         }
 
