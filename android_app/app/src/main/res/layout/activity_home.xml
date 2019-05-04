@@ -7,12 +7,145 @@
     android:layout_height="match_parent"
     tools:context=".Home">
 
-    <android.support.constraint.Guideline
-        android:id="@+id/guideline"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
         android:orientation="vertical"
-        app:layout_constraintGuide_begin="20dp" />
+        android:padding="20dp"
+        android:weightSum="100"
+        app:layout_constraintBottom_toTopOf="@+id/fabLinerLayout"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.456">
+
+        <TextView
+            android:id="@+id/walletsBalanceTV"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="3dp"
+            android:gravity="center"
+            android:text="0.00€"
+            android:textSize="30sp" />
+
+        <TextView
+            android:id="@+id/textView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="3dp"
+            android:gravity="center"
+            android:text="Wallets Balance" />
+
+        <android.support.v7.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="10dp"
+            android:layout_weight="68">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/textView7"
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    android:text="OVERVIEW"
+                    android:textSize="16sp" />
+
+                <android.support.v7.widget.GridLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_margin="10dp"
+                    app:rowCount="3"
+                    app:columnCount="2">
+
+                    <TextView
+                        android:id="@+id/textView8"
+                        app:layout_columnWeight="1"
+                        app:layout_gravity="left"
+                        app:layout_rowWeight="1"
+                        android:text="Incomes" />
+
+                    <TextView
+                        android:id="@+id/incomesOverviewTV"
+                        app:layout_columnWeight="1"
+                        app:layout_gravity="center"
+                        app:layout_rowWeight="1"
+                        android:text="TextView"/>
+
+                    <TextView
+                        android:id="@+id/textView12"
+                        app:layout_columnWeight="1"
+                        app:layout_gravity="left"
+                        app:layout_rowWeight="1"
+                        android:text="Expenses"/>
+
+                    <TextView
+                        android:id="@+id/expensesOverviewTV"
+                        app:layout_columnWeight="1"
+                        app:layout_gravity="center"
+                        app:layout_rowWeight="1"
+                        android:text="TextView"/>
+
+                    <TextView
+                        android:id="@+id/textView22"
+                        app:layout_columnWeight="1"
+                        app:layout_gravity="left"
+                        app:layout_rowWeight="1"
+                        android:text="Transfers"/>
+
+                    <TextView
+                        android:id="@+id/transfersOverviewTV"
+                        app:layout_columnWeight="1"
+                        app:layout_gravity="center"
+                        app:layout_rowWeight="1"
+                        android:text="TextView"/>
+                </android.support.v7.widget.GridLayout>
+
+            </LinearLayout>
+
+
+        </android.support.v7.widget.CardView>
+
+        <android.support.v7.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="10dp"
+            android:layout_weight="50">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_margin="10dp"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/textView10"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="5dp"
+                    android:text="EXPENSES BY CATEGORY"
+                    android:textSize="16sp" />
+
+                <com.github.mikephil.charting.charts.PieChart
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:id="@+id/homePieChart">
+
+                </com.github.mikephil.charting.charts.PieChart>
+            </LinearLayout>
+
+        </android.support.v7.widget.CardView>
+    </LinearLayout>
 
     <android.support.v7.widget.LinearLayoutCompat
         android:id="@+id/fabLinerLayout"
@@ -33,13 +166,7 @@
             android:tint="@android:color/white"
             app:fabSize="normal"
             app:srcCompat="@drawable/ic_add_black_24dp" />
-<!--
-        <TextView
-            android:id="@+id/transferTextView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="expense" />
--->
+
     </android.support.v7.widget.LinearLayoutCompat>
 
     <android.support.design.widget.BottomNavigationView
@@ -55,5 +182,7 @@
         app:menu="@menu/navigation">
 
     </android.support.design.widget.BottomNavigationView>
+
+
 
 </android.support.constraint.ConstraintLayout>
