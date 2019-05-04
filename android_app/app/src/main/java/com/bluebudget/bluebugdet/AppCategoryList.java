@@ -72,8 +72,8 @@ public class AppCategoryList {
         for(String key : categories.keySet() ) {
             AppCategory cat = categories.get(key);
 
-            if(parentsList == null || parentsList.contains(cat.getParent())) {
-                if(typesList == null || typesList.contains(cat.getType())){
+            if(parentsList == null || parentsList.contains(cat.getParent()) ) {
+                if (typesList == null || typesList.contains(cat.getType())) {
                     res.add(cat);
                 }
             }
@@ -96,8 +96,10 @@ public class AppCategoryList {
         for(AppCategory category : parentCatList){
             res.add(category);
             List<AppCategory> subcatList = catSubMap.get(category);
-            for( AppCategory subcat : subcatList ){
-                res.add(subcat);
+            if(subcatList!=null){
+                for( AppCategory subcat : subcatList ){
+                    res.add(subcat);
+                }
             }
         }
 

@@ -2,6 +2,7 @@ package com.bluebudget.bluebugdet;
 
 import android.util.Log;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
@@ -89,6 +90,28 @@ public class App {
                                               List<AppBudgetType> typesList){
         return categories.filterCategories(parentsList, typesList);
     }
+
+    public List<AppCategory> filterCategories(String parent,
+                                              AppBudgetType type){
+        List<String> parentsList = new ArrayList<>();
+        parentsList.add(parent);
+        List<AppBudgetType> typesList = new ArrayList<>();
+        typesList.add(type);
+        return categories.filterCategories(parentsList, typesList);
+    }
+
+    public List<AppCategory> filterCategories(String parent){
+        List<String> parentsList = new ArrayList<>();
+        parentsList.add(parent);
+        return categories.filterCategories(parentsList, null);
+    }
+
+    public List<AppCategory> filterCategories(AppBudgetType type){
+        List<AppBudgetType> typesList = new ArrayList<>();
+        typesList.add(type);
+        return categories.filterCategories(null, typesList);
+    }
+
 
     public List<AppCategory> allCatTypeOrdered(AppBudgetType type){
         return categories.allCatTypeOrdered(type);

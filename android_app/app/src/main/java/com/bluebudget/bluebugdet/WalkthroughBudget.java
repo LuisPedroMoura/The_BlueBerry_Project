@@ -52,13 +52,7 @@ public class WalkthroughBudget extends AppCompatActivity implements PopupDialog.
     public void getBudgetCategories(){
         Log.i(TAG, "getIncomeCategories");
 
-        List<String> parentsList = new ArrayList<>();
-        parentsList.add(null);
-
-        List<AppBudgetType> typesList = new ArrayList<>();
-        typesList.add(AppBudgetType.EXPENSE);
-
-        budgetCatList = Home.app.filterCategories(parentsList, typesList);
+        budgetCatList = Home.app.filterCategories(null, AppBudgetType.EXPENSE);
         Log.i(TAG, "budgetCatList.size = " + budgetCatList.size());
 
         Map<AppCategory, List<AppCategory>> temp = Home.app.getCategoriesAndSubCategoriesDict();

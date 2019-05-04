@@ -11,16 +11,17 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ListView;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 public class Budget extends AppCompatActivity {
 
     private Toolbar toolbar;
     private ListView budgetProgressionLV;
+    private  ArrayList<BudgetProgression> budgetProgressionList;
     private FloatingActionButton addFab;
 
 
@@ -31,13 +32,12 @@ public class Budget extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_budget);
 
-        toolbar = findViewById(R.id.budgetToolbar);
-        setSupportActionBar(toolbar);
-
-        initFabMenu();
+        toolbar = findViewById(R.id.bluebudgetToolbar);
+        setSupportActionBar(toolbar);//to personalize
 
         initBudgetProgressionListView();
 
+        initFabMenu();
 
         //get the icon selected and go to the respective activity
         BottomNavigationView navigation = findViewById(R.id.navigation);
@@ -82,42 +82,40 @@ public class Budget extends AppCompatActivity {
         }
     };
 
+    //personalize toolbar
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_filter_toolbar, menu);
+        return true;
+    }
 
+    //select toolbar item
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        Log.i(TAG, item.toString()+" selected");
+        return super.onOptionsItemSelected(item);
+    }
 
     private void initBudgetProgressionListView(){
         Log.d(TAG, "budget progression initiated");
 
         budgetProgressionLV = findViewById(R.id.budgetProgressionListView);
 
-        ArrayList<BudgetProgression> budgetProgressionList = new ArrayList<>();
+        budgetProgressionList = new ArrayList<>();
 
-        List<String> parentsList = new ArrayList<>();
-        parentsList.add(null);
-        List<AppBudgetType> typesList = new ArrayList<>();
-        typesList.add(AppBudgetType.EXPENSE);
-        List<AppCategory> budgetTypeExpenses = Home.app.filterCategories(parentsList,typesList);//Home.app.allCatTypeOrdered(AppBudgetType.EXPENSE);
+        List<AppCategory> budgetTypeExpenses = Home.app.filterCategories(null, AppBudgetType.EXPENSE);//Home.app.allCatTypeOrdered(AppBudgetType.EXPENSE);
 
         for(AppCategory c : budgetTypeExpenses){
 
             String catName = c.getName();
-            Log.i(TAG, "category name " + catName);
+            //Log.i(TAG, "category name " + catName);
 
             List<String> catList = new ArrayList<>();
             catList.add(catName);
 
             List<AppTransaction> allTransactions = Home.app.getTransactions(null, null, catList, null, null , null);
 
-            for(AppTransaction ap : allTransactions ){
-                Log.i(TAG, "AppTransaction -> category " + (ap.getCategory()!=null));
-                if(ap.getCategory()!=null){
-                    Log.i(TAG, "AppTransaction -> category name " + ap.getCategory().getName());
-                }
-                Log.i(TAG, "AppTransaction -> type " + ap.getType().name());
-
-            }
-
-
-            int categoryIcon = Home.app.getCategory(catName).getIcon();
+            int categoryIcon = c.getIcon();
             String description = catName;
             Double spentAmount = Home.app.calculateBalance(allTransactions);
             Double leftAmount  = Home.app.calculateBalance(allTransactions);
@@ -130,8 +128,24 @@ public class Budget extends AppCompatActivity {
         BudgetProgressionListAdapter adapter = new BudgetProgressionListAdapter(this, R.layout.layout_budget_progression, budgetProgressionList);
         budgetProgressionLV.setAdapter(adapter);
 
+        budgetProgressionLV.setOnItemClickListener(budgetProgressionListener);
+
         Log.d(TAG, "budget progression done");
     }
+
+    AdapterView.OnItemClickListener budgetProgressionListener = new AdapterView.OnItemClickListener() {
+        @Override
+        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+            Log.i(TAG, "pos="+position+"; "+budgetProgressionList.get(position).getDescription());
+
+            Intent stats = new Intent(Budget.this, Stats.class);
+            stats.putExtra("fromBudget", "true");
+            stats.putExtra("parentCat", budgetProgressionList.get(position).getDescription());
+
+            startActivity(stats);
+
+        }
+    };
 
 
     private void initFabMenu() {
@@ -147,16 +161,4 @@ public class Budget extends AppCompatActivity {
         }
     };
 
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_filter_toolbar, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        Log.i(TAG, item.toString()+" selected");
-        return super.onOptionsItemSelected(item);
-    }
 }

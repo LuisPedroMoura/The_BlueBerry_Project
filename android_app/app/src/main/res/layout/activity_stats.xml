@@ -8,7 +8,7 @@
 
 
     <android.support.v7.widget.Toolbar
-        android:id="@+id/budgetToolbar"
+        android:id="@+id/bluebudgetToolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:minHeight="?actionBarSize"
@@ -25,7 +25,7 @@
         android:background="@color/colorPrimary"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/budgetToolbar">
+        app:layout_constraintTop_toBottomOf="@+id/bluebudgetToolbar">
 
         <ImageView
             android:id="@+id/imageView"
@@ -78,13 +78,24 @@
         android:layout_width="419dp"
         android:layout_height="266dp"
         android:layout_marginTop="4dp"
-        android:layout_marginBottom="300dp"
+        app:layout_constraintBottom_toTopOf="@+id/statsListView"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/constraintLayout2">
+
+    </com.github.mikephil.charting.charts.PieChart>
+
+    <ListView
+        android:id="@+id/statsListView"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginBottom="8dp"
         app:layout_constraintBottom_toTopOf="@+id/navigation"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/constraintLayout2"
-        app:layout_constraintVertical_bias="0.0" />
+        app:layout_constraintTop_toBottomOf="@+id/piechart" />
 
     <android.support.design.widget.BottomNavigationView
         android:id="@+id/navigation"

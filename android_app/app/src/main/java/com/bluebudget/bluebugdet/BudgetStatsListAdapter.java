@@ -12,14 +12,14 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 
-public class BudgetProgressionListAdapter extends ArrayAdapter<BudgetProgression> {
+public class BudgetStatsListAdapter extends ArrayAdapter<BudgetProgression> {
 
     private Context context;
     private int resource;
 
     private static final String TAG = "BudgetProgressionLA";
 
-    public BudgetProgressionListAdapter(Context context, int resource, ArrayList<BudgetProgression> objects) {
+    public BudgetStatsListAdapter(Context context, int resource, ArrayList<BudgetProgression> objects) {
         super(context, resource, objects);
         this.context = context;
         this.resource = resource;
@@ -36,7 +36,6 @@ public class BudgetProgressionListAdapter extends ArrayAdapter<BudgetProgression
         String spentAmount = getItem(position).getSpentAmount();
         String leftAmount = getItem(position).getLeftAmount();
         int budgetProgress = getItem(position).getProgressBar();
-        //int moreIconIV;
 
 
         LayoutInflater inflater = LayoutInflater.from(this.context);
@@ -49,7 +48,6 @@ public class BudgetProgressionListAdapter extends ArrayAdapter<BudgetProgression
         TextView spentAmountTV = convertView.findViewById(R.id.spentAmountBudgetTextView);
         TextView leftAmountTV = convertView.findViewById(R.id.leftAmountBudgetTextView);
         ProgressBar budgetProgressBar = convertView.findViewById(R.id.budgetProgressBar);
-        ImageView moreIconIV = convertView.findViewById(R.id.moreIconImageView);
 
         if(catIconIV!=null && descriptionTV!=null && spentAmountTV!=null && leftAmountTV!=null && budgetProgressBar!=null ){
             catIconIV.setImageResource(catIcon);
@@ -58,17 +56,12 @@ public class BudgetProgressionListAdapter extends ArrayAdapter<BudgetProgression
             leftAmountTV.setText(leftAmount);
             budgetProgressBar.setProgress(budgetProgress);
 
-            moreIconIV.setOnClickListener(moreIconListener);
         }
+
+
+
 
         return convertView;
     }
-
-    View.OnClickListener moreIconListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            Log.i(TAG, "more icon clicked");
-        }
-    };
 
 }
