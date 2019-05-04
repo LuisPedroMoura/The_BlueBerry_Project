@@ -1,6 +1,6 @@
 ﻿namespace BlueBudget_DB
 {
-    partial class stocks
+    partial class StocksForm
     {
         /// <summary>
         /// Required designer variable.
@@ -29,8 +29,6 @@
         private void InitializeComponent()
         {
             this.Stocks_label = new System.Windows.Forms.Label();
-            this.Stockmarket_listBox = new System.Windows.Forms.ListBox();
-            this.Mystocks_listBox = new System.Windows.Forms.ListBox();
             this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.company_textBox = new System.Windows.Forms.TextBox();
@@ -48,6 +46,13 @@
             this.buy_btn = new System.Windows.Forms.Button();
             this.sell_btn = new System.Windows.Forms.Button();
             this.back_btn = new System.Windows.Forms.Button();
+            this.StockMarket_listView = new System.Windows.Forms.ListView();
+            this.Stock_col = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.AskPrice_col = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.listView1 = new System.Windows.Forms.ListView();
+            this.Ticker_col = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.Company_col = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.BidPrice_col = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             ((System.ComponentModel.ISupportInitialize)(this.quantity_numericupdown)).BeginInit();
             this.SuspendLayout();
             // 
@@ -55,28 +60,11 @@
             // 
             this.Stocks_label.AutoSize = true;
             this.Stocks_label.Font = new System.Drawing.Font("Microsoft Sans Serif", 17.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.Stocks_label.Location = new System.Drawing.Point(229, 9);
+            this.Stocks_label.Location = new System.Drawing.Point(322, 9);
             this.Stocks_label.Name = "Stocks_label";
             this.Stocks_label.Size = new System.Drawing.Size(119, 29);
             this.Stocks_label.TabIndex = 0;
             this.Stocks_label.Text = "STOCKS";
-            // 
-            // Stockmarket_listBox
-            // 
-            this.Stockmarket_listBox.FormattingEnabled = true;
-            this.Stockmarket_listBox.Location = new System.Drawing.Point(40, 71);
-            this.Stockmarket_listBox.Name = "Stockmarket_listBox";
-            this.Stockmarket_listBox.Size = new System.Drawing.Size(155, 264);
-            this.Stockmarket_listBox.TabIndex = 1;
-            this.Stockmarket_listBox.SelectedIndexChanged += new System.EventHandler(this.Stockmarket_listBox_SelectedIndexChanged);
-            // 
-            // Mystocks_listBox
-            // 
-            this.Mystocks_listBox.FormattingEnabled = true;
-            this.Mystocks_listBox.Location = new System.Drawing.Point(201, 71);
-            this.Mystocks_listBox.Name = "Mystocks_listBox";
-            this.Mystocks_listBox.Size = new System.Drawing.Size(155, 264);
-            this.Mystocks_listBox.TabIndex = 2;
             // 
             // label1
             // 
@@ -90,7 +78,7 @@
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(211, 54);
+            this.label2.Location = new System.Drawing.Point(231, 56);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(57, 13);
             this.label2.TabIndex = 4;
@@ -98,7 +86,7 @@
             // 
             // company_textBox
             // 
-            this.company_textBox.Location = new System.Drawing.Point(362, 71);
+            this.company_textBox.Location = new System.Drawing.Point(508, 89);
             this.company_textBox.Name = "company_textBox";
             this.company_textBox.ReadOnly = true;
             this.company_textBox.Size = new System.Drawing.Size(206, 20);
@@ -106,7 +94,7 @@
             // 
             // bidprice_textBox
             // 
-            this.bidprice_textBox.Location = new System.Drawing.Point(362, 113);
+            this.bidprice_textBox.Location = new System.Drawing.Point(508, 131);
             this.bidprice_textBox.Name = "bidprice_textBox";
             this.bidprice_textBox.ReadOnly = true;
             this.bidprice_textBox.Size = new System.Drawing.Size(100, 20);
@@ -114,7 +102,7 @@
             // 
             // askprice_textBox
             // 
-            this.askprice_textBox.Location = new System.Drawing.Point(468, 113);
+            this.askprice_textBox.Location = new System.Drawing.Point(614, 131);
             this.askprice_textBox.Name = "askprice_textBox";
             this.askprice_textBox.ReadOnly = true;
             this.askprice_textBox.Size = new System.Drawing.Size(100, 20);
@@ -123,7 +111,7 @@
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(362, 54);
+            this.label3.Location = new System.Drawing.Point(508, 72);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(51, 13);
             this.label3.TabIndex = 8;
@@ -132,7 +120,7 @@
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(359, 97);
+            this.label4.Location = new System.Drawing.Point(505, 115);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(49, 13);
             this.label4.TabIndex = 9;
@@ -141,7 +129,7 @@
             // label5
             // 
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(465, 97);
+            this.label5.Location = new System.Drawing.Point(611, 115);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(52, 13);
             this.label5.TabIndex = 10;
@@ -149,7 +137,7 @@
             // 
             // purchased_textBox
             // 
-            this.purchased_textBox.Location = new System.Drawing.Point(362, 193);
+            this.purchased_textBox.Location = new System.Drawing.Point(508, 211);
             this.purchased_textBox.Name = "purchased_textBox";
             this.purchased_textBox.ReadOnly = true;
             this.purchased_textBox.Size = new System.Drawing.Size(100, 20);
@@ -157,7 +145,7 @@
             // 
             // quantity_numericupdown
             // 
-            this.quantity_numericupdown.Location = new System.Drawing.Point(468, 193);
+            this.quantity_numericupdown.Location = new System.Drawing.Point(614, 211);
             this.quantity_numericupdown.Name = "quantity_numericupdown";
             this.quantity_numericupdown.Size = new System.Drawing.Size(100, 20);
             this.quantity_numericupdown.TabIndex = 14;
@@ -165,7 +153,7 @@
             // label6
             // 
             this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(359, 177);
+            this.label6.Location = new System.Drawing.Point(505, 195);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(73, 13);
             this.label6.TabIndex = 15;
@@ -174,7 +162,7 @@
             // label7
             // 
             this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(468, 176);
+            this.label7.Location = new System.Drawing.Point(614, 194);
             this.label7.Name = "label7";
             this.label7.Size = new System.Drawing.Size(46, 13);
             this.label7.TabIndex = 16;
@@ -182,7 +170,7 @@
             // 
             // stocktype_textBox
             // 
-            this.stocktype_textBox.Location = new System.Drawing.Point(362, 152);
+            this.stocktype_textBox.Location = new System.Drawing.Point(508, 170);
             this.stocktype_textBox.Name = "stocktype_textBox";
             this.stocktype_textBox.ReadOnly = true;
             this.stocktype_textBox.Size = new System.Drawing.Size(206, 20);
@@ -191,7 +179,7 @@
             // label8
             // 
             this.label8.AutoSize = true;
-            this.label8.Location = new System.Drawing.Point(359, 136);
+            this.label8.Location = new System.Drawing.Point(505, 154);
             this.label8.Name = "label8";
             this.label8.Size = new System.Drawing.Size(62, 13);
             this.label8.TabIndex = 18;
@@ -199,7 +187,7 @@
             // 
             // buy_btn
             // 
-            this.buy_btn.Location = new System.Drawing.Point(362, 233);
+            this.buy_btn.Location = new System.Drawing.Point(508, 251);
             this.buy_btn.Name = "buy_btn";
             this.buy_btn.Size = new System.Drawing.Size(75, 23);
             this.buy_btn.TabIndex = 19;
@@ -208,7 +196,7 @@
             // 
             // sell_btn
             // 
-            this.sell_btn.Location = new System.Drawing.Point(442, 233);
+            this.sell_btn.Location = new System.Drawing.Point(588, 251);
             this.sell_btn.Name = "sell_btn";
             this.sell_btn.Size = new System.Drawing.Size(75, 23);
             this.sell_btn.TabIndex = 20;
@@ -217,18 +205,67 @@
             // 
             // back_btn
             // 
-            this.back_btn.Location = new System.Drawing.Point(493, 312);
+            this.back_btn.Location = new System.Drawing.Point(639, 313);
             this.back_btn.Name = "back_btn";
             this.back_btn.Size = new System.Drawing.Size(75, 23);
             this.back_btn.TabIndex = 21;
             this.back_btn.Text = "Back";
             this.back_btn.UseVisualStyleBackColor = true;
             // 
-            // stocks
+            // StockMarket_listView
+            // 
+            this.StockMarket_listView.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.Stock_col,
+            this.AskPrice_col});
+            this.StockMarket_listView.Location = new System.Drawing.Point(40, 72);
+            this.StockMarket_listView.Name = "StockMarket_listView";
+            this.StockMarket_listView.Size = new System.Drawing.Size(187, 264);
+            this.StockMarket_listView.TabIndex = 22;
+            this.StockMarket_listView.UseCompatibleStateImageBehavior = false;
+            this.StockMarket_listView.View = System.Windows.Forms.View.Details;
+            // 
+            // Stock_col
+            // 
+            this.Stock_col.Text = "Stocks";
+            this.Stock_col.Width = 120;
+            // 
+            // AskPrice_col
+            // 
+            this.AskPrice_col.Text = "Ask Price";
+            // 
+            // listView1
+            // 
+            this.listView1.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.Ticker_col,
+            this.Company_col,
+            this.BidPrice_col});
+            this.listView1.Location = new System.Drawing.Point(234, 73);
+            this.listView1.Name = "listView1";
+            this.listView1.Size = new System.Drawing.Size(244, 263);
+            this.listView1.TabIndex = 23;
+            this.listView1.UseCompatibleStateImageBehavior = false;
+            this.listView1.View = System.Windows.Forms.View.Details;
+            // 
+            // Ticker_col
+            // 
+            this.Ticker_col.Text = "ticker";
+            // 
+            // Company_col
+            // 
+            this.Company_col.Text = "Company";
+            this.Company_col.Width = 120;
+            // 
+            // BidPrice_col
+            // 
+            this.BidPrice_col.Text = "Bid Price";
+            // 
+            // StocksForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(600, 366);
+            this.ClientSize = new System.Drawing.Size(741, 366);
+            this.Controls.Add(this.listView1);
+            this.Controls.Add(this.StockMarket_listView);
             this.Controls.Add(this.back_btn);
             this.Controls.Add(this.sell_btn);
             this.Controls.Add(this.buy_btn);
@@ -246,11 +283,10 @@
             this.Controls.Add(this.company_textBox);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.label1);
-            this.Controls.Add(this.Mystocks_listBox);
-            this.Controls.Add(this.Stockmarket_listBox);
             this.Controls.Add(this.Stocks_label);
-            this.Name = "stocks";
+            this.Name = "StocksForm";
             this.Text = "Stocks";
+            this.Load += new System.EventHandler(this.Stocks_Load);
             ((System.ComponentModel.ISupportInitialize)(this.quantity_numericupdown)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
@@ -260,8 +296,6 @@
         #endregion
 
         private System.Windows.Forms.Label Stocks_label;
-        private System.Windows.Forms.ListBox Stockmarket_listBox;
-        private System.Windows.Forms.ListBox Mystocks_listBox;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.TextBox company_textBox;
@@ -279,5 +313,12 @@
         private System.Windows.Forms.Button buy_btn;
         private System.Windows.Forms.Button sell_btn;
         private System.Windows.Forms.Button back_btn;
+        private System.Windows.Forms.ListView StockMarket_listView;
+        private System.Windows.Forms.ColumnHeader Stock_col;
+        private System.Windows.Forms.ColumnHeader AskPrice_col;
+        private System.Windows.Forms.ListView listView1;
+        private System.Windows.Forms.ColumnHeader Ticker_col;
+        private System.Windows.Forms.ColumnHeader Company_col;
+        private System.Windows.Forms.ColumnHeader BidPrice_col;
     }
 }

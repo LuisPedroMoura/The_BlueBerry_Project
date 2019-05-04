@@ -53,11 +53,11 @@
     <Compile Include="back_office.Designer.cs">
       <DependentUpon>back_office.cs</DependentUpon>
     </Compile>
-    <Compile Include="budget.cs">
+    <Compile Include="budgets.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="budget.Designer.cs">
-      <DependentUpon>budget.cs</DependentUpon>
+    <Compile Include="budgets.Designer.cs">
+      <DependentUpon>budgets.cs</DependentUpon>
     </Compile>
     <Compile Include="DB_API.cs" />
     <Compile Include="DB_IO.cs" />
@@ -65,11 +65,12 @@
     <Compile Include="NumericTextBox.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="stocks.cs">
+    <Compile Include="Stock.cs" />
+    <Compile Include="StocksForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="stocks.Designer.cs">
-      <DependentUpon>stocks.cs</DependentUpon>
+    <Compile Include="StocksForm.Designer.cs">
+      <DependentUpon>StocksForm.cs</DependentUpon>
     </Compile>
     <Compile Include="goals.cs">
       <SubType>Form</SubType>
@@ -115,11 +116,11 @@
     <EmbeddedResource Include="back_office.resx">
       <DependentUpon>back_office.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="budget.resx">
-      <DependentUpon>budget.cs</DependentUpon>
+    <EmbeddedResource Include="budgets.resx">
+      <DependentUpon>budgets.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="stocks.resx">
-      <DependentUpon>stocks.cs</DependentUpon>
+    <EmbeddedResource Include="StocksForm.resx">
+      <DependentUpon>StocksForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="goals.resx">
       <DependentUpon>goals.cs</DependentUpon>

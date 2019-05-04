@@ -11,7 +11,6 @@ C:\Users\Work\Dropbox\UA\3-Ano\The_BlueBerry_Project\database\BlueBudget_DB\obj\
 C:\Users\Work\Dropbox\UA\3-Ano\The_BlueBerry_Project\database\BlueBudget_DB\obj\Debug\BlueBudget_DB.user_login.resources
 C:\Users\Work\Dropbox\UA\3-Ano\The_BlueBerry_Project\database\BlueBudget_DB\obj\Debug\BlueBudget_DB.user_menu.resources
 C:\Users\Work\Dropbox\UA\3-Ano\The_BlueBerry_Project\database\BlueBudget_DB\obj\Debug\BlueBudget_DB.csprojAssemblyReference.cache
-C:\Users\Work\Dropbox\UA\3-Ano\The_BlueBerry_Project\database\BlueBudget_DB\obj\Debug\BlueBudget_DB.budget.resources
 D:\Dropbox\UA\3-Ano\The_BlueBerry_Project\database\BlueBudget_DB\bin\Debug\BlueBudget_DB.exe.config
 D:\Dropbox\UA\3-Ano\The_BlueBerry_Project\database\BlueBudget_DB\bin\Debug\BlueBudget_DB.exe
 D:\Dropbox\UA\3-Ano\The_BlueBerry_Project\database\BlueBudget_DB\bin\Debug\BlueBudget_DB.pdb
@@ -27,6 +26,7 @@ D:\Dropbox\UA\3-Ano\The_BlueBerry_Project\database\BlueBudget_DB\obj\Debug\BlueB
 D:\Dropbox\UA\3-Ano\The_BlueBerry_Project\database\BlueBudget_DB\obj\Debug\BlueBudget_DB.exe
 D:\Dropbox\UA\3-Ano\The_BlueBerry_Project\database\BlueBudget_DB\obj\Debug\BlueBudget_DB.pdb
 C:\Users\Work\Dropbox\UA\3-Ano\The_BlueBerry_Project\database\BlueBudget_DB\obj\Debug\BlueBudget_DB.transactions.resources
-C:\Users\Work\Dropbox\UA\3-Ano\The_BlueBerry_Project\database\BlueBudget_DB\obj\Debug\BlueBudget_DB.stocks.resources
 C:\Users\Work\Dropbox\UA\3-Ano\The_BlueBerry_Project\database\BlueBudget_DB\obj\Debug\BlueBudget_DB.goals.resources
 C:\Users\Work\Dropbox\UA\3-Ano\The_BlueBerry_Project\database\BlueBudget_DB\obj\Debug\BlueBudget_DB.loans.resources
+C:\Users\Work\Dropbox\UA\3-Ano\The_BlueBerry_Project\database\BlueBudget_DB\obj\Debug\BlueBudget_DB.budgets.resources
+C:\Users\Work\Dropbox\UA\3-Ano\The_BlueBerry_Project\database\BlueBudget_DB\obj\Debug\BlueBudget_DB.StocksForm.resources

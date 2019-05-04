@@ -105,6 +105,16 @@ namespace BlueBudget_DB
             transaction_type_id,
             designation
         }
+        public enum StockEnt
+        {
+            ticker,
+            company,
+            account_id,
+            purchase_value,
+            bid_price,
+            ask_price,
+            stock_type_id
+        }
 
         // ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
         // API METHODS ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -556,6 +566,17 @@ namespace BlueBudget_DB
             attrValue[DB_API.TransactionEnt.transaction_id] = transaction_id;
             DB_IO.Delete(DB_IO.DB_Interface.pr_delete_transaction, attrValue);
         }
-        
+
+        // ----------------------------------------------------------------------------------------------
+        // STOCKS ---------------------------------------------------------------------------------------
+        // ----------------------------------------------------------------------------------------------
+
+        public static DataTableReader SelectAllAccountStocks(int account_id)
+        {
+            var attrValue = DB_IO.AttrValue();
+            attrValue[DB_API.StockEnt.account_id] = account_id;
+            return DB_IO.SelectReader(DB_IO.DB_Interface.pr_select_stocks, attrValue);
+        }
+
     }
 }

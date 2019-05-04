@@ -42,7 +42,7 @@ namespace BlueBudget_DB
 
         private void Budget_btn_Click(object sender, EventArgs e)
         {
-            var frm = new budget(user_email, account_id)
+            var frm = new budgets(user_email, account_id)
             {
                 Location = this.Location,
                 StartPosition = FormStartPosition.Manual
@@ -78,7 +78,7 @@ namespace BlueBudget_DB
 
         private void Stock_btn_Click(object sender, EventArgs e)
         {
-            var frm = new stocks(user_email, account_id)
+            var frm = new StocksForm(user_email, account_id)
             {
                 Location = this.Location,
                 StartPosition = FormStartPosition.Manual
