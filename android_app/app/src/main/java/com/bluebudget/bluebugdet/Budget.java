@@ -11,18 +11,24 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.animation.OvershootInterpolator;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class Budget extends AppCompatActivity {
+public class Budget extends AppCompatActivity
+                        implements PopupDialogEdit.PopupDialogListener{
 
     private Toolbar toolbar;
     private ListView budgetProgressionLV;
     private  ArrayList<BudgetProgression> budgetProgressionList;
-    private FloatingActionButton addFab;
+
+    private FloatingActionButton addFab, incomeFab, expenseFab;
+    private Float translationY = 100f;
+    private OvershootInterpolator interpolator = new OvershootInterpolator();
+    private Boolean isMenuOpen = false;
 
 
     private static final String TAG = "Budget";
@@ -154,18 +160,85 @@ public class Budget extends AppCompatActivity {
         }
     };
 
-
     private void initFabMenu() {
         addFab = findViewById(R.id.addBudgetFab);
+        incomeFab = findViewById(R.id.incomeBudgetFab);
+        expenseFab = findViewById(R.id.expenseBudgetFab);
 
-        addFab.setOnClickListener(addFabOnClick);
+        //set transparency and visibility
+        hideFabAndLabel(incomeFab, findViewById(R.id.incomeTextView));
+        hideFabAndLabel(expenseFab, findViewById(R.id.expenseTextView));
+
+        incomeFab.setTranslationY(translationY);
+        expenseFab.setTranslationY(translationY);
+
+        addFab.setOnClickListener(addBudgetFabOnClick);
+        incomeFab.setOnClickListener(incomeBudgetFabOnClick);
+        expenseFab.setOnClickListener(expenseBudgetFabOnClick);
     }
 
-    View.OnClickListener addFabOnClick = new View.OnClickListener() {
+    private void openMenu() {
+        isMenuOpen = !isMenuOpen;
+        //show sub fabs
+        showFabAndLabel(incomeFab, findViewById(R.id.incomeTextView));
+        showFabAndLabel(expenseFab, findViewById(R.id.expenseTextView));
+    }
+
+    private void closeMenu() {
+        isMenuOpen = !isMenuOpen;
+
+        //hide sub fabs
+        hideFabAndLabel(incomeFab, findViewById(R.id.incomeTextView));
+        hideFabAndLabel(expenseFab, findViewById(R.id.expenseTextView));
+    }
+
+
+    private void showFabAndLabel(FloatingActionButton fab, View txtView){
+        fab.show();
+        fab.animate().translationY(0f).alpha(1f).setInterpolator(interpolator).setDuration(300).start();
+        txtView.setVisibility(View.VISIBLE);
+    }
+
+    private void hideFabAndLabel(FloatingActionButton fab, View txtView){
+        fab.animate().translationY(translationY).alpha(0f).setInterpolator(interpolator).setDuration(300).start();
+        fab.hide();
+        txtView.setVisibility(View.INVISIBLE);
+    }
+
+    View.OnClickListener addBudgetFabOnClick = new View.OnClickListener() {
         public void onClick(View view) {
             Log.i(TAG, "onClick: add fab");
-
+            if (isMenuOpen) {
+                closeMenu();
+            } else {
+                openMenu();
+            }
         }
     };
 
+
+    View.OnClickListener incomeBudgetFabOnClick = new View.OnClickListener() {
+        public void onClick(View view) {
+            Log.i(TAG, "onClick: income fab");
+            if (isMenuOpen) {
+                Intent newIncome = new Intent(Budget.this, AddIncomeBudget.class);
+                startActivity(newIncome);
+            }
+        }
+    };
+
+    View.OnClickListener expenseBudgetFabOnClick = new View.OnClickListener() {
+        public void onClick(View view) {
+            Log.i(TAG, "onClick: expense fab");
+            if (isMenuOpen) {
+                Intent newExpense = new Intent(Budget.this, AddExpenseBudget.class);
+                startActivity(newExpense);
+            }
+        }
+    };
+
+    @Override
+    public void applyTexts(String name, Double amount) {
+        
+    }
 }

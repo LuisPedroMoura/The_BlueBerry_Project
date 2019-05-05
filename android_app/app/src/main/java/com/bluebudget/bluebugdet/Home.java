@@ -125,7 +125,7 @@ public class Home extends AppCompatActivity {
                 null, AppTransactionType.EXPENSE);
 
         double expensesAmount = Home.app.calculateBalance(expenses);
-        expensesOverviewTV.setText(Double.toString(expensesAmount)+"€");
+        expensesOverviewTV.setText(expensesAmount+"€");
     }
 
     public void updateTransfersTV(){

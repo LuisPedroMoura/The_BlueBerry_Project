@@ -1,8 +1,8 @@
 package com.bluebudget.bluebugdet;
 
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.ExpandableListView;
@@ -12,7 +12,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class WalkthroughBudget extends AppCompatActivity
+public class AddExpenseBudget extends AppCompatActivity
                                 implements PopupDialogAdd.PopupDialogListener,
                                             PopupDialogEdit.PopupDialogListener {
 
@@ -38,7 +38,7 @@ public class WalkthroughBudget extends AppCompatActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_walkthrough_budget);
+        setContentView(R.layout.activity_add_expense_budget);
 
 
         groupPositionClicked = -1;
@@ -70,7 +70,7 @@ public class WalkthroughBudget extends AppCompatActivity
 
         Log.i(TAG, "initExpandableLV");
 
-        expLV = findViewById(R.id.budgetWalkthroughExpLV);
+        expLV = findViewById(R.id.addExpenseBudgetExpLV);
 
         headerList = new ArrayList<>();
         headerChildHash = new HashMap<>();
@@ -235,20 +235,14 @@ public class WalkthroughBudget extends AppCompatActivity
         return  (String)array[pos];
     }
 
-    public void budgetWalkthroughBackBtnClicked(View view){
-        Log.i(TAG, "back btn clicked");
-        Intent back = new Intent(WalkthroughBudget.this, WalkthroughIncome.class);
-        startActivity(back);
-    }
-
-    public void budgetWalkthroughFinishBtnClicked(View view){
+    public void addExpenseBudgetOkBtnClicked(View view){
         Log.i(TAG, "finish btn clicked");
-        Intent finish = new Intent(WalkthroughBudget.this, Home.class);
+        Intent finish = new Intent(AddExpenseBudget.this, Budget.class);
         startActivity(finish);
     }
 
 
-    public void budgetWalkthroughAddBtnClicked(View view){
+    public void addExpenseBudgetAddBtnClicked(View view){
         Log.i(TAG, "add cat btn clicked");
         addCatBtnClicked=true;
         openDialog("New category");

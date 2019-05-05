@@ -1,6 +1,7 @@
 package com.bluebudget.bluebugdet;
 
 import android.content.Context;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,7 +13,8 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 
-public class BudgetProgressionListAdapter extends ArrayAdapter<BudgetProgression> {
+public class BudgetProgressionListAdapter extends ArrayAdapter<BudgetProgression>
+                                            implements PopupDialogEdit.PopupDialogListener{
 
     private Context context;
     private int resource;
@@ -67,8 +69,22 @@ public class BudgetProgressionListAdapter extends ArrayAdapter<BudgetProgression
     View.OnClickListener moreIconListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
+
+            openDialog("Edit", " ");
             Log.i(TAG, "more icon clicked");
         }
     };
 
+    public void openDialog( String title, String tip) {
+        PopupDialogEdit dialog = new PopupDialogEdit();
+        dialog.setTitle(title);
+        //dialog.setTipTV(tip);
+
+        dialog.show(((AppCompatActivity) context).getSupportFragmentManager(), TAG+"-> openDialog-> Popup Dialog");
+    }
+
+    @Override
+    public void applyTexts(String name, Double amount) {
+        
+    }
 }
