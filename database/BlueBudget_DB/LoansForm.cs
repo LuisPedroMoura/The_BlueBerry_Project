@@ -11,13 +11,13 @@ using System.Windows.Forms;
 
 namespace BlueBudget_DB
 {
-    public partial class loans : Form
+    public partial class LoansForm : Form
     {
 
         string user_email;
         int account_id;
 
-        public loans(string user_email, int account_id)
+        public LoansForm(string user_email, int account_id)
         {
             InitializeComponent();
             this.user_email = user_email;
@@ -46,7 +46,7 @@ namespace BlueBudget_DB
             }
             catch
             {
-                Notifications.Text = ErrorMessenger.WrongFormat("Loan amount");
+                ErrorMessenger.WrongFormat("Loan amount");
                 return;
             }
             double interest = 0.0;
@@ -56,7 +56,7 @@ namespace BlueBudget_DB
             }
             catch
             {
-                Notifications.Text = ErrorMessenger.WrongFormat("Interest");
+                ErrorMessenger.WrongFormat("Interest");
                 return;
             }
             DateTime term = DateTime.Parse(Enddate_dateTimePicker.Value.ToString());
@@ -64,7 +64,7 @@ namespace BlueBudget_DB
             // verify if name and amount fields are filled
             if (loan_name.Equals("") || amount.Equals(""))
             {
-                Notifications.Text = ErrorMessenger.EmptyField("Name and Amount");
+                ErrorMessenger.EmptyField("Name and Amount");
                 return;
             }
 
@@ -72,11 +72,11 @@ namespace BlueBudget_DB
             try
             {
                 DB_API.InsertLoan(account_id, loan_name, amount, term, interest);
-                Notifications.Text = ErrorMessenger.SuccessfulOperation();
+                ErrorMessenger.SuccessfulOperation();
             }
             catch (SqlException ex)
             {
-                Notifications.Text = ErrorMessenger.Exception(ex);
+                ErrorMessenger.Exception(ex);
                 return;
             }
 
@@ -125,7 +125,7 @@ namespace BlueBudget_DB
             while (rdr.Read())
             {
                 res.Add(rdr[DB_API.LoanEnt.name.ToString()].ToString());
-                res.Add(rdr[DB_API.LoanEnt.amount.ToString()].ToString());
+                res.Add(rdr[DB_API.LoanEnt.initial_amount.ToString()].ToString());
                 res.Add(DateTime.Parse(rdr[DB_API.LoanEnt.term.ToString()].ToString()));
                 res.Add(rdr[DB_API.LoanEnt.interest.ToString()].ToString());
             }

@@ -20,7 +20,7 @@ namespace BlueBudget_DB
             card_number,
             periodicity,
             term,
-            active
+            active_subscription
         };
         public enum RecurrenceEnt
         {
@@ -52,7 +52,8 @@ namespace BlueBudget_DB
         public enum LoanEnt
         {
             name,
-	        amount,
+	        initial_amount,
+            current_debt,
             term,
 	        interest,
 	        monthly_payment,
@@ -113,19 +114,37 @@ namespace BlueBudget_DB
             purchase_price,
             bid_price,
             ask_price,
-            stock_type_id
+            stock_type_id,
+            stock_type
         }
 
         // ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
         // API METHODS ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
         // ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
+        public static string Moneyfy(string value)
+        {
+            double aux;
+            if (Double.TryParse(value, out aux))
+            {
+                return Moneyfy(aux);
+            }
+            return String.Empty;
+        }
 
-        // ----------------------------------------------------------------------------------------------
-        // USERS ----------------------------------------------------------------------------------------
-        // ----------------------------------------------------------------------------------------------
+        public static string Moneyfy(double value)
+        {
+            return String.Format(System.Globalization.CultureInfo.CurrentCulture, "{0:C2}", value);
+        }
 
-        public static bool ExistsUser(string email)
+            
+
+
+// ----------------------------------------------------------------------------------------------
+// USERS ----------------------------------------------------------------------------------------
+// ----------------------------------------------------------------------------------------------
+
+public static bool ExistsUser(string email)
         {
             var attrValue = DB_IO.AttrValue();
             attrValue[DB_API.UserEnt.email] = email;
@@ -145,7 +164,7 @@ namespace BlueBudget_DB
                 { UserEnt.card_number, cardNo },
                 { UserEnt.periodicity, periodicity },
                 { UserEnt.term, term },
-                { UserEnt.active, active }
+                { UserEnt.active_subscription, active }
             };
             DB_IO.Insert(DB_IO.DB_Interface.pr_insert_user, attrValue);
         }
@@ -163,7 +182,7 @@ namespace BlueBudget_DB
                 { UserEnt.card_number, cardNo },
                 { UserEnt.periodicity, periodicity },
                 { UserEnt.term, term },
-                { UserEnt.active, active }
+                { UserEnt.active_subscription, active }
             };
             DB_IO.Update(DB_IO.DB_Interface.pr_update_user, attrValue);
         }
@@ -379,7 +398,7 @@ namespace BlueBudget_DB
             {
                 { LoanEnt.account_id, account_id },
                 { LoanEnt.name, name },
-                { LoanEnt.amount, amount },
+                { LoanEnt.initial_amount, amount },
                 { LoanEnt.term, term },
                 {LoanEnt.interest, interest }
             };
@@ -601,7 +620,7 @@ namespace BlueBudget_DB
             DB_IO.Delete(DB_IO.DB_Interface.pr_delete_purchased_stocks, attrValue);
         }
 
-        public static void DeleteStocksByCompany(int company)
+        public static void DeleteStocksByCompany(string company)
         {
             var attrValue = DB_IO.AttrValue();
             attrValue[DB_API.StockEnt.company] = company;

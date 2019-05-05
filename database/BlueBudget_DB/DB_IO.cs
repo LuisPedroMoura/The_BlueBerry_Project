@@ -231,10 +231,10 @@ namespace BlueBudget_DB
                 rows = cmd.ExecuteNonQuery();
                 Console.WriteLine("Query executed successfully");
             }
-            //catch (Exception ex)
-            //{
-            //    Console.WriteLine("Error executing query: " + ex.ToString());
-            //}
+            catch (SqlException ex)
+            {
+                ErrorMessenger.Exception(ex);
+            }
             finally
             {
                 DBdisconnect(cnx);
@@ -252,9 +252,9 @@ namespace BlueBudget_DB
                 rdr.Close();
                 Console.WriteLine("Query executed successfully");
             }
-            catch (Exception ex)
+            catch (SqlException ex)
             {
-                Console.WriteLine("Error executing query: " + ex.ToString());
+                ErrorMessenger.Exception(ex);
             }
             finally
             {
@@ -271,9 +271,9 @@ namespace BlueBudget_DB
                 res = cmd.ExecuteScalar();
                 Console.WriteLine("Query executed successfully");
             }
-            catch (Exception ex)
+            catch (SqlException ex)
             {
-                Console.WriteLine("Error executing query: " + ex.ToString());
+                ErrorMessenger.Exception(ex);
             }
             finally
             {
@@ -281,7 +281,6 @@ namespace BlueBudget_DB
             }
             return res;
         }
-
 
         // ----------------------------------------------------------------------------------------------
         // AUXILAR PARSING METHODS ----------------------------------------------------------------------

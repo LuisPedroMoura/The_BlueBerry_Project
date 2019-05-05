@@ -1,6 +1,6 @@
 ﻿namespace BlueBudget_DB
 {
-    partial class transactions
+    partial class TransactionsForm
     {
         /// <summary>
         /// Required designer variable.
@@ -55,8 +55,6 @@
             this.label3 = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
             this.filtertype_comboBox = new System.Windows.Forms.ComboBox();
-            this.Notifications = new System.Windows.Forms.RichTextBox();
-            this.label5 = new System.Windows.Forms.Label();
             this.Refresh_btn = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
@@ -186,7 +184,7 @@
             this.Transactions_listBox.FormattingEnabled = true;
             this.Transactions_listBox.Location = new System.Drawing.Point(29, 20);
             this.Transactions_listBox.Name = "Transactions_listBox";
-            this.Transactions_listBox.Size = new System.Drawing.Size(213, 342);
+            this.Transactions_listBox.Size = new System.Drawing.Size(213, 420);
             this.Transactions_listBox.TabIndex = 14;
             this.Transactions_listBox.SelectedIndexChanged += new System.EventHandler(this.Transactions_listBox_SelectedIndexChanged);
             // 
@@ -301,24 +299,6 @@
             this.filtertype_comboBox.Size = new System.Drawing.Size(138, 21);
             this.filtertype_comboBox.TabIndex = 27;
             // 
-            // Notifications
-            // 
-            this.Notifications.Location = new System.Drawing.Point(29, 390);
-            this.Notifications.Name = "Notifications";
-            this.Notifications.ReadOnly = true;
-            this.Notifications.Size = new System.Drawing.Size(213, 59);
-            this.Notifications.TabIndex = 28;
-            this.Notifications.Text = "";
-            // 
-            // label5
-            // 
-            this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(29, 371);
-            this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(65, 13);
-            this.label5.TabIndex = 29;
-            this.label5.Text = "Notifications";
-            // 
             // Refresh_btn
             // 
             this.Refresh_btn.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
@@ -330,14 +310,12 @@
             this.Refresh_btn.UseVisualStyleBackColor = true;
             this.Refresh_btn.Click += new System.EventHandler(this.Refresh_btn_Click);
             // 
-            // transactions
+            // TransactionsForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(600, 461);
             this.Controls.Add(this.Refresh_btn);
-            this.Controls.Add(this.label5);
-            this.Controls.Add(this.Notifications);
             this.Controls.Add(this.filtertype_comboBox);
             this.Controls.Add(this.label4);
             this.Controls.Add(this.label3);
@@ -365,9 +343,9 @@
             this.Controls.Add(this.subcategory_comboBox);
             this.Controls.Add(this.category_comboBox);
             this.Controls.Add(this.Transactions_label);
-            this.Name = "transactions";
+            this.Name = "TransactionsForm";
             this.Text = "transactions";
-            this.Load += new System.EventHandler(this.transactions_Load);
+            this.Load += new System.EventHandler(this.Transactions_Load);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -402,8 +380,6 @@
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.ComboBox filtertype_comboBox;
-        private System.Windows.Forms.RichTextBox Notifications;
-        private System.Windows.Forms.Label label5;
         private System.Windows.Forms.Button Refresh_btn;
     }
 }

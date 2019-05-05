@@ -36,6 +36,7 @@
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Messaging" />
+    <Reference Include="System.Windows.Forms.DataVisualization" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -47,23 +48,29 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="back_office.cs">
+    <Compile Include="BackOfficeForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="back_office.Designer.cs">
-      <DependentUpon>back_office.cs</DependentUpon>
+    <Compile Include="BackOfficeForm.Designer.cs">
+      <DependentUpon>BackOfficeForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="budgets.cs">
+    <Compile Include="BudgetsForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="budgets.Designer.cs">
-      <DependentUpon>budgets.cs</DependentUpon>
+    <Compile Include="BudgetsForm.Designer.cs">
+      <DependentUpon>BudgetsForm.cs</DependentUpon>
     </Compile>
     <Compile Include="DB_API.cs" />
     <Compile Include="DB_IO.cs" />
     <Compile Include="ErrorMessenger.cs" />
     <Compile Include="NumericTextBox.cs">
       <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="StatisticsForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="StatisticsForm.Designer.cs">
+      <DependentUpon>StatisticsForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Stock.cs" />
     <Compile Include="StocksForm.cs">
@@ -72,17 +79,17 @@
     <Compile Include="StocksForm.Designer.cs">
       <DependentUpon>StocksForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="goals.cs">
+    <Compile Include="GoalsForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="goals.Designer.cs">
-      <DependentUpon>goals.cs</DependentUpon>
+    <Compile Include="GoalsForm.Designer.cs">
+      <DependentUpon>GoalsForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="loans.cs">
+    <Compile Include="LoansForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="loans.Designer.cs">
-      <DependentUpon>loans.cs</DependentUpon>
+    <Compile Include="LoansForm.Designer.cs">
+      <DependentUpon>LoansForm.cs</DependentUpon>
     </Compile>
     <Compile Include="MainForm.cs">
       <SubType>Form</SubType>
@@ -95,38 +102,42 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="transactions.cs">
+    <Compile Include="TransactionsForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="transactions.Designer.cs">
-      <DependentUpon>transactions.cs</DependentUpon>
+    <Compile Include="TransactionsForm.Designer.cs">
+      <DependentUpon>TransactionsForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="user_menu.cs">
+    <Compile Include="User.cs" />
+    <Compile Include="UserMenuForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="user_menu.Designer.cs">
-      <DependentUpon>user_menu.cs</DependentUpon>
+    <Compile Include="UserMenuForm.Designer.cs">
+      <DependentUpon>UserMenuForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="user_login.cs">
+    <Compile Include="UserLoginForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="user_login.Designer.cs">
-      <DependentUpon>user_login.cs</DependentUpon>
+    <Compile Include="UserLoginForm.Designer.cs">
+      <DependentUpon>UserLoginForm.cs</DependentUpon>
     </Compile>
-    <EmbeddedResource Include="back_office.resx">
-      <DependentUpon>back_office.cs</DependentUpon>
+    <EmbeddedResource Include="BackOfficeForm.resx">
+      <DependentUpon>BackOfficeForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="budgets.resx">
-      <DependentUpon>budgets.cs</DependentUpon>
+    <EmbeddedResource Include="BudgetsForm.resx">
+      <DependentUpon>BudgetsForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="StatisticsForm.resx">
+      <DependentUpon>StatisticsForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="StocksForm.resx">
       <DependentUpon>StocksForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="goals.resx">
-      <DependentUpon>goals.cs</DependentUpon>
+    <EmbeddedResource Include="GoalsForm.resx">
+      <DependentUpon>GoalsForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="loans.resx">
-      <DependentUpon>loans.cs</DependentUpon>
+    <EmbeddedResource Include="LoansForm.resx">
+      <DependentUpon>LoansForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>
@@ -140,14 +151,14 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <EmbeddedResource Include="transactions.resx">
-      <DependentUpon>transactions.cs</DependentUpon>
+    <EmbeddedResource Include="TransactionsForm.resx">
+      <DependentUpon>TransactionsForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="user_login.resx">
-      <DependentUpon>user_login.cs</DependentUpon>
+    <EmbeddedResource Include="UserLoginForm.resx">
+      <DependentUpon>UserLoginForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="user_menu.resx">
-      <DependentUpon>user_menu.cs</DependentUpon>
+    <EmbeddedResource Include="UserMenuForm.resx">
+      <DependentUpon>UserMenuForm.cs</DependentUpon>
     </EmbeddedResource>
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>

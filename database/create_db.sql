@@ -61,6 +61,11 @@ BEGIN
 	DROP PROC pr_select_transaction_types;
 	DROP PROC pr_delete_transaction;
 
+	DROP PROC pr_select_purchased_stocks;
+	DROP PROC pr_select_stocks;
+	DROP PROC pr_insert_purchased_stock;
+	DROP PROC pr_delete_purchased_stocks;
+
 	DROP TRIGGER Project.tr_insert_base_categories_on_new_money_account_insert;
 	DROP TRIGGER Project.tr_insert_base_wallets_on_new_money_account_insert;
 	DROP TRIGGER Project.tr_insert_new_wallet_on_goal_insert;
@@ -149,7 +154,7 @@ GO
 CREATE PROC pr_insert_user (
 	@email varchar(50) = NULL,
 	@card_number varchar(20) = NULL,
-	@term DATETIME = NULL,
+	@term DATE = NULL,
 	@fname VARCHAR(20) = NULL,	
 	@lname VARCHAR(20) = NULL,
 	@periodicity INT = NULL,
@@ -192,7 +197,7 @@ GO
 CREATE PROC pr_update_user (
 	@email varchar(50) = NULL,
 	@card_number varchar(20) = NULL,
-	@term DATETIME = NULL,
+	@term DATE = NULL,
 	@fname VARCHAR(20) = NULL,	
 	@lname VARCHAR(20) = NULL,
 	@periodicity INT = NULL,
@@ -252,7 +257,7 @@ GO
 CREATE PROC pr_select_users (
 	@email varchar(50) = NULL,
 	@card_number varchar(20) = NULL,
-	@term DATETIME = NULL,
+	@term DATE = NULL,
 	@fname VARCHAR(20) = NULL,	
 	@lname VARCHAR(20) = NULL,
 	@periodicity INT = NULL,
@@ -628,7 +633,7 @@ GO
 CREATE PROC pr_select_loans (
 	@name VARCHAR(20) = NULL,
 	@amount MONEY = NULL,
-	@term DATETIME = NULL,
+	@term DATE = NULL,
 	@interest DECIMAL(5,2) = NULL,
 	@account_id INT = NULL
 ) AS
@@ -662,7 +667,7 @@ CREATE PROC pr_insert_loan (
 	@account_id INT = NULL,
 	@name VARCHAR(20) = NULL,
 	@amount MONEY = NULL,
-	@term DATETIME = NULL,
+	@term DATE = NULL,
 	@interest DECIMAL(5,2) = NULL
 ) AS
 BEGIN
@@ -690,8 +695,8 @@ CREATE PROC pr_select_budgets (
 	@budget_id INT = NULL,
 	@amount MONEY = NULL,
 	@periodicity INT = NULL,
-	@start_date DATETIME = NULL,
-	@end_date DATETIME = NULL
+	@start_date DATE = NULL,
+	@end_date DATE = NULL
 ) AS
 BEGIN
 	
@@ -738,8 +743,8 @@ CREATE PROC pr_insert_budget (
 	@category_id INT,
 	@amount MONEY = 0.0,
 	@periodicity INT = 1,
-	@start_date DATETIME NULL,
-	@end_date DATETIME = NULL
+	@start_date DATE NULL,
+	@end_date DATE = NULL
 ) AS
 BEGIN
 	
@@ -761,7 +766,7 @@ CREATE PROC pr_insert_goal (
 	@category_id INT,
 	@account_id INT,
 	@amount INT = 0.0,
-	@term DATETIME = NULL,
+	@term DATE = NULL,
 	@accomplished BIT = 0
 ) AS
 BEGIN
@@ -778,7 +783,7 @@ CREATE PROC pr_select_goals (
 	@category_id INT = NULL,
 	@account_id INT = NULL,
 	@amount INT = NULL,
-	@term DATETIME = NULL,
+	@term DATE = NULL,
 	@accomplished BIT = NULL
 ) AS
 BEGIN
@@ -807,22 +812,23 @@ CREATE PROC pr_select_transactions (
 	@transaction_type_id INT = NULL,
 	@min_amount MONEY = NULL,
 	@max_amount MONEY = NULL,
-	@start_date DATETIME = NULL,
-	@end_date DATETIME = NULL,
+	@start_date DATE = NULL,
+	@end_date DATE = NULL,
 	@location VARCHAR(50) = NULL
 ) AS
 BEGIN
 	
-	SET @start_date = CONVERT(DATE, @start_date)
-	SET @end_date = CONVERT(DATE, @end_date)
-	IF @start_date = @end_date
-	BEGIN
-		SET @end_date = DATEADD(day,1,@end_date)
-		SET @end_date = DATEADD(second,-1,@end_date)
+	--SET @start_date = CONVERT(DATE, CONVERT(DATE, @start_date))
+	--SET @end_date = CONVERT(DATE, CONVERT(DATE, @end_date))
+	--IF @start_date = @end_date
+	--BEGIN
+	--	SET @end_date = DATEADD(day,1,@end_date)
+	--	SET @end_date = DATEADD(millisecond,-1,@end_date)
+	--END
 
-	PRINT CONCAT(@start_date, ' <-> ', @end_date) 
-	/*
-	IF @category_id%100 = 0
+	--PRINT CONCAT(@start_date, ' <-> ', @end_date) 
+	--
+	IF @category_id%100 != 0
 	BEGIN
 	
 		SELECT *
@@ -859,19 +865,17 @@ BEGIN
 			AND ([date]>=@start_date OR @start_date IS NULL)
 			AND ([date]<=@end_date OR @end_date IS NULL)
 			AND ([location]=@location OR @location IS NULL)
-
 	END
-	*/
 END
 GO
-exec pr_select_transactions @start_date='05/04/2019 00:00:00', @end_date='05/05/2019 15:32:00';
+
 CREATE PROC pr_insert_transaction (
 	@account_id INT,
 	@category_id INT,
 	@wallet_id INT,
 	@transaction_type_id INT,
 	@amount MONEY = 0.0,
-	@date DATETIME = NULL,
+	@date DATE = NULL,
 	@notes VARCHAR(50) = NULL,
 	@location VARCHAR(50) = NULL
 ) AS
@@ -931,6 +935,76 @@ BEGIN
 END
 GO
 
+---------------------------------------------------------------
+--- STOCK -----------------------------------------------------
+---------------------------------------------------------------
+
+CREATE PROC pr_select_purchased_stocks (
+	@account_id INT = NULL,
+	@ticker INT = NULL,
+	@company VARCHAR(50) = NULL,
+	@purchase_price MONEY = NULL
+) AS
+BEGIN
+	
+	SELECT PS.account_id AS account_id, PS.ticker AS ticker, PS.company AS company, PS.purchase_price AS purchase_price,
+			S.bid_price AS bid_price, S.stock_type_id AS stock_type_id
+	FROM
+		Project.purchased_stocks AS PS JOIN Project.stocks AS S
+		ON PS.company = S.company
+	WHERE
+			(account_id=@account_id OR @account_id IS NULL)
+		AND (ticker=@ticker OR @ticker IS NULL)
+		AND (PS.company=@company OR @company IS NULL)
+		AND (purchase_price=@purchase_price OR @purchase_price IS NULL)
+END
+GO
+
+CREATE PROC pr_select_stocks (
+	@company VARCHAR(50) = NULL,
+	@min_ask_price MONEY = NULL,
+	@max_ask_price MONEY = NULL,
+	@min_bid_price MONEY = NULL,
+	@max_bid_price MONEY = NULL,
+	@stock_type_id INT = NULL
+) AS
+BEGIN
+
+	SELECT *
+	FROM Project.stocks
+	WHERE
+			(ask_price>=@min_ask_price OR @min_ask_price IS NULL)
+		AND (ask_price<=@max_ask_price OR @max_ask_price IS NULL)
+		AND (bid_price>=@min_bid_price OR @min_bid_price IS NULL)
+		AND (bid_price<=@max_bid_price OR @max_bid_price IS NULL)
+		AND (company=@company OR @company IS NULL)
+		AND (stock_type_id=@stock_type_id OR @stock_type_id IS NULL)
+END
+GO
+
+CREATE PROC pr_insert_purchased_stock (
+	@account_id INT,
+	@company VARCHAR(50),
+	@purchase_price MONEY
+) AS
+BEGIN
+
+	INSERT INTO Project.purchased_stocks (account_id, company, purchase_price)
+	VALUES (@account_id, @company, @purchase_price)
+END
+GO
+
+CREATE PROC pr_delete_purchased_stocks (
+	@ticker INT = NULL,
+	@company VARCHAR(50) = NULL
+) AS
+BEGIN
+
+	DELETE FROM Project.purchased_stocks
+	WHERE ticker=@ticker OR company=@company
+END
+GO
+
 ------------------------------------------------------------------------------------------------------------------------
 -- CREATE DATABASE TABLES ----------------------------------------------------------------------------------------------
 ------------------------------------------------------------------------------------------------------------------------
@@ -975,7 +1049,7 @@ CREATE TABLE Project.subscriptions
 (
 	card_number VARCHAR(20),
 	email VARCHAR(50),
-	term DATETIME NOT NULL, --DEFAULT DATEADD(year, 1, GETDATE()),
+	term DATE NOT NULL, --DEFAULT DATEADD(year, 1, GETDATE()),
 	fname VARCHAR(20) NOT NULL,
 	mname VARCHAR(20),
 	lname VARCHAR(20) NOT NULL,
@@ -1032,7 +1106,7 @@ CREATE TABLE Project.transactions
 (
 	transaction_id INT IDENTITY(1,1),
 	amount INT NOT NULL,
-	[date] DATETIME NOT NULL,
+	[date] DATE NOT NULL,
 	notes VARCHAR(50),
 	[location] VARCHAR(50),
 	category_id INT,
@@ -1067,8 +1141,8 @@ CREATE TABLE Project.budgets
 	account_id INT,
 	amount INT DEFAULT 0,
 	periodicity INT,
-	[start_date] DATETIME,
-	end_date DATETIME,
+	[start_date] DATE,
+	end_date DATE,
 	CONSTRAINT PK_BUDGETS PRIMARY KEY (budget_id, category_id, account_id),
 	CONSTRAINT FK_BUDGETS_RECURRENCE FOREIGN KEY (periodicity) REFERENCES Project.recurrence(periodicity)
 		ON DELETE NO ACTION ON UPDATE CASCADE,
@@ -1082,7 +1156,7 @@ CREATE TABLE Project.goals
 	category_id INT,
 	account_id INT,
 	amount INT DEFAULT 0,
-	term DATETIME,
+	term DATE,
 	accomplished BIT,
 	CHECK([name] != ''),
 	CONSTRAINT PK_GOALS PRIMARY KEY ([name], category_id, account_id),
@@ -1095,7 +1169,7 @@ CREATE TABLE Project.loans
 	[name] VARCHAR(20),
 	account_id INT,
 	amount MONEY,
-	term DATETIME,
+	term DATE,
 	interest DECIMAL(5,2) DEFAULT(0.0),
 	CHECK([name] != ''),
 	CHECK(amount>=0),
@@ -1116,8 +1190,8 @@ CREATE TABLE Project.stock_types
 CREATE TABLE Project.stocks
 (
 	company VARCHAR(50),
-	bid_price INT,
-	ask_price INT,
+	bid_price MONEY,
+	ask_price MONEY,
 	stock_type_id INT,
 	CHECK(company != ''),
 	CONSTRAINT PK_STOCKS PRIMARY KEY (company),
@@ -1130,8 +1204,7 @@ CREATE TABLE Project.purchased_stocks
 	ticker INT IDENTITY(1,1),
 	company VARCHAR(50),
 	account_id INT,
-	purchase_value INT,
-	quantity INT,
+	purchase_price MONEY,
 	CONSTRAINT PK_PURCHASEDSTOCKS PRIMARY KEY (ticker),
 	CONSTRAINT FK_PURCHASEDSTOCKS_STOCKS FOREIGN KEY (company) REFERENCES Project.stocks(company)
 		ON DELETE NO ACTION ON UPDATE CASCADE,
@@ -1165,6 +1238,32 @@ INSERT INTO Project.category_types (designation, category_type_id)
 VALUES
 		('income', 1),
 		('expense', -1);
+
+INSERT INTO Project.stocks (company, ask_price, stock_type_id)
+VALUES
+	( 'Microsoft Corporation', CAST(RAND() * 100 AS MONEY), 0 ),
+    ( 'Apple Inc.', CAST(RAND() * 100 AS MONEY), 0 ),
+    ( 'Johnson & Johnson', CAST(RAND() * 100 AS MONEY), 1 ),
+    ( 'JPMorgan Chase & Co.', CAST(RAND() * 100 AS MONEY), 0 ),
+    ( 'ExxonMobil Corporation', CAST(RAND() * 100 AS MONEY), 1 ),
+    ( 'Bank of America Corp.', CAST(RAND() * 100 AS MONEY), 0 ),
+    ( 'Facebook Inc.', CAST(RAND() * 100 AS MONEY), 1 ),
+    ( 'Wal-Mart Stores Inc.', CAST(RAND() * 100 AS MONEY), 0 ),
+    ( 'Amazon.com, Inc.', CAST(RAND() * 100 AS MONEY), 1 ),
+    ( 'Alphabet Inc.', CAST(RAND() * 100 AS MONEY), 0 ),
+    ( 'Berkshire Hathaway Inc', CAST(RAND() * 100 AS MONEY), 0 ),
+    ( 'Alibaba Group Holding Ltd', CAST(RAND() * 100 AS MONEY), 0 ),
+    ( 'Wells Fargo & Co.', CAST(RAND() * 100 AS MONEY), 0 ),
+    ( 'Royal Dutch Shell plc', CAST(RAND() * 100 AS MONEY), 1 ),
+    ( 'Visa Inc.', CAST(RAND() * 100 AS MONEY), 0 ),
+    ( 'Procter & Gamble Co.', CAST(RAND() * 100 AS MONEY), 0 ),
+    ( 'Anheuser-Busch Inbev NV', CAST(RAND() * 100 AS MONEY), 1 ),
+    ( 'AT&T Inc.', CAST(RAND() * 100 AS MONEY), 0 ),
+    ( 'Chevron Corporation', CAST(RAND() * 100 AS MONEY), 0 ),
+    ( 'UnitedHealth Group Inc.', CAST(RAND() * 100 AS MONEY), 0 ),
+    ( 'Pfizer Inc.', CAST(RAND() * 100 AS MONEY), 0 ),
+    ( 'Roche Holding Ltd.', CAST(RAND() * 100 AS MONEY), 1 )
+
 
 GO
 

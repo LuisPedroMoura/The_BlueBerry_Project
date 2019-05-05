@@ -29,7 +29,7 @@ namespace BlueBudget_DB
 
         private void Back_office_btn_Click(object sender, EventArgs e)
         {
-            var frm = new back_office();
+            var frm = new BackOfficeForm();
             frm.Location = this.Location;
             frm.StartPosition = FormStartPosition.Manual;
             frm.FormClosing += delegate { this.Show(); };
@@ -39,7 +39,7 @@ namespace BlueBudget_DB
 
         private void Users_btn_Click(object sender, EventArgs e)
         {
-            var frm = new user_login();
+            var frm = new UserLoginForm();
             frm.Location = this.Location;
             frm.StartPosition = FormStartPosition.Manual;
             frm.FormClosing += delegate { this.Show(); };
