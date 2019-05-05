@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Data.SqlClient;
 using System.Drawing;
 using System.Linq;
 using System.Text;
@@ -27,24 +28,103 @@ namespace BlueBudget_DB
         private void Stocks_Load(object sender, EventArgs e)
         {
             PopulateStockMarketListView();
+            PopulateMyStocksListView();
         }
 
         // -------------------------------------------------------------------
-        // LIST BOXES --------------------------------------------------------
+        // BUTTONS -----------------------------------------------------------
         // -------------------------------------------------------------------
 
-        public void PopulateStockMarketListView()
+        private void Buy_btn_Click(object sender, EventArgs e)
+        {
+            // ge selected item values
+            Stock stock = (Stock) StockMarket_listView.SelectedItems[0].Tag;
+            int quantity = (int)quantity_numericupdown.Value;
+
+            // make the buy (insert new purchased stock)
+            try
+            {
+                for (int i = 0; i < quantity; i++)
+                {
+                    DB_API.InsertPurchasedStock(this.account_id, stock.Company, (double)stock.AskPrice);
+                }
+            }
+            catch( SqlException ex)
+            {
+                ErrorMessenger.Exception(ex);
+            }
+
+            // update MyStocks listView
+            PopulateMyStocksListView();
+
+        }
+
+        private void sell_btn_Click(object sender, EventArgs e)
+        {
+            //get selected item values
+            Stock stock = (Stock)MyStocks_listView.SelectedItems[0].Tag;
+
+            // make the sell
+            try
+            {
+                DB_API.DeleteStockByTicker((int)stock.Ticker);
+            }
+            catch(SqlException ex)
+            {
+                ErrorMessenger.Exception(ex);
+            }
+
+            // update MyStocks listView
+            PopulateMyStocksListView();
+        }
+
+        // -------------------------------------------------------------------
+        // LIST VIEW BOXES ---------------------------------------------------
+        // -------------------------------------------------------------------
+
+        private void PopulateStockMarketListView()
         {
             // clear the listView
             StockMarket_listView.Items.Clear();
 
-            var StockMarket = GetStockMarket();
-            foreach(KeyValuePair<string, double> entry in StockMarket)
-            {
-                var row = new string[] { entry.Key, entry.Value.ToString() };
+            // populate listView
+            var rdr = DB_API.SelectAllStocks();
+            while (rdr.Read()) {
+                string company = rdr[DB_API.StockEnt.company.ToString()].ToString();
+                double askPrice = Double.Parse(rdr[DB_API.StockEnt.ask_price.ToString()].ToString());
+                string ask_price = String.Format(System.Globalization.CultureInfo.CurrentCulture, "{0:C2}", askPrice);
+                var row = new string[] { company, ask_price };
                 var item = new ListViewItem(row);
-                item.Tag = entry;
+                item.Tag = new Stock(null,null, company, askPrice, null, null);
                 StockMarket_listView.Items.Add(item);
+            }
+        }
+
+        private void PopulateMyStocksListView()
+        {
+            // clear the listView
+            MyStocks_listView.Items.Clear();
+            // populate listView
+            try
+            {
+                var rdr = DB_API.SelectAllAccountPurchasedStocks(this.account_id);
+                while (rdr.Read())
+                {
+                    int ticker = (int)rdr[DB_API.StockEnt.ticker.ToString()];
+                    string company = rdr[DB_API.StockEnt.company.ToString()].ToString();
+                    int stockTypeId = (int)rdr[DB_API.StockEnt.stock_type_id.ToString()];
+                    double purchasePrice = Double.Parse(rdr[DB_API.StockEnt.purchase_price.ToString()].ToString());
+                    string purchase_price = String.Format(System.Globalization.CultureInfo.CurrentCulture, "{0:C2}", purchasePrice);
+
+                    var row = new string[] { ticker.ToString(), company, purchase_price };
+                    var item = new ListViewItem(row);
+                    item.Tag = new Stock(ticker, stockTypeId, company, null, purchasePrice, this.account_id);
+                    MyStocks_listView.Items.Add(item);
+                }
+            }
+            catch (SqlException ex)
+            {
+                ErrorMessenger.Exception(ex);
             }
         }
 
@@ -86,6 +166,11 @@ namespace BlueBudget_DB
                 { "Roche Holding Ltd.", RandomNumber(100,200) }
             };
             return stock_market;
+        }
+
+        private void buy_btn_Click(object sender, EventArgs e)
+        {
+
         }
 
         

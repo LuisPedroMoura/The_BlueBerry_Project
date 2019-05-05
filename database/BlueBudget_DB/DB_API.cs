@@ -110,7 +110,7 @@ namespace BlueBudget_DB
             ticker,
             company,
             account_id,
-            purchase_value,
+            purchase_price,
             bid_price,
             ask_price,
             stock_type_id
@@ -571,12 +571,41 @@ namespace BlueBudget_DB
         // STOCKS ---------------------------------------------------------------------------------------
         // ----------------------------------------------------------------------------------------------
 
-        public static DataTableReader SelectAllAccountStocks(int account_id)
+        public static DataTableReader SelectAllAccountPurchasedStocks(int account_id)
         {
             var attrValue = DB_IO.AttrValue();
             attrValue[DB_API.StockEnt.account_id] = account_id;
-            return DB_IO.SelectReader(DB_IO.DB_Interface.pr_select_stocks, attrValue);
+            return DB_IO.SelectReader(DB_IO.DB_Interface.pr_select_purchased_stocks, attrValue);
         }
 
+        public static void InsertPurchasedStock(int account_id, string company, double purchase_price)
+        {
+            var attrValue = new Dictionary<System.Enum, Object>
+            {
+                { StockEnt.account_id, account_id },
+                { StockEnt.company, company },
+                { StockEnt.purchase_price, purchase_price },
+            };
+            DB_IO.Insert(DB_IO.DB_Interface.pr_insert_purchased_stock, attrValue);
+        }
+
+        public static DataTableReader SelectAllStocks()
+        {
+            return DB_IO.SelectReader(DB_IO.DB_Interface.pr_select_stocks, DB_IO.AttrValue());
+        }
+
+        public static void DeleteStockByTicker(int ticker)
+        {
+            var attrValue = DB_IO.AttrValue();
+            attrValue[DB_API.StockEnt.ticker] = ticker;
+            DB_IO.Delete(DB_IO.DB_Interface.pr_delete_purchased_stocks, attrValue);
+        }
+
+        public static void DeleteStocksByCompany(int company)
+        {
+            var attrValue = DB_IO.AttrValue();
+            attrValue[DB_API.StockEnt.company] = company;
+            DB_IO.Delete(DB_IO.DB_Interface.pr_delete_purchased_stocks, attrValue);
+        }
     }
 }

@@ -9,23 +9,21 @@ namespace BlueBudget_DB
     class Stock
     {
 
-        private int? Id { get; set; }
-        private int? StockTypeId { get; set; }
-        private string Company { get; set; }
-        private double? AskPrice { get; set; }
-        private double? BidPrice { get; set; }
-        private double? PurchasedPrice { get; set; }
-        private int? AccountId { get; set; }
+        public int? Ticker { get; }
+        public int? StockTypeId { get; }
+        public string Company { get; }
+        public double? AskPrice { get; }
+        public double? PurchasePrice { get; }
+        public int? AccountId { get; }
 
-        public Stock(int? id = null, int? stockTypeId = null, string company = null, double? askPrice = null,
-            double? bidPrice = null, double? purchasedPrice = null, int? accountId = null)
+        public Stock(int? ticker = null, int? stockTypeId = null, string company = null, double? askPrice = null,
+            double? purchasePrice = null, int? accountId = null)
         {
-            Id = id;
+            Ticker = ticker;
             StockTypeId = stockTypeId;
             Company = company;
             AskPrice = askPrice;
-            BidPrice = bidPrice;
-            PurchasedPrice = purchasedPrice;
+            PurchasePrice = purchasePrice;
             AccountId = accountId;
         }
 

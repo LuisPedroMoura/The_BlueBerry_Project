@@ -61,7 +61,12 @@ namespace BlueBudget_DB
             pr_select_transactions,
             pr_insert_transaction,
             pr_select_transaction_types,
-            pr_delete_transaction
+            pr_delete_transaction,
+            //---
+            pr_select_purchased_stocks,
+            pr_select_stocks,
+            pr_insert_purchased_stock,
+            pr_delete_purchased_stocks
 
         }
 

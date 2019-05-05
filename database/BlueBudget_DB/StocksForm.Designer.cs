@@ -49,10 +49,10 @@
             this.StockMarket_listView = new System.Windows.Forms.ListView();
             this.Stock_col = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.AskPrice_col = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.listView1 = new System.Windows.Forms.ListView();
+            this.MyStocks_listView = new System.Windows.Forms.ListView();
             this.Ticker_col = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.Company_col = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.BidPrice_col = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.PurchasePrice_col = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             ((System.ComponentModel.ISupportInitialize)(this.quantity_numericupdown)).BeginInit();
             this.SuspendLayout();
             // 
@@ -193,6 +193,7 @@
             this.buy_btn.TabIndex = 19;
             this.buy_btn.Text = "Buy";
             this.buy_btn.UseVisualStyleBackColor = true;
+            this.buy_btn.Click += new System.EventHandler(this.Buy_btn_Click);
             // 
             // sell_btn
             // 
@@ -202,6 +203,7 @@
             this.sell_btn.TabIndex = 20;
             this.sell_btn.Text = "Sell";
             this.sell_btn.UseVisualStyleBackColor = true;
+            this.sell_btn.Click += new System.EventHandler(this.sell_btn_Click);
             // 
             // back_btn
             // 
@@ -217,6 +219,7 @@
             this.StockMarket_listView.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.Stock_col,
             this.AskPrice_col});
+            this.StockMarket_listView.FullRowSelect = true;
             this.StockMarket_listView.Location = new System.Drawing.Point(40, 72);
             this.StockMarket_listView.Name = "StockMarket_listView";
             this.StockMarket_listView.Size = new System.Drawing.Size(187, 264);
@@ -233,18 +236,19 @@
             // 
             this.AskPrice_col.Text = "Ask Price";
             // 
-            // listView1
+            // MyStocks_listView
             // 
-            this.listView1.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.MyStocks_listView.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.Ticker_col,
             this.Company_col,
-            this.BidPrice_col});
-            this.listView1.Location = new System.Drawing.Point(234, 73);
-            this.listView1.Name = "listView1";
-            this.listView1.Size = new System.Drawing.Size(244, 263);
-            this.listView1.TabIndex = 23;
-            this.listView1.UseCompatibleStateImageBehavior = false;
-            this.listView1.View = System.Windows.Forms.View.Details;
+            this.PurchasePrice_col});
+            this.MyStocks_listView.FullRowSelect = true;
+            this.MyStocks_listView.Location = new System.Drawing.Point(234, 72);
+            this.MyStocks_listView.Name = "MyStocks_listView";
+            this.MyStocks_listView.Size = new System.Drawing.Size(265, 263);
+            this.MyStocks_listView.TabIndex = 23;
+            this.MyStocks_listView.UseCompatibleStateImageBehavior = false;
+            this.MyStocks_listView.View = System.Windows.Forms.View.Details;
             // 
             // Ticker_col
             // 
@@ -255,16 +259,17 @@
             this.Company_col.Text = "Company";
             this.Company_col.Width = 120;
             // 
-            // BidPrice_col
+            // PurchasePrice_col
             // 
-            this.BidPrice_col.Text = "Bid Price";
+            this.PurchasePrice_col.Text = "Purchase Price";
+            this.PurchasePrice_col.Width = 90;
             // 
             // StocksForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(741, 366);
-            this.Controls.Add(this.listView1);
+            this.Controls.Add(this.MyStocks_listView);
             this.Controls.Add(this.StockMarket_listView);
             this.Controls.Add(this.back_btn);
             this.Controls.Add(this.sell_btn);
@@ -316,9 +321,9 @@
         private System.Windows.Forms.ListView StockMarket_listView;
         private System.Windows.Forms.ColumnHeader Stock_col;
         private System.Windows.Forms.ColumnHeader AskPrice_col;
-        private System.Windows.Forms.ListView listView1;
+        private System.Windows.Forms.ListView MyStocks_listView;
         private System.Windows.Forms.ColumnHeader Ticker_col;
         private System.Windows.Forms.ColumnHeader Company_col;
-        private System.Windows.Forms.ColumnHeader BidPrice_col;
+        private System.Windows.Forms.ColumnHeader PurchasePrice_col;
     }
 }

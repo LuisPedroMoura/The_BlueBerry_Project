@@ -4,6 +4,7 @@ using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace BlueBudget_DB
 {
@@ -27,13 +28,21 @@ namespace BlueBudget_DB
 
         public static string Exception(SqlException ex)
         {
+            string message;
+            string caption = "EXCEPTION ERROR";
+
             switch (ex.Number)
             {
                 case 2601:
-                    return "EXCEPTION ERROR:\nDuplicate already in database.";
+                    message = "Duplicate already in database.";
+                    break;
                 default:
-                    return "EXCEPTION ERROR:\nAn error has occurred!\nError.number: " + ex.Number;
+                    message = "An error has occurred!\nError.number: " + ex.Number;
+                    break;
             }
+            MessageBox.Show(message, caption);
+            return "";
+
         }
 
         public static string Warning(string message)
