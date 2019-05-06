@@ -163,6 +163,8 @@ public class Transactions extends AppCompatActivity {
             TransactionsHistory th = new TransactionsHistory(date, icon, description, Double.toString(t.getValue()));
             transactionsHistoryList.add(th);
         }
+        transactionsHistoryList.add(null);
+
 
         TransactionsHistoryListAdapter adapter = new TransactionsHistoryListAdapter(this, R.layout.layout_transactions_history, transactionsHistoryList);
         transactionsHistoryLV.setAdapter(adapter);

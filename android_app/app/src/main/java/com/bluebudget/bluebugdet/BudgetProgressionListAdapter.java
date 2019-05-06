@@ -32,13 +32,29 @@ public class BudgetProgressionListAdapter extends ArrayAdapter<BudgetProgression
     public View getView(int position, View convertView, ViewGroup parent) {
         Log.d(TAG, "get view");
 
+        int catIcon;
+        String description;
+        String spentAmount;
+        String leftAmount;
+        int budgetProgress;
+
         //get the progression info
-        int catIcon = getItem(position).getCategoryIcon();
-        String description = getItem(position).getDescription();
-        String spentAmount = getItem(position).getSpentAmount();
-        String leftAmount = getItem(position).getLeftAmount();
-        int budgetProgress = getItem(position).getProgressBar();
-        //int moreIconIV;
+        if(getItem(position) == null){
+            catIcon = R.drawable.empty_background;
+            description = " ";
+            spentAmount = " ";
+            leftAmount = " ";
+            budgetProgress = -1;
+        }
+        else{
+            catIcon = getItem(position).getCategoryIcon();
+            description = getItem(position).getDescription();
+            spentAmount = getItem(position).getSpentAmount();
+            leftAmount = getItem(position).getLeftAmount();
+            budgetProgress = getItem(position).getProgressBar();
+            //int moreIconIV;
+
+        }
 
 
         LayoutInflater inflater = LayoutInflater.from(this.context);
@@ -58,10 +74,20 @@ public class BudgetProgressionListAdapter extends ArrayAdapter<BudgetProgression
             descriptionTV.setText(description);
             spentAmountTV.setText(spentAmount);
             leftAmountTV.setText(leftAmount);
-            budgetProgressBar.setProgress(budgetProgress);
-
-            moreIconIV.setOnClickListener(moreIconListener);
+            if(getItem(position)!=null){
+                budgetProgressBar.setProgress(budgetProgress);
+                moreIconIV.setOnClickListener(moreIconListener);
+            }
+            else{
+                TextView spentTV = convertView.findViewById(R.id.spent);
+                TextView leftTV = convertView.findViewById(R.id.left);
+                spentTV.setVisibility(View.INVISIBLE);
+                leftTV.setVisibility(View.INVISIBLE);
+                budgetProgressBar.setVisibility(View.INVISIBLE);
+                moreIconIV.setVisibility(View.INVISIBLE);
+            }
         }
+
 
         return convertView;
     }

@@ -17,9 +17,7 @@ import android.widget.TextView;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.GregorianCalendar;
 import java.util.List;
-import java.util.Map;
 
 public class NewExpense extends AppCompatActivity {
 
@@ -89,7 +87,8 @@ public class NewExpense extends AppCompatActivity {
         for(AppCategory category : categoriesList){
             categoryItemList.add(new SpinnerItem(category.getName(), category.getIcon()));
         }
-
+        categoryItemList.add(new SpinnerItem("add new category", R.drawable.empty_background));
+        categoryItemList.add(new SpinnerItem("add new sub-category", R.drawable.empty_background));
 
         return categoryItemList;
     }
@@ -105,6 +104,7 @@ public class NewExpense extends AppCompatActivity {
         for(AppWallet wallet : walletsList){
             walletItemList.add(new SpinnerItem(wallet.getName(), wallet.getIcon()));
         }
+        walletItemList.add(new SpinnerItem("add new wallet", R.drawable.empty));
 
         return walletItemList;
     }

@@ -1,18 +1,13 @@
 package com.bluebudget.bluebugdet;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
-
-import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 
@@ -34,13 +29,27 @@ public class TransactionsHistoryListAdapter extends ArrayAdapter<TransactionsHis
     public View getView(int position, View convertView, ViewGroup parent) {
         Log.d(TAG, "get view");
 
+        String date;
+        int icon;
+        String description;
+        String amount;
+
         //get the history info
-        String date = getItem(position).getDate();
-        int icon = getItem(position).getIcon();
-        String description = getItem(position).getDescription();
-        String amount = getItem(position).getAmount();
-        
-        
+        if(getItem(position)==null){
+            date = " ";
+            icon = R.drawable.empty_background;
+            description = " ";
+            amount = " ";
+        }
+        else{
+            date = getItem(position).getDate();
+            icon = getItem(position).getIcon();
+            description = getItem(position).getDescription();
+            amount = getItem(position).getAmount();
+        }
+
+
+
         LayoutInflater inflater = LayoutInflater.from(this.context);
         convertView = inflater.inflate(this.resource, parent, false);
         
@@ -55,14 +64,17 @@ public class TransactionsHistoryListAdapter extends ArrayAdapter<TransactionsHis
         descriptionTV.setText(description);
         amountTV.setText(amount);
 
-       Double value = Double.parseDouble(amount);
-        if(value<0){
-            //Log.i(TAG, value+"");
-            amountTV.setTextColor(amountTV.getContext().getResources().getColor(R.color.colorRed));
+        if(!amount.equals(" ")){
+            Double value = Double.parseDouble(amount);
+            if(value<0){
+                //Log.i(TAG, value+"");
+                amountTV.setTextColor(amountTV.getContext().getResources().getColor(R.color.colorRed));
+            }
+            else{
+                amountTV.setTextColor(amountTV.getContext().getResources().getColor(R.color.colorGreen));
+            }
         }
-        else{
-            amountTV.setTextColor(amountTV.getContext().getResources().getColor(R.color.colorGreen));
-        }
+
 
         return convertView;
     }

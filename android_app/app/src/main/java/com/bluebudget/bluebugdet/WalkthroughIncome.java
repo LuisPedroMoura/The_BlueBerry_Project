@@ -149,6 +149,8 @@ public class WalkthroughIncome extends AppCompatActivity
                 openDialog("New sub-category");
             }
 
+
+
             return false;
         }
     };

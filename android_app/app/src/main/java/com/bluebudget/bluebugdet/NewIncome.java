@@ -4,7 +4,6 @@ import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -19,7 +18,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
-import java.util.Map;
 
 public class NewIncome extends AppCompatActivity {
 
@@ -90,6 +88,8 @@ public class NewIncome extends AppCompatActivity {
         for(AppCategory category : categoriesList){
             categoryItemList.add(new SpinnerItem(category.getName(), category.getIcon()));
         }
+        categoryItemList.add(new SpinnerItem("add new category", R.drawable.empty_background));
+        categoryItemList.add(new SpinnerItem("add new sub-category", R.drawable.empty_background));
 
         return categoryItemList;
     }
@@ -104,6 +104,7 @@ public class NewIncome extends AppCompatActivity {
         for(AppWallet wallet : walletsList){
             walletItemList.add(new SpinnerItem(wallet.getName(), wallet.getIcon()));
         }
+        walletItemList.add(new SpinnerItem("add new wallet", R.drawable.empty_background));
 
         return walletItemList;
     }

@@ -137,7 +137,7 @@ public class Budget extends AppCompatActivity
             BudgetProgression bp = new BudgetProgression(categoryIcon, description, spentAmount+"", leftAmount+"", progressBar);
             budgetProgressionList.add(bp);
         }
-
+        budgetProgressionList.add(null);
         BudgetProgressionListAdapter adapter = new BudgetProgressionListAdapter(this, R.layout.layout_budget_progression, budgetProgressionList);
         budgetProgressionLV.setAdapter(adapter);
 
@@ -239,6 +239,6 @@ public class Budget extends AppCompatActivity
 
     @Override
     public void applyTexts(String name, Double amount) {
-        
+
     }
 }
