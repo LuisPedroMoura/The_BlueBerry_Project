@@ -39,6 +39,9 @@ public class BudgetProgressionListAdapter extends ArrayAdapter<BudgetProgression
         int budgetProgress;
 
         //get the progression info
+
+        //Log.i(TAG, "position " + position);
+        //Log.i(TAG, "getItem(position)==null " + (getItem(position)==null));
         if(getItem(position) == null){
             catIcon = R.drawable.empty_background;
             description = " ";
@@ -53,7 +56,6 @@ public class BudgetProgressionListAdapter extends ArrayAdapter<BudgetProgression
             leftAmount = getItem(position).getLeftAmount();
             budgetProgress = getItem(position).getProgressBar();
             //int moreIconIV;
-
         }
 
 
@@ -74,17 +76,20 @@ public class BudgetProgressionListAdapter extends ArrayAdapter<BudgetProgression
             descriptionTV.setText(description);
             spentAmountTV.setText(spentAmount);
             leftAmountTV.setText(leftAmount);
+            Log.i(TAG, "getItem(position)!=null " + (getItem(position)!=null));
             if(getItem(position)!=null){
+                Log.i(TAG, "set progress bar progress");
                 budgetProgressBar.setProgress(budgetProgress);
                 moreIconIV.setOnClickListener(moreIconListener);
             }
             else{
+                Log.i(TAG, "set INVISIBLE");
                 TextView spentTV = convertView.findViewById(R.id.spent);
                 TextView leftTV = convertView.findViewById(R.id.left);
-                spentTV.setVisibility(View.INVISIBLE);
-                leftTV.setVisibility(View.INVISIBLE);
-                budgetProgressBar.setVisibility(View.INVISIBLE);
-                moreIconIV.setVisibility(View.INVISIBLE);
+                spentTV.setVisibility(View.GONE);
+                leftTV.setVisibility(View.GONE);
+                budgetProgressBar.setVisibility(View.GONE);
+                moreIconIV.setVisibility(View.GONE);
             }
         }
 

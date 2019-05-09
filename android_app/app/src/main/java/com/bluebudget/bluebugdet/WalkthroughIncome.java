@@ -180,6 +180,12 @@ public class WalkthroughIncome extends AppCompatActivity
         String subcatName = Home.app.newSubCategoryFullName(parentName, name);
 
         Home.app.addCategory(parentName, subcatName, incomeCat.getIcon(), amount, 1, AppBudgetType.INCOME);
+        Home.app.updateCategory(parentName, incomeCat.getDefBudget()+amount, 1);
+
+        //refresh
+        Intent intent = getIntent();
+        finish();
+        startActivity(intent);
     }
 
     public void incomeWalkthroughBtnClicked(View view){

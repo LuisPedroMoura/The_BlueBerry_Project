@@ -87,8 +87,8 @@ public class NewExpense extends AppCompatActivity {
         for(AppCategory category : categoriesList){
             categoryItemList.add(new SpinnerItem(category.getName(), category.getIcon()));
         }
-        categoryItemList.add(new SpinnerItem("add new category", R.drawable.empty_background));
-        categoryItemList.add(new SpinnerItem("add new sub-category", R.drawable.empty_background));
+        categoryItemList.add(new SpinnerItem("add new category", R.drawable.empty));
+        categoryItemList.add(new SpinnerItem("add new sub-category", R.drawable.empty));
 
         return categoryItemList;
     }

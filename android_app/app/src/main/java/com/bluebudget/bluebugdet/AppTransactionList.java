@@ -82,7 +82,8 @@ public class AppTransactionList {
 
             if (tr.getDate().compareTo(minDate) >= 0 && tr.getDate().compareTo(maxDate) <= 0){
                 Log.i(TAG, "(categories == null) "+(categories == null));
-                if (categories == null || categories.contains(tr.getCategory().getName()) || categories.contains(tr.getCategory().getParent())){
+                Log.i(TAG, "(tr.getCategory() == null) "+(tr.getCategory() == null));
+                if (categories == null || tr.getCategory()==null || categories.contains(tr.getCategory().getName()) || categories.contains(tr.getCategory().getParent())){
                     if (locations == null || locations.contains(tr.getLocation())){
                         if (type == null || tr.getType() == type) {
                             if (wallets == null || wallets.contains(tr.getWallet())) {

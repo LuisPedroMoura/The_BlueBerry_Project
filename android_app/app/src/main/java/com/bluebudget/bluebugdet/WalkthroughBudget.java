@@ -217,6 +217,7 @@ public class WalkthroughBudget extends AppCompatActivity
             String subcatName = Home.app.newSubCategoryFullName(parentName, name);
 
             Home.app.addCategory(parentName, subcatName, parent.getIcon(), amount, 1, AppBudgetType.EXPENSE);
+            Home.app.updateCategory(parentName, parent.getDefBudget()+amount, 1);
         }
 
 

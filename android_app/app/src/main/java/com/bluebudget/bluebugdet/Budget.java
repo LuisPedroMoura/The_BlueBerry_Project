@@ -9,10 +9,12 @@ import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.OvershootInterpolator;
 import android.widget.AdapterView;
+import android.widget.ImageView;
 import android.widget.ListView;
 
 import java.util.ArrayList;
@@ -25,10 +27,17 @@ public class Budget extends AppCompatActivity
     private ListView budgetProgressionLV;
     private  ArrayList<BudgetProgression> budgetProgressionList;
 
+    private ImageView filterIcon;
+
     private FloatingActionButton addFab, incomeFab, expenseFab;
     private Float translationY = 100f;
     private OvershootInterpolator interpolator = new OvershootInterpolator();
     private Boolean isMenuOpen = false;
+
+    //private AdapterView.OnItemClickListener budgetProgressionListener
+    //private View.OnClickListener addBudgetFabOnClick
+    //private View.OnClickListener incomeBudgetFabOnClick
+    //private View.OnClickListener expenseBudgetFabOnClick
 
 
     private static final String TAG = "Budget";
@@ -53,7 +62,6 @@ public class Budget extends AppCompatActivity
         Menu menu = navigation.getMenu();
         MenuItem menuItem = menu.getItem(2);
         menuItem.setChecked(true);
-
 
 
     }
@@ -98,45 +106,53 @@ public class Budget extends AppCompatActivity
     //select toolbar item
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        Log.i(TAG, item.toString()+" selected");
+        int id = item.getItemId();
+
+        if(id == R.id.filterIcon){
+            Log.i(TAG, "filter clicked");
+            Intent filter = new Intent(Budget.this, Filter.class);
+            filter.putExtra("className", "Budget");
+            startActivity(filter);
+        }
+
         return super.onOptionsItemSelected(item);
     }
 
     private void initBudgetProgressionListView(){
-        Log.d(TAG, "budget progression initiated");
+        //Log.i(TAG, "budget progression initiated");
 
         budgetProgressionLV = findViewById(R.id.budgetProgressionListView);
 
         budgetProgressionList = new ArrayList<>();
 
-        List<AppCategory> budgetTypeExpenses = Home.app.filterCategories(null, AppBudgetType.EXPENSE);//Home.app.allCatTypeOrdered(AppBudgetType.EXPENSE);
+        List<AppCategory> allAppBudgetExpenses = Home.app.filterCategories(null, AppBudgetType.EXPENSE);
+        for(AppCategory c : allAppBudgetExpenses){
 
-        for(AppCategory c : budgetTypeExpenses){
+            List<String> l = new ArrayList<>();
+            l.add(c.getName());
+            List<AppTransaction> totalExpenses = Home.app.getTransactions(null, null, l, null, null , AppTransactionType.EXPENSE);
 
-            String catName = c.getName();
-            //Log.i(TAG, "category name " + catName);
-
-            List<String> catList = new ArrayList<>();
-            catList.add(catName);
-
-            List<AppTransaction> totalExpenses = Home.app.getTransactions(null, null, catList, null, null , AppTransactionType.EXPENSE);
             int categoryIcon = c.getIcon();
-            String description = catName;
+            String description = c.getName();
             Double spentAmount = Home.app.calculateBalance(totalExpenses);
-            spentAmount = spentAmount==-0? 0: -spentAmount;
+            spentAmount = spentAmount == -0 ? 0 : -spentAmount;
             Double budgetAmount = c.getDefBudget();
-            Double leftAmount  = budgetAmount - spentAmount;
-            int progressBar = (int)((spentAmount*100)/budgetAmount);
+            Double leftAmount = budgetAmount - spentAmount;
+            int progressBar = (int) ((spentAmount * 100) / budgetAmount);
 
-            Log.i(TAG, description+"");
-            Log.i(TAG, "spentAmount "+spentAmount);
-            Log.i(TAG, "budgetAmount "+budgetAmount);
-            Log.i(TAG, "leftAmount "+leftAmount);
-            Log.i(TAG, "progressBar "+progressBar);
+            Log.i(TAG, description + "");
+            Log.i(TAG, "spentAmount " + spentAmount);
+            Log.i(TAG, "budgetAmount " + budgetAmount);
+            Log.i(TAG, "leftAmount " + leftAmount);
+            Log.i(TAG, "progressBar " + progressBar);
 
-            BudgetProgression bp = new BudgetProgression(categoryIcon, description, spentAmount+"", leftAmount+"", progressBar);
+            BudgetProgression bp = new BudgetProgression(categoryIcon, description, spentAmount + "", leftAmount + "", progressBar);
             budgetProgressionList.add(bp);
+
+
         }
+
+
         budgetProgressionList.add(null);
         BudgetProgressionListAdapter adapter = new BudgetProgressionListAdapter(this, R.layout.layout_budget_progression, budgetProgressionList);
         budgetProgressionLV.setAdapter(adapter);
@@ -146,17 +162,20 @@ public class Budget extends AppCompatActivity
         Log.d(TAG, "budget progression done");
     }
 
-    AdapterView.OnItemClickListener budgetProgressionListener = new AdapterView.OnItemClickListener() {
+    private AdapterView.OnItemClickListener budgetProgressionListener = new AdapterView.OnItemClickListener() {
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-            Log.i(TAG, "pos="+position+"; "+budgetProgressionList.get(position).getDescription());
 
-            Intent stats = new Intent(Budget.this, Stats.class);
-            stats.putExtra("fromBudget", "true");
-            stats.putExtra("parentCat", budgetProgressionList.get(position).getDescription());
+            Log.i(TAG, "budgetProgressionList.get(position)==null: "+(budgetProgressionList.get(position)==null));
+            if(budgetProgressionList.get(position)!=null){
+                Log.i(TAG, "pos="+position+"; "+budgetProgressionList.get(position).getDescription());
 
-            startActivity(stats);
+                Intent stats = new Intent(Budget.this, Stats.class);
+                stats.putExtra("fromBudget", "true");
+                stats.putExtra("parentCat", budgetProgressionList.get(position).getDescription());
 
+                startActivity(stats);
+            }
         }
     };
 
@@ -205,7 +224,7 @@ public class Budget extends AppCompatActivity
         txtView.setVisibility(View.INVISIBLE);
     }
 
-    View.OnClickListener addBudgetFabOnClick = new View.OnClickListener() {
+    private View.OnClickListener addBudgetFabOnClick = new View.OnClickListener() {
         public void onClick(View view) {
             Log.i(TAG, "onClick: add fab");
             if (isMenuOpen) {
@@ -217,7 +236,7 @@ public class Budget extends AppCompatActivity
     };
 
 
-    View.OnClickListener incomeBudgetFabOnClick = new View.OnClickListener() {
+    private View.OnClickListener incomeBudgetFabOnClick = new View.OnClickListener() {
         public void onClick(View view) {
             Log.i(TAG, "onClick: income fab");
             if (isMenuOpen) {
@@ -227,7 +246,7 @@ public class Budget extends AppCompatActivity
         }
     };
 
-    View.OnClickListener expenseBudgetFabOnClick = new View.OnClickListener() {
+    private View.OnClickListener expenseBudgetFabOnClick = new View.OnClickListener() {
         public void onClick(View view) {
             Log.i(TAG, "onClick: expense fab");
             if (isMenuOpen) {

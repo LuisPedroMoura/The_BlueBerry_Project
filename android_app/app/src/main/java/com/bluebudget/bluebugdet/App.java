@@ -26,29 +26,46 @@ public class App {
         this.wallets = new AppWalletList();
         this.categories = new AppCategoryList();
 
+        defaultStart();
+        //example();
+
+    }
+
+
+    public void defaultStart(){
         addWallet("Current", R.drawable.ic_account_balance_wallet_black_24dp, -1.0);
         addWallet("Future Expenses", R.drawable.ic_account_balance_wallet_black_24dp, -1.0);
         addWallet("Savings",R.drawable.ic_account_balance_wallet_black_24dp, -1.0);
 
         addCategory(null, "Income", R.drawable.ic_trending_up_black_24dp, 0.0, 1, AppBudgetType.INCOME);
-        addCategory("Income", "Income: gifts", R.drawable.ic_trending_up_black_24dp, 0.0, 1, AppBudgetType.INCOME);
         addCategory(null, "Home", R.drawable.ic_home_black_24dp, 0.0, 1, AppBudgetType.EXPENSE);
-        addCategory("Home", "Home: cleaning products", R.drawable.ic_home_black_24dp, 0.0, 1, AppBudgetType.EXPENSE);
         addCategory(null, "Food", R.drawable.ic_shopping_cart_black_24dp, 0.0, 1, AppBudgetType.EXPENSE);
         addCategory(null, "Transports", R.drawable.ic_directions_car_black_24dp, 30.0, 1, AppBudgetType.EXPENSE);
-
-
-        addCategory(null, "Home1", R.drawable.ic_home_black_24dp, 0.0, 1, AppBudgetType.EXPENSE);
-        addCategory(null, "Home2", R.drawable.ic_home_black_24dp, 0.0, 1, AppBudgetType.EXPENSE);
-        addCategory(null, "Home3", R.drawable.ic_home_black_24dp, 0.0, 1, AppBudgetType.EXPENSE);
-
-
-        Calendar calendar = new GregorianCalendar(1998,9,21);
-        addIncome(10.0, calendar, getCategory("Income"), "", "", "Current");
-        addIncome(10.0, calendar, getCategory("Income"), "", "", "Savings");
-
     }
 
+    public void example(){
+
+        addWallet("Current", R.drawable.ic_account_balance_wallet_black_24dp, -1.0);
+        addWallet("Future Expenses", R.drawable.ic_account_balance_wallet_black_24dp, -1.0);
+        addWallet("Savings",R.drawable.ic_account_balance_wallet_black_24dp, -1.0);
+
+        addCategory(null, "Income", R.drawable.ic_trending_up_black_24dp, 0.0, 1, AppBudgetType.INCOME);
+        addCategory("Income", "Income: salary", R.drawable.ic_trending_up_black_24dp, 1500.0, 1, AppBudgetType.INCOME);
+
+        addCategory(null, "Home", R.drawable.ic_home_black_24dp, 0.0, 1, AppBudgetType.EXPENSE);
+        addCategory("Home", "Home: cleaning services", R.drawable.ic_home_black_24dp, 25.0, 1, AppBudgetType.EXPENSE);
+
+        addCategory(null, "Food", R.drawable.ic_shopping_cart_black_24dp, 0.0, 1, AppBudgetType.EXPENSE);
+        addCategory("Food", "Food: sweets", R.drawable.ic_shopping_cart_black_24dp, 5.0, 1, AppBudgetType.EXPENSE);
+
+        addCategory(null, "Transports", R.drawable.ic_directions_car_black_24dp, 30.0, 1, AppBudgetType.EXPENSE);
+        addCategory("Transports", "Transports: oil", R.drawable.ic_directions_car_black_24dp, 80.0, 1, AppBudgetType.EXPENSE);
+
+
+        /*Calendar calendar = new GregorianCalendar(1998,9,21);
+        addIncome(10.0, calendar, getCategory("Income"), "", "", "Current");
+        addIncome(10.0, calendar, getCategory("Income"), "", "", "Savings");*/
+    }
 
 
     // ---------------------------------------------------------------------------------------------
@@ -82,7 +99,11 @@ public class App {
                                               List<AppBudgetType> typesList){
         return categories.filterCategories(parentsList, typesList);
     }
-
+/*
+    public List<AppCategory> filterCategories(){
+        return categories.filterCategories(null, null);
+    }
+*/
     public List<AppCategory> filterCategories(String parent,
                                               AppBudgetType type){
         List<String> parentsList = new ArrayList<>();
@@ -92,13 +113,13 @@ public class App {
         return categories.filterCategories(parentsList, typesList);
     }
 
-    public List<AppCategory> filterCategories(String parent){
+    public List<AppCategory> filterCategoriesByParent(String parent){
         List<String> parentsList = new ArrayList<>();
         parentsList.add(parent);
         return categories.filterCategories(parentsList, null);
     }
 
-    public List<AppCategory> filterCategories(AppBudgetType type){
+    public List<AppCategory> filterCategoriesByType(AppBudgetType type){
         List<AppBudgetType> typesList = new ArrayList<>();
         typesList.add(type);
         return categories.filterCategories(null, typesList);
