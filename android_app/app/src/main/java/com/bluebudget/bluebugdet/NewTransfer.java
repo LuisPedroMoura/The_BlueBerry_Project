@@ -86,6 +86,7 @@ public class NewTransfer extends AppCompatActivity {
         for(AppWallet wallet : walletsList){
             walletItemList.add(new SpinnerItem(wallet.getName(), wallet.getIcon()));
         }
+        walletItemList.add(new SpinnerItem("add new wallet", R.drawable.empty));
 
         return walletItemList;
     }

@@ -10,11 +10,21 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
+            android:name=".Filter"
+            android:label="@string/title_activity_filter"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
+        <activity
             android:name=".ScrollingActivity"
             android:label="@string/title_activity_scrolling"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".WalkthroughBudget" />
-        <activity android:name=".WalkthroughIncome" />
+        <activity android:name=".WalkthroughIncome">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
         <activity android:name=".CalendarPopUp" />
         <activity
             android:name=".testTabbedActivity"
@@ -36,15 +46,11 @@
             android:name=".NewTransaction"
             android:label="New transaction"
             android:theme="@style/AppTheme.NoActionBar" />
+        <activity android:name=".AddIncomeBudget" />
+        <activity android:name=".AddExpenseBudget" />
         <activity
             android:name=".Home"
-            android:label="@string/app_name">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
+            android:label="@string/app_name" />
         <activity android:name=".Transactions" />
         <activity android:name=".Budget" />
         <activity android:name=".Stats" />

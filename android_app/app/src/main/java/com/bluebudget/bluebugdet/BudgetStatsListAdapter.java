@@ -17,7 +17,7 @@ public class BudgetStatsListAdapter extends ArrayAdapter<BudgetProgression> {
     private Context context;
     private int resource;
 
-    private static final String TAG = "BudgetProgressionLA";
+    private static final String TAG = "BudgetStatsLA";
 
     public BudgetStatsListAdapter(Context context, int resource, ArrayList<BudgetProgression> objects) {
         super(context, resource, objects);

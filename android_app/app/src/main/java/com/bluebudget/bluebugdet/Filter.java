@@ -4,13 +4,13 @@ import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.DatePicker;
-import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
 
@@ -19,47 +19,42 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
-public class NewExpense extends AppCompatActivity {
+public class Filter extends AppCompatActivity {
 
     private Toolbar toolbar;
-
     private FloatingActionButton fab;
-    private EditText amountET;
-    private TextView dateTV;
     private Spinner categorySpinner;
-    private EditText locationET;
-    private EditText notesET;
     private Spinner walletSpinner;
+    private TextView startDateTV;
+    private TextView endDateTV;
+    //private View.OnClickListener fabListener;
+    //private AdapterView.OnItemSelectedListener av;
+    //private View.OnClickListener startDateListener ;
 
-    private static final String TAG = "NewExpense";
+    private static final String TAG = "Filter";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_new_expense);
+        setContentView(R.layout.activity_filter);
 
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        fab = findViewById(R.id.newExpensefab);
-        fab.setOnClickListener(checkFabOnClick);
+        fab = findViewById(R.id.filterFab);
+        fab.setOnClickListener(fabListener);
 
-        amountET = findViewById(R.id.amountNewExpenseET);
-
-        locationET = findViewById(R.id.locationNewExpenseET);
-
-        notesET = findViewById(R.id.notesNewExpenseET);
 
         //Category Spinner
-        categorySpinner = findViewById(R.id.categoryNewExpenseSpinner);
+        categorySpinner = findViewById(R.id.categorySpinnerFilter);
 
         ArrayList<SpinnerItem> categoryItemList = initCategoryList();
         SpinnerAdapter categoryAdapter = new SpinnerAdapter(this, categoryItemList);
         categorySpinner.setAdapter(categoryAdapter);
         categorySpinner.setOnItemSelectedListener(av);
 
-        //Wallet Spinner
-        walletSpinner = findViewById(R.id.walletNewExpenseSpinner);
+        //wallet Spinner
+        walletSpinner = findViewById(R.id.walletSpinnerFilter);
 
         ArrayList<SpinnerItem> walletItemList = initWalletList();
         SpinnerAdapter walletAdapter = new SpinnerAdapter(this, walletItemList);
@@ -68,11 +63,15 @@ public class NewExpense extends AppCompatActivity {
 
 
         //Date
-        dateTV = findViewById(R.id.dateNewExpenseTV);
-        dateTV.setOnClickListener(dateListener);
         SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
-        dateTV.setText(sdf.format(Calendar.getInstance().getTime()));
 
+        startDateTV = findViewById(R.id.startDateFilterTV);
+        startDateTV.setOnClickListener(startDateListener);
+        startDateTV.setText(sdf.format(Calendar.getInstance().getTime()));
+
+        endDateTV = findViewById(R.id.endDateFilterTV);
+        endDateTV.setOnClickListener(endDateListener);
+        endDateTV.setText(sdf.format(Calendar.getInstance().getTime()));
 
     }
 
@@ -83,16 +82,14 @@ public class NewExpense extends AppCompatActivity {
 
         ArrayList<SpinnerItem> categoryItemList = new ArrayList<>();
 
-        List<AppCategory> categoriesList = Home.app.allCatTypeOrdered(AppBudgetType.EXPENSE);
+        List<AppCategory> categoriesList = Home.app.getCategoriesList();
+
         for(AppCategory category : categoriesList){
             categoryItemList.add(new SpinnerItem(category.getName(), category.getIcon()));
         }
-        categoryItemList.add(new SpinnerItem("add new category", R.drawable.empty));
-        categoryItemList.add(new SpinnerItem("add new sub-category", R.drawable.empty));
 
         return categoryItemList;
     }
-
 
     //////////////////////
     ////Wallet Spinner////
@@ -104,18 +101,17 @@ public class NewExpense extends AppCompatActivity {
         for(AppWallet wallet : walletsList){
             walletItemList.add(new SpinnerItem(wallet.getName(), wallet.getIcon()));
         }
-        walletItemList.add(new SpinnerItem("add new wallet", R.drawable.empty));
 
         return walletItemList;
     }
 
-    AdapterView.OnItemSelectedListener av = new AdapterView.OnItemSelectedListener() {
+    private AdapterView.OnItemSelectedListener av = new AdapterView.OnItemSelectedListener() {
         @Override
         public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
             SpinnerItem clickedItem = (SpinnerItem) parent.getItemAtPosition(position);
             String clickedName = clickedItem.getName();
 
-            Log.i(TAG, "category " + view.getId() + " " + clickedName+ " selected");
+            Log.i(TAG, "category " + clickedName+ " selected");
         }
 
         @Override
@@ -124,21 +120,20 @@ public class NewExpense extends AppCompatActivity {
         }
     };
 
-
     //////////////////////
     /////////Date/////////
     //////////////////////
-    View.OnClickListener dateListener = new View.OnClickListener() {
+    private View.OnClickListener startDateListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            showDatePickerDialog();
+            showStartDatePickerDialog();
         }
     };
 
-    public void showDatePickerDialog(){
+    public void showStartDatePickerDialog(){
         DatePickerDialog datePickerDialog = new DatePickerDialog(
                 this,
-                onDateSetListener,
+                onStartDateSetListener,
                 Calendar.getInstance().get(Calendar.YEAR),
                 Calendar.getInstance().get(Calendar.MONTH),
                 Calendar.getInstance().get(Calendar.DAY_OF_MONTH));
@@ -146,40 +141,62 @@ public class NewExpense extends AppCompatActivity {
     }
 
 
-    DatePickerDialog.OnDateSetListener onDateSetListener = new DatePickerDialog.OnDateSetListener(){
+    DatePickerDialog.OnDateSetListener onStartDateSetListener = new DatePickerDialog.OnDateSetListener(){
         @Override
         public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
             String date = dayOfMonth + "-" + (month+1) + "-" + year;
-            dateTV.setText(date);
+            startDateTV.setText(date);
         }
     };
 
 
-    //////////////////////
-    /////////FAB//////////
-    //////////////////////
-    View.OnClickListener checkFabOnClick = new View.OnClickListener() {
+    private View.OnClickListener endDateListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            showEndDatePickerDialog();
+        }
+    };
+
+    public void showEndDatePickerDialog(){
+        DatePickerDialog datePickerDialog = new DatePickerDialog(
+                this,
+                onEndDateSetListener,
+                Calendar.getInstance().get(Calendar.YEAR),
+                Calendar.getInstance().get(Calendar.MONTH),
+                Calendar.getInstance().get(Calendar.DAY_OF_MONTH));
+        datePickerDialog.show();
+    }
+
+
+    DatePickerDialog.OnDateSetListener onEndDateSetListener = new DatePickerDialog.OnDateSetListener(){
+        @Override
+        public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+            String date = dayOfMonth + "-" + (month+1) + "-" + year;
+            endDateTV.setText(date);
+        }
+    };
+
+
+    private View.OnClickListener fabListener = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
-            Log.d(TAG, "check clicked");
-            Intent transactions = new Intent(NewExpense.this, Transactions.class);
+            Intent incomingIntent = getIntent();
+            String className = incomingIntent.getStringExtra("className");
 
-            transactions.putExtra("transactionType", "NewExpense");
-            String amount = amountET.getText().toString();
-            if(amount.equals("")){
-                amount = 0.0+"";
+            if(className.equals("Transactions")){
+                Intent filter = new Intent(Filter.this, Transactions.class);
+                startActivity(filter);
             }
-            transactions.putExtra("amount", Double.parseDouble(amount));
-            transactions.putExtra("date", dateTV.getText().toString());
+            else if(className.equals("Budget")){
+                Intent filter = new Intent(Filter.this, Budget.class);
+                startActivity(filter);
+            }
+            else if(className.equals("Stats")){
+                Intent filter = new Intent(Filter.this, Stats.class);
+                startActivity(filter);
+            }
 
-            SpinnerItem csi = (SpinnerItem) categorySpinner.getSelectedItem();
-            transactions.putExtra("category", csi.getName() );
-            transactions.putExtra("location", locationET.getText().toString());
-            transactions.putExtra("notes", notesET.getText().toString());
-            SpinnerItem wsi = (SpinnerItem) walletSpinner.getSelectedItem();
-            transactions.putExtra("wallet", wsi.getName());
 
-            startActivity(transactions);
         }
     };
 }

@@ -4,7 +4,6 @@ import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -19,7 +18,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
-import java.util.Map;
 
 public class NewIncome extends AppCompatActivity {
 
@@ -32,6 +30,9 @@ public class NewIncome extends AppCompatActivity {
     private EditText locationET;
     private EditText notesET;
     private Spinner walletSpinner;
+
+    private ArrayList<SpinnerItem> categoryItemList;
+    private ArrayList<SpinnerItem> walletItemList;
 
     private static final String TAG = "NewIncome";
 
@@ -55,19 +56,11 @@ public class NewIncome extends AppCompatActivity {
 
         //Category Spinner
         categorySpinner = findViewById(R.id.categoryNewIncomeSpinner);
-
-        ArrayList<SpinnerItem> categoryItemList = initCategoryList();
-        SpinnerAdapter categoryAdapter = new SpinnerAdapter(this, categoryItemList);
-        categorySpinner.setAdapter(categoryAdapter);
-        categorySpinner.setOnItemSelectedListener(av);
+        initCategoryList();
 
         //wallet Spinner
         walletSpinner = findViewById(R.id.walletNewIncomeSpinner);
-
-        ArrayList<SpinnerItem> walletItemList = initWalletList();
-        SpinnerAdapter walletAdapter = new SpinnerAdapter(this, walletItemList);
-        walletSpinner.setAdapter(walletAdapter);
-        walletSpinner.setOnItemSelectedListener(av);
+        initWalletList();
 
 
         //Date
@@ -81,31 +74,40 @@ public class NewIncome extends AppCompatActivity {
     //////////////////////
     ///Category Spinner///
     //////////////////////
-    private ArrayList<SpinnerItem> initCategoryList(){
+    private void initCategoryList(){
 
-        ArrayList<SpinnerItem> categoryItemList = new ArrayList<>();
+        categoryItemList = new ArrayList<>();
 
         List<AppCategory> categoriesList = Home.app.allCatTypeOrdered(AppBudgetType.INCOME);
 
         for(AppCategory category : categoriesList){
             categoryItemList.add(new SpinnerItem(category.getName(), category.getIcon()));
         }
+        categoryItemList.add(new SpinnerItem("add new category", R.drawable.empty));
+        categoryItemList.add(new SpinnerItem("add new sub-category", R.drawable.empty));
 
-        return categoryItemList;
+
+        SpinnerAdapter categoryAdapter = new SpinnerAdapter(this, categoryItemList);
+        categorySpinner.setAdapter(categoryAdapter);
+        categorySpinner.setOnItemSelectedListener(av);
     }
 
     //////////////////////
     ////Wallet Spinner////
     //////////////////////
-    private ArrayList<SpinnerItem> initWalletList(){
+    private void initWalletList(){
         List<AppWallet> walletsList = Home.app.getWalletsList();
-        ArrayList<SpinnerItem> walletItemList = new ArrayList<>();
+        walletItemList = new ArrayList<>();
 
         for(AppWallet wallet : walletsList){
             walletItemList.add(new SpinnerItem(wallet.getName(), wallet.getIcon()));
         }
+        walletItemList.add(new SpinnerItem("add new wallet", R.drawable.empty));
 
-        return walletItemList;
+
+        SpinnerAdapter walletAdapter = new SpinnerAdapter(this, walletItemList);
+        walletSpinner.setAdapter(walletAdapter);
+        walletSpinner.setOnItemSelectedListener(av);
     }
 
     AdapterView.OnItemSelectedListener av = new AdapterView.OnItemSelectedListener() {
@@ -114,7 +116,7 @@ public class NewIncome extends AppCompatActivity {
             SpinnerItem clickedItem = (SpinnerItem) parent.getItemAtPosition(position);
             String clickedName = clickedItem.getName();
 
-            Log.i(TAG, "category " + clickedName+ " selected");
+            Log.i(TAG, "category " + clickedName+ " selected !!!!!!!!!!!!!!!!!!!!!!!!!!");
         }
 
         @Override

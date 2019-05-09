@@ -12,6 +12,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.OvershootInterpolator;
+import android.widget.AdapterView;
 import android.widget.ListView;
 
 
@@ -22,7 +23,8 @@ import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.List;
 
-public class Transactions extends AppCompatActivity {
+public class Transactions extends AppCompatActivity
+                            implements PopupDialogEdit.PopupDialogListener{
 
     private FloatingActionButton addFab, incomeFab, expenseFab, transferFab;
     private Float translationY = 100f;
@@ -32,6 +34,7 @@ public class Transactions extends AppCompatActivity {
     private Toolbar toolbar;
     private BottomNavigationView navigation;
     private ListView transactionsHistoryLV;
+    private ArrayList<TransactionsHistory> transactionsHistoryList;
 
     private static final String TAG = "Transactions";
 
@@ -125,8 +128,6 @@ public class Transactions extends AppCompatActivity {
                 else if(transactionType.equals("NewTransfer")){
                     Home.app.addTransfer(amount, calendar, notes, location, wallet, recipientWallet);
                     Log.i(TAG, "added new transfer");
-                    List<AppTransaction> allTransactions = Home.app.getTransactions(null, null, null, null, null , null);
-                    Log.i(TAG, allTransactions.size()+"");
                 }
             }
         }
@@ -137,7 +138,7 @@ public class Transactions extends AppCompatActivity {
 
         transactionsHistoryLV = findViewById(R.id.transactionsHistoryListView);
 
-        ArrayList<TransactionsHistory> transactionsHistoryList = new ArrayList<>();
+        transactionsHistoryList = new ArrayList<>();
         List<AppTransaction> allTransactions = Home.app.getTransactions(null, null, null, null, null , null);
 
         for(AppTransaction t : allTransactions){
@@ -163,12 +164,44 @@ public class Transactions extends AppCompatActivity {
             TransactionsHistory th = new TransactionsHistory(date, icon, description, Double.toString(t.getValue()));
             transactionsHistoryList.add(th);
         }
+        transactionsHistoryList.add(null);
+
 
         TransactionsHistoryListAdapter adapter = new TransactionsHistoryListAdapter(this, R.layout.layout_transactions_history, transactionsHistoryList);
         transactionsHistoryLV.setAdapter(adapter);
+        transactionsHistoryLV.setOnItemClickListener(transactionHistoryListener);
 
         Log.d(TAG, "history done");
     }
+
+
+    AdapterView.OnItemClickListener transactionHistoryListener = new AdapterView.OnItemClickListener() {
+        @Override
+        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
+            Log.i(TAG, "budgetProgressionList.get(position)==null: "+(transactionsHistoryList.get(position)==null));
+            if(transactionsHistoryList.get(position)!=null){
+                Log.i(TAG, "pos="+position+"; "+transactionsHistoryList.get(position).getDescription());
+
+                openDialog("Edit", " ");
+                Log.i(TAG, "item clicked");
+            }
+        }
+    };
+
+    public void openDialog( String title, String tip) {
+        PopupDialogEdit dialog = new PopupDialogEdit();
+        dialog.setTitle(title);
+        //dialog.setTipTV(tip);
+
+        dialog.show(getSupportFragmentManager(), TAG+"-> openDialog-> Popup Dialog");
+    }
+
+    @Override
+    public void applyTexts(String name, Double amount) {
+
+    }
+
 
 
     private void initFabMenu() {
@@ -274,7 +307,14 @@ public class Transactions extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        Log.i(TAG, item.toString()+" selected");
+        int id = item.getItemId();
+
+        if(id == R.id.filterIcon){
+            Log.i(TAG, "filter clicked");
+            Intent filter = new Intent(Transactions.this, Filter.class);
+            filter.putExtra("className", "Transactions");
+            startActivity(filter);
+        }
         return super.onOptionsItemSelected(item);
     }
 }

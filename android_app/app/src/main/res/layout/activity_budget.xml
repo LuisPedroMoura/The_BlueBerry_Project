@@ -74,7 +74,7 @@
 
     <ListView
         android:id="@+id/budgetProgressionListView"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_margin="10dp"
         android:layout_marginTop="8dp"
@@ -99,11 +99,54 @@
         app:layout_constraintEnd_toEndOf="parent">
 
         <android.support.design.widget.FloatingActionButton
+            android:id="@+id/expenseBudgetFab"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="4dp"
+            android:tint="@android:color/white"
+            android:backgroundTint="@color/colorPrimary"
+            app:fabSize="mini"
+            app:srcCompat="@drawable/ic_trending_down_black_24dp" />
+
+        <TextView
+            android:id="@+id/expenseTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/colorWhite"
+            android:background="@color/colorLightGrey"
+            android:paddingLeft="3dp"
+            android:paddingRight="3dp"
+            android:textAlignment="center"
+            android:text="expense\nbudget" />
+
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/incomeBudgetFab"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="4dp"
+            android:tint="@android:color/white"
+            android:backgroundTint="@color/colorPrimary"
+            app:fabSize="mini"
+            app:srcCompat="@drawable/ic_trending_up_black_24dp" />
+
+        <TextView
+            android:id="@+id/incomeTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/colorWhite"
+            android:background="@color/colorLightGrey"
+            android:paddingLeft="3dp"
+            android:paddingRight="3dp"
+            android:textAlignment="center"
+            android:text="income\nbudget" />
+
+        <android.support.design.widget.FloatingActionButton
             android:id="@+id/addBudgetFab"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="4dp"
             android:tint="@android:color/white"
+            android:backgroundTint="@color/colorPrimary"
             app:fabSize="normal"
             app:srcCompat="@drawable/ic_add_black_24dp" />
 

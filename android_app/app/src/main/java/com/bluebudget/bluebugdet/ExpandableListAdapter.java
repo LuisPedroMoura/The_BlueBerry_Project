@@ -2,13 +2,13 @@ package com.bluebudget.bluebugdet;
 
 import android.content.Context;
 import android.graphics.Typeface;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import java.util.HashMap;
@@ -19,6 +19,7 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
     private List<List<String>> headerList;
     private HashMap<String, List<List<String>>> headerChildMap;
     private int key;
+    private int groupPos, childPos;
 
     private static final String TAG = "ExpandableListAdapter";
 
@@ -27,6 +28,8 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
         this.headerList = headerList;
         this.headerChildMap = headerChildMap;
         this.key = key;
+        groupPos = -1;
+        childPos = -1;
     }
 
     @Override
@@ -85,7 +88,8 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
         TextView amountTV = convertView.findViewById(R.id.headerAmountTextView);
         ImageView moreIV = convertView.findViewById(R.id.headerMoreImageView);
         TextView addSubCatTV = convertView.findViewById(R.id.textviewTextView);
-
+        groupPos=groupPosition;
+        childPos=-1;
         if(headerList.size()==3){
             int icon = Integer.parseInt(headerList.get(0));
             String description = headerList.get(1);
@@ -97,6 +101,7 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
             amountTV.setTypeface(null, Typeface.BOLD);
             amountTV.setText(amount);
             moreIV.setOnClickListener(moreIVListener);
+
         }
         else{
             String text = headerList.get(0);
@@ -135,7 +140,8 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
         TextView descriptionTV = convertView.findViewById(R.id.childDescriptionTextView);
         TextView amountTV = convertView.findViewById(R.id.childAmountTextView);
         ImageView moreIV = convertView.findViewById(R.id.childMoreImageView);
-
+        groupPos=groupPosition;
+        childPos=childPosition;
 
         if(childList.size()==3){
 
@@ -147,6 +153,7 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
             String amount = childList.get(2);
             amountTV.setText(amount);
             moreIV.setOnClickListener(moreIVListener);
+
             //Log.i(TAG, "description = " + description);
             //Log.i(TAG, "amount = " + amount);
         }
@@ -174,7 +181,20 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
     View.OnClickListener moreIVListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
+
+
+            Log.i(TAG, "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!groupPos="+groupPos+" childPos="+childPos);
+
+            openDialog("Edit", " ");
             Log.i(TAG, "more icon clicked");
         }
     };
+
+    public void openDialog( String title, String tip) {
+        PopupDialogEdit dialog = new PopupDialogEdit();
+        dialog.setTitle(title);
+        //dialog.setTipTV(tip);
+
+        dialog.show(((AppCompatActivity) context).getSupportFragmentManager(), TAG+"-> openDialog-> Popup Dialog");
+    }
 }

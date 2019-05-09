@@ -107,33 +107,40 @@ public class Home extends AppCompatActivity {
 
 
     public void initOverview(){
-        updateIncomesTV();
-        updateExpensesTV();
+        double incomes = updateIncomesTV();
+        double expenses = updateExpensesTV();
         updateTransfersTV();
+        updateWalletsBalanceTV(incomes, expenses);
     }
 
-    public void updateIncomesTV(){
+    public double updateIncomesTV(){
         List<AppTransaction> incomes = Home.app.getTransactions(null, null, null, null,
                 null, AppTransactionType.INCOME);
 
         double incomesAmount = Home.app.calculateBalance(incomes);
-        incomesOverviewTV.setText(Double.toString(incomesAmount)+"€");
+        incomesOverviewTV.setText(incomesAmount+"€");
+        return incomesAmount;
     }
 
-    public void updateExpensesTV(){
+    public double updateExpensesTV(){
         List<AppTransaction> expenses = Home.app.getTransactions(null, null, null, null,
                 null, AppTransactionType.EXPENSE);
 
         double expensesAmount = Home.app.calculateBalance(expenses);
-        expensesOverviewTV.setText(Double.toString(expensesAmount)+"€");
+        expensesOverviewTV.setText(expensesAmount+"€");
+        return expensesAmount;
     }
 
     public void updateTransfersTV(){
         List<AppTransaction> transfers = Home.app.getTransactions(null, null, null, null,
-                null, AppTransactionType.TRANSFER);;
+                null, AppTransactionType.TRANSFER);
 
         double transfersAmount = Home.app.calculateBalance(transfers);
-        transfersOverviewTV.setText(Double.toString(transfersAmount)+"€");
+        transfersOverviewTV.setText(transfersAmount+"€");
+    }
+
+    public void updateWalletsBalanceTV(double incomes, double expenses){
+        walletsBalanceTV.setText((incomes+expenses)+"€"); //expenses are a negative value
     }
 
 
@@ -141,10 +148,11 @@ public class Home extends AppCompatActivity {
         budgetTypeExpenses = Home.app.filterCategories(null,AppBudgetType.EXPENSE);
         Map<String, Float> spents = new HashMap<>();
         boolean hasData = false;
+        Log.i(TAG, "budgetTypeExpenses.size() "+budgetTypeExpenses.size()+"!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
         for(AppCategory c : budgetTypeExpenses){
             String catName = c.getName();
             float spentAmount = (float)getSpentAmount(catName);
-            Log.i(TAG, spentAmount+"!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+            Log.i(TAG, spentAmount+"");
             if(spentAmount!= (float)0.0){
                 spents.put(catName, spentAmount);
                 hasData=true;

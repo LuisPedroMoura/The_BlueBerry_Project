@@ -181,6 +181,7 @@
             android:layout_height="wrap_content"
             android:layout_margin="4dp"
             android:tint="@android:color/white"
+            android:backgroundTint="@color/colorPrimary"
             app:fabSize="mini"
             app:srcCompat="@drawable/ic_compare_arrows_black_24dp" />
 
@@ -188,6 +189,10 @@
             android:id="@+id/transferTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:textColor="@color/colorWhite"
+            android:background="@color/colorLightGrey"
+            android:paddingLeft="3dp"
+            android:paddingRight="3dp"
             android:text="transfer" />
 
         <android.support.design.widget.FloatingActionButton
@@ -196,6 +201,7 @@
             android:layout_height="wrap_content"
             android:layout_margin="4dp"
             android:tint="@android:color/white"
+            android:backgroundTint="@color/colorPrimary"
             app:fabSize="mini"
             app:srcCompat="@drawable/ic_trending_down_black_24dp" />
 
@@ -203,6 +209,10 @@
             android:id="@+id/expenseTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:textColor="@color/colorWhite"
+            android:background="@color/colorLightGrey"
+            android:paddingLeft="3dp"
+            android:paddingRight="3dp"
             android:text="expense" />
 
         <android.support.design.widget.FloatingActionButton
@@ -211,6 +221,7 @@
             android:layout_height="wrap_content"
             android:layout_margin="4dp"
             android:tint="@android:color/white"
+            android:backgroundTint="@color/colorPrimary"
             app:fabSize="mini"
             app:srcCompat="@drawable/ic_trending_up_black_24dp" />
 
@@ -218,6 +229,10 @@
             android:id="@+id/incomeTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:textColor="@color/colorWhite"
+            android:background="@color/colorLightGrey"
+            android:paddingLeft="3dp"
+            android:paddingRight="3dp"
             android:text="income" />
 
         <android.support.design.widget.FloatingActionButton
@@ -226,6 +241,7 @@
             android:layout_height="wrap_content"
             android:layout_margin="4dp"
             android:tint="@android:color/white"
+            android:backgroundTint="@color/colorPrimary"
             app:fabSize="normal"
             app:srcCompat="@drawable/ic_add_black_24dp" />
 

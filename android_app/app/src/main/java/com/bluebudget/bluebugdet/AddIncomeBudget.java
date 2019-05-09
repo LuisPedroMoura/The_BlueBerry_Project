@@ -1,8 +1,8 @@
 package com.bluebudget.bluebugdet;
 
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.ExpandableListView;
@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-public class WalkthroughIncome extends AppCompatActivity
+public class AddIncomeBudget extends AppCompatActivity
                                 implements PopupDialogAdd.PopupDialogListener,
                                             PopupDialogEdit.PopupDialogListener{
 
@@ -34,7 +34,7 @@ public class WalkthroughIncome extends AppCompatActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_walkthrough_income);
+        setContentView(R.layout.activity_add_income_budget);
 
         getIncomeCategories();
 
@@ -61,7 +61,7 @@ public class WalkthroughIncome extends AppCompatActivity
 
         Log.i(TAG, "initExpandableLV");
 
-        expLV = findViewById(R.id.incomeWalkthroughExpLV);
+        expLV = findViewById(R.id.addIncomeBudgetExpLV);
 
 
 
@@ -149,8 +149,6 @@ public class WalkthroughIncome extends AppCompatActivity
                 openDialog("New sub-category");
             }
 
-
-
             return false;
         }
     };
@@ -180,17 +178,11 @@ public class WalkthroughIncome extends AppCompatActivity
         String subcatName = Home.app.newSubCategoryFullName(parentName, name);
 
         Home.app.addCategory(parentName, subcatName, incomeCat.getIcon(), amount, 1, AppBudgetType.INCOME);
-        Home.app.updateCategory(parentName, incomeCat.getDefBudget()+amount, 1);
-
-        //refresh
-        Intent intent = getIntent();
-        finish();
-        startActivity(intent);
     }
 
-    public void incomeWalkthroughBtnClicked(View view){
+    public void addIncomeBudgetOkBtnClicked(View view){
         Log.i(TAG, "next btn clicked");
-        Intent next = new Intent(WalkthroughIncome.this, WalkthroughBudget.class);
+        Intent next = new Intent(AddIncomeBudget.this, Budget.class);
         startActivity(next);
     }
 

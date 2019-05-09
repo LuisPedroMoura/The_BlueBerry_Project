@@ -103,7 +103,14 @@ public class Stats extends AppCompatActivity {
     //select toolbar item
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        Log.i(TAG, item.toString()+" selected");
+        int id = item.getItemId();
+
+        if(id == R.id.filterIcon){
+            Log.i(TAG, "filter clicked");
+            Intent filter = new Intent(Stats.this, Filter.class);
+            filter.putExtra("className", "Stats");
+            startActivity(filter);
+        }
         return super.onOptionsItemSelected(item);
     }
 
@@ -166,7 +173,7 @@ public class Stats extends AppCompatActivity {
 
             String catName = c.getName();
             float spentAmount = (float)getSpentAmount(catName);
-            Log.i(TAG, spentAmount+"!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+            Log.i(TAG, spentAmount+"");
             if(spentAmount!= (float)0.0){
                 spending.put(catName, spentAmount);
                 hasData=true;
