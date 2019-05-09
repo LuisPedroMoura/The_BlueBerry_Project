@@ -27,5 +27,10 @@ namespace BlueBudget_DB
         {
 
         }
+
+        private void Back_btn_Click(object sender, EventArgs e)
+        {
+            this.Close();
+        }
     }
 }

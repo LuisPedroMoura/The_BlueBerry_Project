@@ -131,8 +131,6 @@ namespace BlueBudget_DB
             // get selected item value and paste it to textbox
             user_textbox.Text = (string)associatedusers_listbox.SelectedItem;
             user_textbox.ForeColor = Color.Black;
-
-            // UNFINISHED!
         }
 
 
@@ -358,10 +356,9 @@ namespace BlueBudget_DB
             }
         }
 
-        private void user_login_Load(object sender, EventArgs e)
+        private void UserLoginForm_Load(object sender, EventArgs e)
         {
 
         }
-
     }
 }

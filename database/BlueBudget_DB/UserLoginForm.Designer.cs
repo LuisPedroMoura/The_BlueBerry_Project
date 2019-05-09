@@ -68,7 +68,7 @@
             // 
             this.accounts_listbox.FormattingEnabled = true;
             this.accounts_listbox.Location = new System.Drawing.Point(30, 105);
-            this.accounts_listbox.Margin = new System.Windows.Forms.Padding(2);
+            this.accounts_listbox.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.accounts_listbox.Name = "accounts_listbox";
             this.accounts_listbox.Size = new System.Drawing.Size(188, 173);
             this.accounts_listbox.TabIndex = 1;
@@ -110,7 +110,7 @@
             // 
             this.back_btn.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.back_btn.Location = new System.Drawing.Point(500, 300);
-            this.back_btn.Margin = new System.Windows.Forms.Padding(2);
+            this.back_btn.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.back_btn.Name = "back_btn";
             this.back_btn.Size = new System.Drawing.Size(74, 29);
             this.back_btn.TabIndex = 6;
@@ -122,7 +122,7 @@
             // 
             this.login_btn.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.login_btn.Location = new System.Drawing.Point(422, 300);
-            this.login_btn.Margin = new System.Windows.Forms.Padding(2);
+            this.login_btn.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.login_btn.Name = "login_btn";
             this.login_btn.Size = new System.Drawing.Size(74, 29);
             this.login_btn.TabIndex = 7;
@@ -133,7 +133,7 @@
             // findme_btn
             // 
             this.findme_btn.Location = new System.Drawing.Point(203, 54);
-            this.findme_btn.Margin = new System.Windows.Forms.Padding(2);
+            this.findme_btn.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.findme_btn.Name = "findme_btn";
             this.findme_btn.Size = new System.Drawing.Size(56, 20);
             this.findme_btn.TabIndex = 9;
@@ -276,11 +276,11 @@
             this.Controls.Add(this.label2);
             this.Controls.Add(this.accounts_listbox);
             this.Controls.Add(this.label1);
-            this.Margin = new System.Windows.Forms.Padding(2);
+            this.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.Name = "UserLoginForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "user_login";
-            this.Load += new System.EventHandler(this.user_login_Load);
+            this.Load += new System.EventHandler(this.UserLoginForm_Load);
             this.ResumeLayout(false);
             this.PerformLayout();
 

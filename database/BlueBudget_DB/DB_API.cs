@@ -57,7 +57,8 @@ namespace BlueBudget_DB
             term,
 	        interest,
 	        monthly_payment,
-            account_id
+            account_id,
+            payment
         }
         public enum BudgetEnt
         {
@@ -124,8 +125,7 @@ namespace BlueBudget_DB
 
         public static string Moneyfy(string value)
         {
-            double aux;
-            if (Double.TryParse(value, out aux))
+            if (Double.TryParse(value, out double aux))
             {
                 return Moneyfy(aux);
             }
@@ -359,7 +359,7 @@ public static bool ExistsUser(string email)
             return (int)DB_IO.SelectScalar(DB_IO.DB_Interface.pr_select_category_types, attrValue);
         }
 
-        public static string SelectCategoryDesignationById(int category_type_id)
+        public static string SelectCategoryTypeDesignationById(int category_type_id)
         {
             var attrValue = DB_IO.AttrValue();
             attrValue[CategoryTypeEnt.category_type_id] = category_type_id;
@@ -392,15 +392,16 @@ public static bool ExistsUser(string email)
             return DB_IO.SelectReader(DB_IO.DB_Interface.pr_select_loans, attrValue);
         }
 
-        public static void InsertLoan(int account_id, string name, double amount, DateTime term, double interest)
+        public static void InsertLoan(int account_id, string name, double amount, double current_debt, DateTime term, double interest)
         {
             var attrValue = new Dictionary<System.Enum, Object>
             {
                 { LoanEnt.account_id, account_id },
                 { LoanEnt.name, name },
                 { LoanEnt.initial_amount, amount },
+                { LoanEnt.current_debt, current_debt },
                 { LoanEnt.term, term },
-                {LoanEnt.interest, interest }
+                { LoanEnt.interest, interest }
             };
             DB_IO.Insert(DB_IO.DB_Interface.pr_insert_loan, attrValue);
         }
@@ -413,6 +414,17 @@ public static bool ExistsUser(string email)
                 { LoanEnt.name, name }
             };
             return DB_IO.Exists(DB_IO.DB_Interface.pr_select_loans, attrValue);
+        }
+
+        public static void LoanPayment(int account_id, string name, double payment)
+        {
+            var attrValue = new Dictionary<System.Enum, Object>
+            {
+                { LoanEnt.account_id, account_id },
+                { LoanEnt.name, name },
+                { LoanEnt.payment, payment }
+            };
+            DB_IO.Update(DB_IO.DB_Interface.pr_loan_payment, attrValue);
         }
 
 

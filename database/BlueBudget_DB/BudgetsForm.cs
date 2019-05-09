@@ -224,7 +224,7 @@ namespace BlueBudget_DB
                 cat_type_id = (int)rdr[DB_API.CategoryEnt.category_type_id.ToString()];
                 break;
             }
-            cat_type_name = DB_API.SelectCategoryDesignationById(cat_type_id);
+            cat_type_name = DB_API.SelectCategoryTypeDesignationById(cat_type_id);
             Type_comboBox.Text = cat_type_name;
         }
 

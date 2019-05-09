@@ -48,6 +48,7 @@ namespace BlueBudget_DB
             pr_select_loans,
             pr_exists_loan,
             pr_insert_loan,
+            pr_loan_payment,
             //---
             pr_select_budgets,
             pr_insert_budget,
