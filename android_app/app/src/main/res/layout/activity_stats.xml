@@ -77,7 +77,7 @@
     <com.github.mikephil.charting.charts.PieChart
         android:id="@+id/piechart"
         android:layout_width="0dp"
-        android:layout_height="300dp"
+        android:layout_height="200dp"
         android:layout_marginTop="4dp"
         app:layout_constraintBottom_toTopOf="@+id/statsListView"
         app:layout_constraintEnd_toEndOf="parent"

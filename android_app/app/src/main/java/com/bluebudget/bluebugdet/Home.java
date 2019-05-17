@@ -7,6 +7,7 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.CardView;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -38,8 +39,13 @@ public class Home extends AppCompatActivity {
     private TextView expensesOverviewTV;
     private TextView transfersOverviewTV;
     private PieChart pie;
+    private CardView overviewCV;
+    private CardView expensesCV;
     private List<AppCategory> budgetTypeExpenses;
     private FloatingActionButton expenseFab;
+    //private View.OnClickListener overviewCVListener
+    //private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
+    //View.OnClickListener expenseFabOnClick
 
     private static final String TAG = "Home";
 
@@ -53,6 +59,8 @@ public class Home extends AppCompatActivity {
         incomesOverviewTV = findViewById(R.id.incomesOverviewTV);
         expensesOverviewTV = findViewById(R.id.expensesOverviewTV);
         transfersOverviewTV = findViewById(R.id.transfersOverviewTV);
+        overviewCV = findViewById(R.id.overviewCardView);
+        expensesCV = findViewById(R.id.expensesCardView);
 
         initOverview();
         initPieChart();
@@ -82,8 +90,6 @@ public class Home extends AppCompatActivity {
             switch (item.getItemId()) {
                 case R.id.navigation_home:
                     Log.i(TAG, "home clicked");
-                    Intent newTransactions = new Intent(Home.this, WalkthroughIncome.class);
-                    startActivity(newTransactions);
                     return true;
                 case R.id.navigation_transactions:
                     Log.i(TAG, "transactions clicked");
@@ -111,6 +117,8 @@ public class Home extends AppCompatActivity {
         double expenses = updateExpensesTV();
         updateTransfersTV();
         updateWalletsBalanceTV(incomes, expenses);
+
+        overviewCV.setOnClickListener(overviewCVListener);
     }
 
     public double updateIncomesTV(){
@@ -143,12 +151,21 @@ public class Home extends AppCompatActivity {
         walletsBalanceTV.setText((incomes+expenses)+"€"); //expenses are a negative value
     }
 
+    private View.OnClickListener overviewCVListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            Intent trans = new Intent(Home.this, Transactions.class);
+            startActivity(trans);
+
+        }
+    };
+
 
     public void initPieChart(){
         budgetTypeExpenses = Home.app.filterCategories(null,AppBudgetType.EXPENSE);
         Map<String, Float> spents = new HashMap<>();
         boolean hasData = false;
-        Log.i(TAG, "budgetTypeExpenses.size() "+budgetTypeExpenses.size()+"!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+        //Log.i(TAG, "budgetTypeExpenses.size() "+budgetTypeExpenses.size()+"!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
         for(AppCategory c : budgetTypeExpenses){
             String catName = c.getName();
             float spentAmount = (float)getSpentAmount(catName);
@@ -162,6 +179,8 @@ public class Home extends AppCompatActivity {
         if(hasData) {
             drawPieChart(spents);
         }
+
+        expensesCV.setOnClickListener(expensesCVListener);
     }
 
     public double getSpentAmount(String catName){
@@ -198,6 +217,14 @@ public class Home extends AppCompatActivity {
         pie.invalidate();
     }
 
+
+    private View.OnClickListener expensesCVListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            Intent stats = new Intent(Home.this, Stats.class);
+            startActivity(stats);
+        }
+    };
 
 
     private void initFabMenu() {

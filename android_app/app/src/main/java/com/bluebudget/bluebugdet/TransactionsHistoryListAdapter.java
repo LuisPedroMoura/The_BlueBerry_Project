@@ -66,16 +66,20 @@ public class TransactionsHistoryListAdapter extends ArrayAdapter<TransactionsHis
 
         if(!amount.equals(" ")){
             Double value = Double.parseDouble(amount);
-            if(value<0){
-                //Log.i(TAG, value+"");
-                amountTV.setTextColor(amountTV.getContext().getResources().getColor(R.color.colorRed));
-            }
-            else{
-                amountTV.setTextColor(amountTV.getContext().getResources().getColor(R.color.colorGreen));
+            if(icon == R.drawable.ic_compare_arrows_black_24dp){
+                //is transfer
+                amountTV.setText(-value+"");
+                amountTV.setTextColor(amountTV.getContext().getResources().getColor(R.color.colorDarkBlue));
+            }else{
+                if(value<0){
+                    //Log.i(TAG, value+"");
+                    amountTV.setTextColor(amountTV.getContext().getResources().getColor(R.color.colorRed));
+                }
+                else{
+                    amountTV.setTextColor(amountTV.getContext().getResources().getColor(R.color.colorGreen));
+                }
             }
         }
-
-
         return convertView;
     }
 

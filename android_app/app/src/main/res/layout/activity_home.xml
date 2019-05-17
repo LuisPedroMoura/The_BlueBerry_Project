@@ -44,6 +44,7 @@
             android:text="Wallets Balance" />
 
         <android.support.v7.widget.CardView
+            android:id="@+id/overviewCardView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_margin="10dp"
@@ -66,50 +67,50 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_margin="10dp"
-                    app:rowCount="3"
-                    app:columnCount="2">
+                    app:columnCount="2"
+                    app:rowCount="3">
 
                     <TextView
                         android:id="@+id/textView8"
+                        android:text="Incomes"
                         app:layout_columnWeight="1"
                         app:layout_gravity="left"
-                        app:layout_rowWeight="1"
-                        android:text="Incomes" />
+                        app:layout_rowWeight="1" />
 
                     <TextView
                         android:id="@+id/incomesOverviewTV"
+                        android:text="TextView"
                         app:layout_columnWeight="1"
                         app:layout_gravity="center"
-                        app:layout_rowWeight="1"
-                        android:text="TextView"/>
+                        app:layout_rowWeight="1" />
 
                     <TextView
                         android:id="@+id/textView12"
+                        android:text="Expenses"
                         app:layout_columnWeight="1"
                         app:layout_gravity="left"
-                        app:layout_rowWeight="1"
-                        android:text="Expenses"/>
+                        app:layout_rowWeight="1" />
 
                     <TextView
                         android:id="@+id/expensesOverviewTV"
+                        android:text="TextView"
                         app:layout_columnWeight="1"
                         app:layout_gravity="center"
-                        app:layout_rowWeight="1"
-                        android:text="TextView"/>
+                        app:layout_rowWeight="1" />
 
                     <TextView
                         android:id="@+id/textView22"
+                        android:text="Transfers"
                         app:layout_columnWeight="1"
                         app:layout_gravity="left"
-                        app:layout_rowWeight="1"
-                        android:text="Transfers"/>
+                        app:layout_rowWeight="1" />
 
                     <TextView
                         android:id="@+id/transfersOverviewTV"
+                        android:text="TextView"
                         app:layout_columnWeight="1"
                         app:layout_gravity="center"
-                        app:layout_rowWeight="1"
-                        android:text="TextView"/>
+                        app:layout_rowWeight="1" />
                 </android.support.v7.widget.GridLayout>
 
             </LinearLayout>
@@ -118,6 +119,7 @@
         </android.support.v7.widget.CardView>
 
         <android.support.v7.widget.CardView
+            android:id="@+id/expensesCardView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_margin="10dp"
@@ -138,9 +140,10 @@
                     android:textSize="16sp" />
 
                 <com.github.mikephil.charting.charts.PieChart
+                    android:id="@+id/homePieChart"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:id="@+id/homePieChart">
+                    android:layout_margin="10dp">
 
                 </com.github.mikephil.charting.charts.PieChart>
             </LinearLayout>
