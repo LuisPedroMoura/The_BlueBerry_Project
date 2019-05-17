@@ -11,7 +11,7 @@ using System.Windows.Forms;
 
 namespace BlueBudget_DB
 {
-    public partial class goals : Form
+    public partial class GoalsForm : Form
     {
 
         string user_email;
@@ -20,7 +20,7 @@ namespace BlueBudget_DB
         List<string> user_goals;
         IDictionary<string, int> categories;
 
-        public goals(string user_email, int account_id)
+        public GoalsForm(string user_email, int account_id)
         {
             InitializeComponent();
             this.user_email = user_email;
@@ -55,12 +55,12 @@ namespace BlueBudget_DB
             // verify if field is filled
             if (goal_name.Equals(""))
             {
-                Notifications.Text = ErrorMessenger.EmptyField("Goal name");
+                ErrorMessenger.EmptyField("Goal name");
                 return;
             }
             if (amount.Equals(""))
             {
-                Notifications.Text = ErrorMessenger.EmptyField("Goal amount");
+                ErrorMessenger.EmptyField("Goal amount");
                 return;
             }
 
@@ -71,7 +71,7 @@ namespace BlueBudget_DB
             }
             catch
             {
-                Notifications.Text = ErrorMessenger.WrongFormat("Goal amount");
+                ErrorMessenger.WrongFormat("Goal amount");
                 return;
             }
 
@@ -86,7 +86,7 @@ namespace BlueBudget_DB
             }
             catch (SqlException ex)
             {
-                Notifications.Text = ErrorMessenger.Exception(ex);
+                ErrorMessenger.Exception(ex);
             }
 
             PopulateGoalsListBox();
@@ -210,13 +210,6 @@ namespace BlueBudget_DB
             // get categories from DB
             var rdr = DB_API.SelectAccountGoals(account_id);
 
-            // verify if account has no goals
-            if (!rdr.HasRows)
-            {
-                Notifications.Text = ErrorMessenger.Warning("Account has no goals!");
-                return;
-            }
-
             // extract goal names for listBox
             this.user_goals = new List<string>();
             var res = new List<string>();
@@ -255,12 +248,12 @@ namespace BlueBudget_DB
             goalamount_textBox.ForeColor = Color.Gray;
         }
 
-        private void goalname_textBox_Enter(object sender, EventArgs e)
+        private void Goalname_textBox_Enter(object sender, EventArgs e)
         {
             goalname_textBox.Text = "";
             goalname_textBox.ForeColor = Color.Black;
         }
-        private void goalname_textBox_Leave(object sender, EventArgs e)
+        private void Goalname_textBox_Leave(object sender, EventArgs e)
         {
             if (goalname_textBox.Text.Equals(""))
             {
@@ -269,12 +262,12 @@ namespace BlueBudget_DB
             }
         }
 
-        private void goalamount_textBox_Enter(object sender, EventArgs e)
+        private void Goalamount_textBox_Enter(object sender, EventArgs e)
         {
             goalamount_textBox.Text = "";
             goalamount_textBox.ForeColor = Color.Black;
         }
-        private void goalamount_textBox_Leave(object sender, EventArgs e)
+        private void Goalamount_textBox_Leave(object sender, EventArgs e)
         {
             if (goalamount_textBox.Text.Equals(""))
             {
@@ -283,7 +276,7 @@ namespace BlueBudget_DB
             }
         }
 
-        private void goals_Load(object sender, EventArgs e)
+        private void Goals_Load(object sender, EventArgs e)
         {
 
         }

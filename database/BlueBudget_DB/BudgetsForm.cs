@@ -11,7 +11,7 @@ using System.Windows.Forms;
 
 namespace BlueBudget_DB
 {
-    public partial class budgets : Form
+    public partial class BudgetsForm : Form
     {
 
         string user_email;
@@ -23,7 +23,7 @@ namespace BlueBudget_DB
             "---", "JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"
         };
 
-        public budgets(string user_email, int account_id)
+        public BudgetsForm(string user_email, int account_id)
         {
             InitializeComponent();
             this.user_email = user_email;
@@ -81,19 +81,12 @@ namespace BlueBudget_DB
                 // verify if field is filled
                 if (Category_textBox.Text.Equals(""))
                 {
-                    Notifications.Text = ErrorMessenger.EmptyField("Category");
+                    ErrorMessenger.EmptyField("Category");
                     return;
                 }
 
                 // add new category
-                try
-                {
-                    DB_API.AddCategoryToAccount(account_id, cat_name, type_id);
-                }
-                catch (SqlException ex)
-                {
-                    Notifications.Text = ErrorMessenger.Exception(ex);
-                }
+                DB_API.AddCategoryToAccount(account_id, cat_name, type_id);
             }
 
             // save new sub category
@@ -104,7 +97,7 @@ namespace BlueBudget_DB
                 // verify if field is filled
                 if (Subcategory_textBox.Text.Equals(""))
                 {
-                    Notifications.Text = ErrorMessenger.EmptyField("Sub-category");
+                    ErrorMessenger.EmptyField("Sub-category");
                     return;
                 }
 
@@ -115,7 +108,7 @@ namespace BlueBudget_DB
                 }
                 catch (SqlException ex)
                 {
-                    Notifications.Text = ErrorMessenger.Exception(ex);
+                    ErrorMessenger.Exception(ex);
                 }
             }
 
@@ -135,7 +128,7 @@ namespace BlueBudget_DB
                 }
                 catch
                 {
-                    Notifications.Text = ErrorMessenger.WrongFormat("Budget");
+                    ErrorMessenger.WrongFormat("Budget");
                     return;
                 }
                 int startMonth = StartMonth_comboBox.SelectedIndex;
@@ -157,7 +150,7 @@ namespace BlueBudget_DB
                 // verify that endaDate is bigger than startDate
                 if (startDate.CompareTo(endDate) > 0)
                 {
-                    Notifications.Text = ErrorMessenger.InvalidData("End date");
+                    ErrorMessenger.InvalidData("End date");
                     return;
                 }
 
@@ -168,7 +161,7 @@ namespace BlueBudget_DB
                 }
                 catch (SqlException ex)
                 {
-                    Notifications.Text = ErrorMessenger.Exception(ex);
+                    ErrorMessenger.Exception(ex);
                 }
             }
 
@@ -205,7 +198,7 @@ namespace BlueBudget_DB
                 cat_id = this.categories[selected];
                 PopulateBudgetsListBox(account_id, cat_id);
             }
-            catch (Exception ex)
+            catch
             {
                 selected = selected.Substring(5);
                 sub_cat_id = this.categories[selected];
@@ -231,7 +224,7 @@ namespace BlueBudget_DB
                 cat_type_id = (int)rdr[DB_API.CategoryEnt.category_type_id.ToString()];
                 break;
             }
-            cat_type_name = DB_API.SelectCategoryDesignationById(cat_type_id);
+            cat_type_name = DB_API.SelectCategoryTypeDesignationById(cat_type_id);
             Type_comboBox.Text = cat_type_name;
         }
 
@@ -267,7 +260,7 @@ namespace BlueBudget_DB
             // verify if account has no categories
             if (!rdr.HasRows)
             {
-                Notifications.Text = ErrorMessenger.Warning("Account has no categories!");
+                ErrorMessenger.Warning("Account has no categories!");
                 Categories_listbox.DataSource = new List<String>();
                 return;
             }

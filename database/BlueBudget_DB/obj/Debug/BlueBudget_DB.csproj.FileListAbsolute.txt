@@ -1,4 +1,3 @@
-C:\Users\Work\Dropbox\UA\3-Ano\The_BlueBerry_Project\database\BlueBudget_DB\obj\Debug\BlueBudget_DB.back_office.resources
 C:\Users\Work\Dropbox\UA\3-Ano\The_BlueBerry_Project\database\BlueBudget_DB\obj\Debug\BlueBudget_DB.MainForm.resources
 C:\Users\Work\Dropbox\UA\3-Ano\The_BlueBerry_Project\database\BlueBudget_DB\obj\Debug\BlueBudget_DB.Properties.Resources.resources
 C:\Users\Work\Dropbox\UA\3-Ano\The_BlueBerry_Project\database\BlueBudget_DB\obj\Debug\BlueBudget_DB.csproj.GenerateResource.cache
@@ -8,8 +7,6 @@ C:\Users\Work\Dropbox\UA\3-Ano\The_BlueBerry_Project\database\BlueBudget_DB\bin\
 C:\Users\Work\Dropbox\UA\3-Ano\The_BlueBerry_Project\database\BlueBudget_DB\bin\Debug\BlueBudget_DB.pdb
 C:\Users\Work\Dropbox\UA\3-Ano\The_BlueBerry_Project\database\BlueBudget_DB\obj\Debug\BlueBudget_DB.exe
 C:\Users\Work\Dropbox\UA\3-Ano\The_BlueBerry_Project\database\BlueBudget_DB\obj\Debug\BlueBudget_DB.pdb
-C:\Users\Work\Dropbox\UA\3-Ano\The_BlueBerry_Project\database\BlueBudget_DB\obj\Debug\BlueBudget_DB.user_login.resources
-C:\Users\Work\Dropbox\UA\3-Ano\The_BlueBerry_Project\database\BlueBudget_DB\obj\Debug\BlueBudget_DB.user_menu.resources
 C:\Users\Work\Dropbox\UA\3-Ano\The_BlueBerry_Project\database\BlueBudget_DB\obj\Debug\BlueBudget_DB.csprojAssemblyReference.cache
 D:\Dropbox\UA\3-Ano\The_BlueBerry_Project\database\BlueBudget_DB\bin\Debug\BlueBudget_DB.exe.config
 D:\Dropbox\UA\3-Ano\The_BlueBerry_Project\database\BlueBudget_DB\bin\Debug\BlueBudget_DB.exe
@@ -25,8 +22,12 @@ D:\Dropbox\UA\3-Ano\The_BlueBerry_Project\database\BlueBudget_DB\obj\Debug\BlueB
 D:\Dropbox\UA\3-Ano\The_BlueBerry_Project\database\BlueBudget_DB\obj\Debug\BlueBudget_DB.csproj.CoreCompileInputs.cache
 D:\Dropbox\UA\3-Ano\The_BlueBerry_Project\database\BlueBudget_DB\obj\Debug\BlueBudget_DB.exe
 D:\Dropbox\UA\3-Ano\The_BlueBerry_Project\database\BlueBudget_DB\obj\Debug\BlueBudget_DB.pdb
-C:\Users\Work\Dropbox\UA\3-Ano\The_BlueBerry_Project\database\BlueBudget_DB\obj\Debug\BlueBudget_DB.transactions.resources
-C:\Users\Work\Dropbox\UA\3-Ano\The_BlueBerry_Project\database\BlueBudget_DB\obj\Debug\BlueBudget_DB.goals.resources
-C:\Users\Work\Dropbox\UA\3-Ano\The_BlueBerry_Project\database\BlueBudget_DB\obj\Debug\BlueBudget_DB.loans.resources
-C:\Users\Work\Dropbox\UA\3-Ano\The_BlueBerry_Project\database\BlueBudget_DB\obj\Debug\BlueBudget_DB.budgets.resources
 C:\Users\Work\Dropbox\UA\3-Ano\The_BlueBerry_Project\database\BlueBudget_DB\obj\Debug\BlueBudget_DB.StocksForm.resources
+C:\Users\Work\Dropbox\UA\3-Ano\The_BlueBerry_Project\database\BlueBudget_DB\obj\Debug\BlueBudget_DB.BackOfficeForm.resources
+C:\Users\Work\Dropbox\UA\3-Ano\The_BlueBerry_Project\database\BlueBudget_DB\obj\Debug\BlueBudget_DB.BudgetsForm.resources
+C:\Users\Work\Dropbox\UA\3-Ano\The_BlueBerry_Project\database\BlueBudget_DB\obj\Debug\BlueBudget_DB.StatisticsForm.resources
+C:\Users\Work\Dropbox\UA\3-Ano\The_BlueBerry_Project\database\BlueBudget_DB\obj\Debug\BlueBudget_DB.GoalsForm.resources
+C:\Users\Work\Dropbox\UA\3-Ano\The_BlueBerry_Project\database\BlueBudget_DB\obj\Debug\BlueBudget_DB.LoansForm.resources
+C:\Users\Work\Dropbox\UA\3-Ano\The_BlueBerry_Project\database\BlueBudget_DB\obj\Debug\BlueBudget_DB.TransactionsForm.resources
+C:\Users\Work\Dropbox\UA\3-Ano\The_BlueBerry_Project\database\BlueBudget_DB\obj\Debug\BlueBudget_DB.UserLoginForm.resources
+C:\Users\Work\Dropbox\UA\3-Ano\The_BlueBerry_Project\database\BlueBudget_DB\obj\Debug\BlueBudget_DB.UserMenuForm.resources

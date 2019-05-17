@@ -61,6 +61,12 @@ BEGIN
 	DROP PROC pr_select_transaction_types;
 	DROP PROC pr_delete_transaction;
 
+	DROP PROC pr_update_stocks_values;
+	DROP PROC pr_select_purchased_stocks;
+	DROP PROC pr_select_stocks;
+	DROP PROC pr_insert_purchased_stock;
+	DROP PROC pr_delete_purchased_stocks;
+
 	DROP TRIGGER Project.tr_insert_base_categories_on_new_money_account_insert;
 	DROP TRIGGER Project.tr_insert_base_wallets_on_new_money_account_insert;
 	DROP TRIGGER Project.tr_insert_new_wallet_on_goal_insert;
@@ -149,23 +155,23 @@ GO
 CREATE PROC pr_insert_user (
 	@email varchar(50) = NULL,
 	@card_number varchar(20) = NULL,
-	@term DATETIME = NULL,
+	@term DATE = NULL,
 	@fname VARCHAR(20) = NULL,	
 	@lname VARCHAR(20) = NULL,
 	@periodicity INT = NULL,
 	@user_name varchar(20) = NULL,
 	@mname VARCHAR(20) = NULL,
-	@active BIT = 0
+	@active_subscription BIT = 0
 ) AS
 BEGIN
 
-	INSERT INTO Project.users(email, [user_name])
-	VALUES (@email, @user_name);
+	INSERT INTO Project.users(email, [user_name], active_subscription)
+	VALUES (@email, @user_name, @active_subscription);
 
-	IF @active=1
+	IF @active_subscription=1
 	BEGIN
-		INSERT INTO Project.subscriptions(card_number, email, term, fname, mname, lname, active, periodicity)
-		VALUES (@card_number, @email, @term, @fname, @mname, @lname, @active, @periodicity);
+		INSERT INTO Project.subscriptions(card_number, email, term, fname, mname, lname, periodicity)
+		VALUES (@card_number, @email, @term, @fname, @mname, @lname, @periodicity);
 	END
 
 END
@@ -175,6 +181,7 @@ CREATE PROC pr_delete_subscription (
 	@email varchar(50)
 ) AS
 BEGIN
+
 	DELETE FROM Project.subscriptions WHERE email=@email;
 END
 GO
@@ -192,13 +199,13 @@ GO
 CREATE PROC pr_update_user (
 	@email varchar(50) = NULL,
 	@card_number varchar(20) = NULL,
-	@term DATETIME = NULL,
+	@term DATE = NULL,
 	@fname VARCHAR(20) = NULL,	
 	@lname VARCHAR(20) = NULL,
 	@periodicity INT = NULL,
 	@user_name varchar(20) = NULL,
 	@mname VARCHAR(20) = NULL,
-	@active BIT = NULL
+	@active_subscription BIT = NULL
 ) AS
 BEGIN
 	
@@ -212,14 +219,16 @@ BEGIN
 
 	-- verify if user was subscribed
 	DECLARE @subscribed BIT;
-	SET @subscribed = ISNULL((SELECT card_number FROM Project.subscriptions WHERE email=@email), 0);
+	SET @subscribed = (SELECT active_subscription FROM Project.users WHERE email=@email);
 
 	-- update 'users' table
 	UPDATE Project.users
-	SET [user_name]=ISNULL(@user_name, [user_name])
+	SET
+		[user_name]=ISNULL(@user_name, [user_name]),
+		active_subscription=ISNULL(@active_subscription, active_subscription)
 	WHERE email=@email;
 
-	IF @subscribed=1 AND (@active=1 OR @active IS NULL)
+	IF @subscribed=1 AND (@active_subscription=1 OR @active_subscription IS NULL)
 	BEGIN
 
 		UPDATE Project.subscriptions
@@ -233,7 +242,7 @@ BEGIN
 		WHERE email=@email;
 	END
 
-	IF @subscribed=1 AND @active=0
+	IF @subscribed=1 AND @active_subscription=0
 	BEGIN
 		IF @subscribed=1
 		BEGIN
@@ -241,10 +250,10 @@ BEGIN
 		END
 	END
 
-	IF @subscribed=0 AND @active=1
+	IF @subscribed=0 AND @active_subscription=1
 	BEGIN
-		INSERT INTO Project.subscriptions (card_number, email,term, fname, mname, lname, periodicity, active)
-		VALUES (@card_number, @email, @term, @fname, @mname, @lname, @periodicity, @active);
+		INSERT INTO Project.subscriptions (card_number, email,term, fname, mname, lname, periodicity)
+		VALUES (@card_number, @email, @term, @fname, @mname, @lname, @periodicity);
 	END	
 END
 GO
@@ -252,13 +261,13 @@ GO
 CREATE PROC pr_select_users (
 	@email varchar(50) = NULL,
 	@card_number varchar(20) = NULL,
-	@term DATETIME = NULL,
+	@term DATE = NULL,
 	@fname VARCHAR(20) = NULL,	
 	@lname VARCHAR(20) = NULL,
 	@periodicity INT = NULL,
 	@user_name varchar(20) = NULL,
 	@mname VARCHAR(20) = NULL,
-	@active BIT = NULL
+	@active_subscription BIT = NULL
 ) AS
 BEGIN
 	
@@ -275,7 +284,7 @@ BEGIN
 		AND (lname=@lname OR @lname IS NULL)
 		AND (periodicity=@periodicity OR @periodicity IS NULL)
 		AND ([user_name]=@user_name OR @user_name IS NULL)
-		AND (active=@active OR @active IS NULL);
+		AND (active_subscription=@active_subscription OR @active_subscription IS NULL);
 END
 GO
 
@@ -344,9 +353,11 @@ BEGIN
 	-- insert new money_account
 	INSERT INTO Project.money_accounts(account_name, balance, patrimony)
 	VALUES (@account_name, @balance, @patrimony);
+
 	-- get new money_account id
 	DECLARE @account_id INT;
 	SET @account_id = SCOPE_IDENTITY();
+
 	-- create relation between money account and user
 	INSERT INTO Project.users_money_accounts([user_email], account_id)
 	VALUES (@user_email, @account_id);
@@ -627,8 +638,9 @@ GO
 
 CREATE PROC pr_select_loans (
 	@name VARCHAR(20) = NULL,
-	@amount MONEY = NULL,
-	@term DATETIME = NULL,
+	@initial_amount MONEY = NULL,
+	@current_debt MONEY = NULL,
+	@term DATE = NULL,
 	@interest DECIMAL(5,2) = NULL,
 	@account_id INT = NULL
 ) AS
@@ -638,7 +650,8 @@ BEGIN
 	FROM Project.loans
 	WHERE
 			([name]=@name OR @name IS NULL)
-		AND (amount=@amount OR @amount IS NULL)
+		AND (initial_amount=@initial_amount OR @initial_amount IS NULL)
+		AND (current_debt=@current_debt OR @current_debt IS NULL)
 		AND (term=@term OR @term IS NULL)
 		AND (interest=@interest OR @interest IS NULL)
 		AND (account_id=@account_id OR @account_id IS NULL)
@@ -659,10 +672,11 @@ END
 GO
 
 CREATE PROC pr_insert_loan (
-	@account_id INT = NULL,
-	@name VARCHAR(20) = NULL,
-	@amount MONEY = NULL,
-	@term DATETIME = NULL,
+	@account_id INT,
+	@name VARCHAR(20),
+	@initial_amount MONEY,
+	@current_debt MONEY = 0.0,
+	@term DATE = NULL,
 	@interest DECIMAL(5,2) = NULL
 ) AS
 BEGIN
@@ -675,8 +689,8 @@ BEGIN
 	--IF EXISTS (SELECT * FROM Project.loans WHERE account_id=@account_id AND [name]=@name)
 	--	RETURN -2
 
-	INSERT INTO Project.loans (account_id, [name], amount, term, interest)
-	VALUES (@account_id, @name, @amount, @term, @interest)
+	INSERT INTO Project.loans (account_id, [name], initial_amount, current_debt, term, interest)
+	VALUES (@account_id, @name, @initial_amount, @current_debt, @term, @interest)
 END
 GO
 
@@ -690,8 +704,8 @@ CREATE PROC pr_select_budgets (
 	@budget_id INT = NULL,
 	@amount MONEY = NULL,
 	@periodicity INT = NULL,
-	@start_date DATETIME = NULL,
-	@end_date DATETIME = NULL
+	@start_date DATE = NULL,
+	@end_date DATE = NULL
 ) AS
 BEGIN
 	
@@ -738,8 +752,8 @@ CREATE PROC pr_insert_budget (
 	@category_id INT,
 	@amount MONEY = 0.0,
 	@periodicity INT = 1,
-	@start_date DATETIME NULL,
-	@end_date DATETIME = NULL
+	@start_date DATE NULL,
+	@end_date DATE = NULL
 ) AS
 BEGIN
 	
@@ -761,7 +775,7 @@ CREATE PROC pr_insert_goal (
 	@category_id INT,
 	@account_id INT,
 	@amount INT = 0.0,
-	@term DATETIME = NULL,
+	@term DATE = NULL,
 	@accomplished BIT = 0
 ) AS
 BEGIN
@@ -778,7 +792,7 @@ CREATE PROC pr_select_goals (
 	@category_id INT = NULL,
 	@account_id INT = NULL,
 	@amount INT = NULL,
-	@term DATETIME = NULL,
+	@term DATE = NULL,
 	@accomplished BIT = NULL
 ) AS
 BEGIN
@@ -807,22 +821,23 @@ CREATE PROC pr_select_transactions (
 	@transaction_type_id INT = NULL,
 	@min_amount MONEY = NULL,
 	@max_amount MONEY = NULL,
-	@start_date DATETIME = NULL,
-	@end_date DATETIME = NULL,
+	@start_date DATE = NULL,
+	@end_date DATE = NULL,
 	@location VARCHAR(50) = NULL
 ) AS
 BEGIN
 	
-	SET @start_date = CONVERT(DATE, @start_date)
-	SET @end_date = CONVERT(DATE, @end_date)
-	IF @start_date = @end_date
-	BEGIN
-		SET @end_date = DATEADD(day,1,@end_date)
-		SET @end_date = DATEADD(second,-1,@end_date)
+	--SET @start_date = CONVERT(DATE, CONVERT(DATE, @start_date))
+	--SET @end_date = CONVERT(DATE, CONVERT(DATE, @end_date))
+	--IF @start_date = @end_date
+	--BEGIN
+	--	SET @end_date = DATEADD(day,1,@end_date)
+	--	SET @end_date = DATEADD(millisecond,-1,@end_date)
+	--END
 
-	PRINT CONCAT(@start_date, ' <-> ', @end_date) 
-	/*
-	IF @category_id%100 = 0
+	--PRINT CONCAT(@start_date, ' <-> ', @end_date) 
+	--
+	IF @category_id%100 != 0
 	BEGIN
 	
 		SELECT *
@@ -859,19 +874,17 @@ BEGIN
 			AND ([date]>=@start_date OR @start_date IS NULL)
 			AND ([date]<=@end_date OR @end_date IS NULL)
 			AND ([location]=@location OR @location IS NULL)
-
 	END
-	*/
 END
 GO
-exec pr_select_transactions @start_date='05/04/2019 00:00:00', @end_date='05/05/2019 15:32:00';
+
 CREATE PROC pr_insert_transaction (
 	@account_id INT,
 	@category_id INT,
 	@wallet_id INT,
 	@transaction_type_id INT,
 	@amount MONEY = 0.0,
-	@date DATETIME = NULL,
+	@date DATE = NULL,
 	@notes VARCHAR(50) = NULL,
 	@location VARCHAR(50) = NULL
 ) AS
@@ -931,6 +944,91 @@ BEGIN
 END
 GO
 
+---------------------------------------------------------------
+--- STOCK -----------------------------------------------------
+---------------------------------------------------------------
+
+CREATE PROC pr_update_stocks_values
+AS
+BEGIN
+
+	UPDATE Project.stocks
+	SET ask_price=CAST(ABS(CHECKSUM(NEWID()) % 10000) AS MONEY) / 100
+END
+GO
+
+CREATE PROC pr_select_purchased_stocks (
+	@account_id INT = NULL,
+	@ticker INT = NULL,
+	@company VARCHAR(50) = NULL,
+	@purchase_price MONEY = NULL
+) AS
+BEGIN
+	
+	SELECT PS.account_id AS account_id, PS.ticker AS ticker, PS.company AS company, PS.purchase_price AS purchase_price,
+			S.bid_price AS bid_price, S.stock_type_id AS stock_type_id
+	FROM
+		Project.purchased_stocks AS PS JOIN Project.stocks AS S
+		ON PS.company = S.company
+	WHERE
+			(account_id=@account_id OR @account_id IS NULL)
+		AND (ticker=@ticker OR @ticker IS NULL)
+		AND (PS.company=@company OR @company IS NULL)
+		AND (purchase_price=@purchase_price OR @purchase_price IS NULL)
+END
+GO
+
+CREATE PROC pr_select_stocks (
+	@company VARCHAR(50) = NULL,
+	@min_ask_price MONEY = NULL,
+	@max_ask_price MONEY = NULL,
+	@min_bid_price MONEY = NULL,
+	@max_bid_price MONEY = NULL,
+	@stock_type_id INT = NULL
+) AS
+BEGIN
+	
+	-- update stocks values
+	EXEC pr_update_stocks_values;
+	
+	-- select stocks
+	SELECT S.company, S.ask_price, S.stock_type_id, ST.designation AS stock_type
+	FROM
+		Project.stocks AS S LEFT JOIN Project.stock_types AS ST
+		ON S.stock_type_id=ST.Stock_type_id
+	WHERE
+			(ask_price>=@min_ask_price OR @min_ask_price IS NULL)
+		AND (ask_price<=@max_ask_price OR @max_ask_price IS NULL)
+		AND (bid_price>=@min_bid_price OR @min_bid_price IS NULL)
+		AND (bid_price<=@max_bid_price OR @max_bid_price IS NULL)
+		AND (company=@company OR @company IS NULL)
+		AND (S.stock_type_id=@stock_type_id OR @stock_type_id IS NULL)
+END
+GO
+
+CREATE PROC pr_insert_purchased_stock (
+	@account_id INT,
+	@company VARCHAR(50),
+	@purchase_price MONEY
+) AS
+BEGIN
+
+	INSERT INTO Project.purchased_stocks (account_id, company, purchase_price)
+	VALUES (@account_id, @company, @purchase_price)
+END
+GO
+
+CREATE PROC pr_delete_purchased_stocks (
+	@ticker INT = NULL,
+	@company VARCHAR(50) = NULL
+) AS
+BEGIN
+
+	DELETE FROM Project.purchased_stocks
+	WHERE ticker=@ticker OR company=@company
+END
+GO
+
 ------------------------------------------------------------------------------------------------------------------------
 -- CREATE DATABASE TABLES ----------------------------------------------------------------------------------------------
 ------------------------------------------------------------------------------------------------------------------------
@@ -967,6 +1065,7 @@ CREATE TABLE Project.users
 (
 	email VARCHAR(50),
 	[user_name] VARCHAR(20),
+	active_subscription BIT NOT NULL DEFAULT(0),
 	CHECK([user_name] != ''),
 	CONSTRAINT PK_USERS PRIMARY KEY (email),
 );
@@ -975,11 +1074,10 @@ CREATE TABLE Project.subscriptions
 (
 	card_number VARCHAR(20),
 	email VARCHAR(50),
-	term DATETIME NOT NULL, --DEFAULT DATEADD(year, 1, GETDATE()),
+	term DATE NOT NULL, --DEFAULT DATEADD(year, 1, GETDATE()),
 	fname VARCHAR(20) NOT NULL,
 	mname VARCHAR(20),
 	lname VARCHAR(20) NOT NULL,
-	active BIT NOT NULL DEFAULT(0),
 	periodicity INT NOT NULL,
 	CHECK(card_number>0),
 	CONSTRAINT PK_SUBSCRIPTIONS PRIMARY KEY (card_number),
@@ -1031,8 +1129,8 @@ CREATE TABLE Project.transaction_types
 CREATE TABLE Project.transactions
 (
 	transaction_id INT IDENTITY(1,1),
-	amount INT NOT NULL,
-	[date] DATETIME NOT NULL,
+	amount MONEY NOT NULL,
+	[date] DATE NOT NULL,
 	notes VARCHAR(50),
 	[location] VARCHAR(50),
 	category_id INT,
@@ -1067,8 +1165,8 @@ CREATE TABLE Project.budgets
 	account_id INT,
 	amount INT DEFAULT 0,
 	periodicity INT,
-	[start_date] DATETIME,
-	end_date DATETIME,
+	[start_date] DATE,
+	end_date DATE,
 	CONSTRAINT PK_BUDGETS PRIMARY KEY (budget_id, category_id, account_id),
 	CONSTRAINT FK_BUDGETS_RECURRENCE FOREIGN KEY (periodicity) REFERENCES Project.recurrence(periodicity)
 		ON DELETE NO ACTION ON UPDATE CASCADE,
@@ -1082,7 +1180,7 @@ CREATE TABLE Project.goals
 	category_id INT,
 	account_id INT,
 	amount INT DEFAULT 0,
-	term DATETIME,
+	term DATE,
 	accomplished BIT,
 	CHECK([name] != ''),
 	CONSTRAINT PK_GOALS PRIMARY KEY ([name], category_id, account_id),
@@ -1094,11 +1192,12 @@ CREATE TABLE Project.loans
 (
 	[name] VARCHAR(20),
 	account_id INT,
-	amount MONEY,
-	term DATETIME,
+	initial_amount MONEY,
+	current_debt MONEY,
+	term DATE,
 	interest DECIMAL(5,2) DEFAULT(0.0),
 	CHECK([name] != ''),
-	CHECK(amount>=0),
+	CHECK(initial_amount>=0),
 	CHECK(interest BETWEEN 0 AND 100),
 	CONSTRAINT PK_LOANS PRIMARY KEY ([name], account_id),
 	CONSTRAINT FK_LOANS_MONEYACCOUNTS FOREIGN KEY (account_id) REFERENCES Project.money_accounts(account_id)
@@ -1116,8 +1215,8 @@ CREATE TABLE Project.stock_types
 CREATE TABLE Project.stocks
 (
 	company VARCHAR(50),
-	bid_price INT,
-	ask_price INT,
+	bid_price MONEY,
+	ask_price MONEY,
 	stock_type_id INT,
 	CHECK(company != ''),
 	CONSTRAINT PK_STOCKS PRIMARY KEY (company),
@@ -1130,8 +1229,7 @@ CREATE TABLE Project.purchased_stocks
 	ticker INT IDENTITY(1,1),
 	company VARCHAR(50),
 	account_id INT,
-	purchase_value INT,
-	quantity INT,
+	purchase_price MONEY,
 	CONSTRAINT PK_PURCHASEDSTOCKS PRIMARY KEY (ticker),
 	CONSTRAINT FK_PURCHASEDSTOCKS_STOCKS FOREIGN KEY (company) REFERENCES Project.stocks(company)
 		ON DELETE NO ACTION ON UPDATE CASCADE,
@@ -1165,6 +1263,31 @@ INSERT INTO Project.category_types (designation, category_type_id)
 VALUES
 		('income', 1),
 		('expense', -1);
+
+INSERT INTO Project.stocks (company, ask_price, stock_type_id)
+	VALUES
+		( 'Microsoft Corporation', CAST(RAND() * 100 AS MONEY), 0 ),
+		( 'Apple Inc.', CAST(RAND() * 100 AS MONEY), 0 ),
+		( 'Johnson & Johnson', CAST(RAND() * 100 AS MONEY), 1 ),
+		( 'JPMorgan Chase & Co.', CAST(RAND() * 100 AS MONEY), 0 ),
+		( 'ExxonMobil Corporation', CAST(RAND() * 100 AS MONEY), 1 ),
+		( 'Bank of America Corp.', CAST(RAND() * 100 AS MONEY), 0 ),
+		( 'Facebook Inc.', CAST(RAND() * 100 AS MONEY), 1 ),
+		( 'Wal-Mart Stores Inc.', CAST(RAND() * 100 AS MONEY), 0 ),
+		( 'Amazon.com, Inc.', CAST(RAND() * 100 AS MONEY), 1 ),
+		( 'Alphabet Inc.', CAST(RAND() * 100 AS MONEY), 0 ),
+		( 'Berkshire Hathaway Inc', CAST(RAND() * 100 AS MONEY), 0 ),
+		( 'Alibaba Group Holding Ltd', CAST(RAND() * 100 AS MONEY), 0 ),
+		( 'Wells Fargo & Co.', CAST(RAND() * 100 AS MONEY), 0 ),
+		( 'Royal Dutch Shell plc', CAST(RAND() * 100 AS MONEY), 1 ),
+		( 'Visa Inc.', CAST(RAND() * 100 AS MONEY), 0 ),
+		( 'Procter & Gamble Co.', CAST(RAND() * 100 AS MONEY), 0 ),
+		( 'Anheuser-Busch Inbev NV', CAST(RAND() * 100 AS MONEY), 1 ),
+		( 'AT&T Inc.', CAST(RAND() * 100 AS MONEY), 0 ),
+		( 'Chevron Corporation', CAST(RAND() * 100 AS MONEY), 0 ),
+		( 'UnitedHealth Group Inc.', CAST(RAND() * 100 AS MONEY), 0 ),
+		( 'Pfizer Inc.', CAST(RAND() * 100 AS MONEY), 0 ),
+		( 'Roche Holding Ltd.', CAST(RAND() * 100 AS MONEY), 1 )
 
 GO
 
@@ -1212,15 +1335,12 @@ BEGIN
 	
 	SET NOCOUNT ON
 
-	DECLARE @account_id INT;
-	SET @account_id = (SELECT account_id FROM INSERTED);
+	DECLARE @in_account_id INT;
+	SET @in_account_id = (SELECT account_id FROM INSERTED);
 
-	INSERT INTO Project.wallets (account_id, [name])
-	VALUES (@account_id, 'Current')
-	INSERT INTO Project.wallets (account_id, [name])
-	VALUES (@account_id, 'Irregular Expenses')
-	INSERT INTO Project.wallets (account_id, [name])
-	VALUES (@account_id, 'Savings')
+	exec pr_insert_wallet @account_id=@in_account_id, @name='Current';
+	exec pr_insert_wallet @account_id=@in_account_id, @name='Irregular Expenses';
+	exec pr_insert_wallet @account_id=@in_account_id, @name='Savings';
 END
 GO
 
@@ -1241,13 +1361,79 @@ BEGIN
 END
 GO
 
+CREATE TRIGGER tr_update_account_patrimony_on_wallet_balance_update
+ON Project.wallets
+AFTER UPDATE
+AS
+BEGIN
 
+	SET NOCOUNT ON
+
+	DECLARE @account_id INT = (SELECT account_id FROM INSERTED);
+	DECLARE @patrimony MONEY;
+	SET @patrimony = COALESCE((SELECT SUM(purchase_price) FROM Project.purchased_stocks WHERE account_id=@account_id), 0.0);
+	SET @patrimony = @patrimony - COALESCE((SELECT SUM(current_debt) FROM Project.loans WHERE account_id=@account_id), 0.0);
+	SET @patrimony = @patrimony + COALESCE((SELECT SUM(balance) FROM Project.wallets WHERE account_id=@account_id), 0.0);
+
+	UPDATE Project.money_accounts SET patrimony=@patrimony WHERE account_id=@account_id;
+
+END
+GO
+
+
+--CREATE TRIGGER tr_update_account_patrimony_on_loans_stocks_insert
+--ON Project.loans, Project.purchased_stocks
+--AFTER INSERT
+--AS
+--BEGIN
+
+--END
+--GO
+
+
+CREATE TRIGGER tr_update_wallet_balance_on_transaction_insert
+ON Project.transactions
+AFTER INSERT
+AS
+BEGIN
+	
+	SET NOCOUNT ON
+
+	DECLARE @value MONEY;
+	DECLARE @wallet_id INT;
+	SELECT @value=amount, @wallet_id=wallet_id FROM INSERTED;
+
+	PRINT(@value);
+
+	UPDATE Project.wallets
+	SET balance=COALESCE(balance, 0) + COALESCE(@value, 0)
+	WHERE wallet_id=@wallet_id;
+END
+GO
+
+CREATE TRIGGER tr_update_wallet_balance_on_transaction_delete
+ON Project.transactions
+AFTER DELETE
+AS
+BEGIN
+
+	SET NOCOUNT ON
+
+	DECLARE @value MONEY;
+	DECLARE @wallet_id INT;
+	SELECT @value=amount, @wallet_id=wallet_id FROM DELETED;
+
+	UPDATE Project.wallets
+	SET balance=COALESCE(balance, 0) + COALESCE(@value, 0)
+	WHERE wallet_id=@wallet_id
+END
+GO
 --------------------------------------------------------------------
 -- POPULATE DATABASE -----------------------------------------------
 --------------------------------------------------------------------
 
 EXEC pr_insert_user @user_name='user1', @email='user1@ua.pt';
-EXEC pr_insert_user @user_name='user2', @email='user2@ua.pt', @fname='user', @lname='two', @active=1, @card_number='1234567890', @term='2020-11-26', @periodicity=1;
+EXEC pr_insert_user @user_name='user2', @email='user2@ua.pt', @fname='user', @lname='two', @active_subscription=1, @card_number='1234567890', @term='2020-11-26', @periodicity=1;
 
 EXEC pr_insert_money_account @user_email='user1@ua.pt', @account_name='u1_personal';
 EXEC pr_insert_money_account @user_email='user2@ua.pt', @account_name='u2_personal';

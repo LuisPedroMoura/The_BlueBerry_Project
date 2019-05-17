@@ -20,7 +20,7 @@ namespace BlueBudget_DB
             card_number,
             periodicity,
             term,
-            active
+            active_subscription
         };
         public enum RecurrenceEnt
         {
@@ -52,11 +52,13 @@ namespace BlueBudget_DB
         public enum LoanEnt
         {
             name,
-	        amount,
+	        initial_amount,
+            current_debt,
             term,
 	        interest,
 	        monthly_payment,
-            account_id
+            account_id,
+            payment
         }
         public enum BudgetEnt
         {
@@ -113,19 +115,36 @@ namespace BlueBudget_DB
             purchase_price,
             bid_price,
             ask_price,
-            stock_type_id
+            stock_type_id,
+            stock_type
         }
 
         // ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
         // API METHODS ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
         // ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
+        public static string Moneyfy(string value)
+        {
+            if (Double.TryParse(value, out double aux))
+            {
+                return Moneyfy(aux);
+            }
+            return String.Empty;
+        }
 
-        // ----------------------------------------------------------------------------------------------
-        // USERS ----------------------------------------------------------------------------------------
-        // ----------------------------------------------------------------------------------------------
+        public static string Moneyfy(double value)
+        {
+            return String.Format(System.Globalization.CultureInfo.CurrentCulture, "{0:C2}", value);
+        }
 
-        public static bool ExistsUser(string email)
+            
+
+
+// ----------------------------------------------------------------------------------------------
+// USERS ----------------------------------------------------------------------------------------
+// ----------------------------------------------------------------------------------------------
+
+public static bool ExistsUser(string email)
         {
             var attrValue = DB_IO.AttrValue();
             attrValue[DB_API.UserEnt.email] = email;
@@ -145,7 +164,7 @@ namespace BlueBudget_DB
                 { UserEnt.card_number, cardNo },
                 { UserEnt.periodicity, periodicity },
                 { UserEnt.term, term },
-                { UserEnt.active, active }
+                { UserEnt.active_subscription, active }
             };
             DB_IO.Insert(DB_IO.DB_Interface.pr_insert_user, attrValue);
         }
@@ -163,7 +182,7 @@ namespace BlueBudget_DB
                 { UserEnt.card_number, cardNo },
                 { UserEnt.periodicity, periodicity },
                 { UserEnt.term, term },
-                { UserEnt.active, active }
+                { UserEnt.active_subscription, active }
             };
             DB_IO.Update(DB_IO.DB_Interface.pr_update_user, attrValue);
         }
@@ -340,7 +359,7 @@ namespace BlueBudget_DB
             return (int)DB_IO.SelectScalar(DB_IO.DB_Interface.pr_select_category_types, attrValue);
         }
 
-        public static string SelectCategoryDesignationById(int category_type_id)
+        public static string SelectCategoryTypeDesignationById(int category_type_id)
         {
             var attrValue = DB_IO.AttrValue();
             attrValue[CategoryTypeEnt.category_type_id] = category_type_id;
@@ -373,15 +392,16 @@ namespace BlueBudget_DB
             return DB_IO.SelectReader(DB_IO.DB_Interface.pr_select_loans, attrValue);
         }
 
-        public static void InsertLoan(int account_id, string name, double amount, DateTime term, double interest)
+        public static void InsertLoan(int account_id, string name, double amount, double current_debt, DateTime term, double interest)
         {
             var attrValue = new Dictionary<System.Enum, Object>
             {
                 { LoanEnt.account_id, account_id },
                 { LoanEnt.name, name },
-                { LoanEnt.amount, amount },
+                { LoanEnt.initial_amount, amount },
+                { LoanEnt.current_debt, current_debt },
                 { LoanEnt.term, term },
-                {LoanEnt.interest, interest }
+                { LoanEnt.interest, interest }
             };
             DB_IO.Insert(DB_IO.DB_Interface.pr_insert_loan, attrValue);
         }
@@ -394,6 +414,17 @@ namespace BlueBudget_DB
                 { LoanEnt.name, name }
             };
             return DB_IO.Exists(DB_IO.DB_Interface.pr_select_loans, attrValue);
+        }
+
+        public static void LoanPayment(int account_id, string name, double payment)
+        {
+            var attrValue = new Dictionary<System.Enum, Object>
+            {
+                { LoanEnt.account_id, account_id },
+                { LoanEnt.name, name },
+                { LoanEnt.payment, payment }
+            };
+            DB_IO.Update(DB_IO.DB_Interface.pr_loan_payment, attrValue);
         }
 
 
@@ -601,7 +632,7 @@ namespace BlueBudget_DB
             DB_IO.Delete(DB_IO.DB_Interface.pr_delete_purchased_stocks, attrValue);
         }
 
-        public static void DeleteStocksByCompany(int company)
+        public static void DeleteStocksByCompany(string company)
         {
             var attrValue = DB_IO.AttrValue();
             attrValue[DB_API.StockEnt.company] = company;

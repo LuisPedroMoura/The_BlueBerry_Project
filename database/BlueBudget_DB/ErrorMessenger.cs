@@ -11,22 +11,28 @@ namespace BlueBudget_DB
     class ErrorMessenger
     {
 
-        public static string EmptyField(string mandatoryField)
+        public static void EmptyField(string mandatoryField)
         {
-            return "ERROR:\n" + mandatoryField + " is mandatory";
+            string message = mandatoryField + " is mandatory";
+            string caption = "ERROR";
+            MessageBox.Show(message, caption);
         }
 
-        public static string WrongFormat(string field)
+        public static void WrongFormat(string field)
         {
-            return "ERROR:\n" + field + " text is incorrectly formatted";
+            string message = field + " text is incorrectly formatted";
+            string caption = "ERROR";
+            MessageBox.Show(message, caption);
         }
 
-        public static string InvalidData(string field)
+        public static void InvalidData(string field)
         {
-            return "ERROR:\n" + field + " data is invalid";
+            string message = field + " data is invalid";
+            string caption = "ERROR";
+            MessageBox.Show(message, caption);
         }
 
-        public static string Exception(SqlException ex)
+        public static void Exception(SqlException ex)
         {
             string message;
             string caption = "EXCEPTION ERROR";
@@ -41,28 +47,31 @@ namespace BlueBudget_DB
                     break;
             }
             MessageBox.Show(message, caption);
-            return "";
-
         }
 
-        public static string Warning(string message)
+        public static void Warning(string message)
         {
-            return "WARNING:\n" + message;
+            string caption = "WARNING";
+            MessageBox.Show(message, caption);
         }
 
-        public static string Error(string message)
+        public static void Error(string message)
         {
-            return "ERROR:\n" + message;
+            string caption = "ERROR";
+            MessageBox.Show(message, caption);
         }
 
-        public static string Success(string message)
+        public static void Success(string message)
         {
-            return "SUCCESS:\n" + message;
+            string caption = "SUCCESS";
+            MessageBox.Show(message, caption);
         }
 
-        public static string SuccessfulOperation()
+        public static void SuccessfulOperation()
         {
-            return "SUCCESS:\nOperation was successful";
+            string message = "Operation was successful";
+            string caption = "SUCCESS";
+            MessageBox.Show(message, caption);
         }
 
 
