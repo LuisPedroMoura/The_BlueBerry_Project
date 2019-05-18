@@ -43,6 +43,18 @@
             android:label="New Income"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
+            android:name=".EditTransfer"
+            android:label="Edit Transfer"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".EditExpense"
+            android:label="Edit Expense"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".EditIncome"
+            android:label="Edit Income"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
             android:name=".NewTransaction"
             android:label="New transaction"
             android:theme="@style/AppTheme.NoActionBar" />

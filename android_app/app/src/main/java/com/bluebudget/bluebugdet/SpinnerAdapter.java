@@ -31,7 +31,7 @@ public class SpinnerAdapter extends ArrayAdapter<SpinnerItem> {
 
     private View initView(int position, View convertView, ViewGroup parent){
 
-        Log.i(TAG, "(convertView==null) "+(convertView==null)+"***************************************");
+        //Log.i(TAG, "(convertView==null) "+(convertView==null)+"***************************************");
         if(convertView==null){
             convertView= LayoutInflater.from(getContext()).inflate(R.layout.layout_spinner_row, parent, false);
         }
@@ -41,14 +41,14 @@ public class SpinnerAdapter extends ArrayAdapter<SpinnerItem> {
 
         SpinnerItem currentItem = getItem(position);
 
-        Log.i(TAG, "(currentItem!=null) "+(currentItem!=null)+"***************************************");
+        //Log.i(TAG, "(currentItem!=null) "+(currentItem!=null)+"***************************************");
         if(currentItem!=null) {
             categoryIcon.setImageResource(currentItem.getIcon());
             categoryName.setText(currentItem.getName());
             Log.i(TAG, "currentItem.getIcon() "+ currentItem.getIcon());
             Log.i(TAG, "currentItem.getName() "+ currentItem.getName());
         }
-        Log.i(TAG, "------------");
+        //Log.i(TAG, "------------");
         return convertView;
 
     }

@@ -59,7 +59,7 @@ public class AppTransaction {
     public AppCategory getCategory(){
         return this.category;
     }
-    public void setCategory(AppCategory categoryI){
+    public void setCategory(AppCategory category){
         this.category = category;
     }
 

@@ -19,7 +19,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
-public class NewExpense extends AppCompatActivity {
+public class EditExpense extends AppCompatActivity {
 
     private Toolbar toolbar;
 
@@ -31,27 +31,47 @@ public class NewExpense extends AppCompatActivity {
     private EditText notesET;
     private Spinner walletSpinner;
 
-    private static final String TAG = "NewExpense";
+    private int idIntent;
+    private String catIntent;
+    private double amountIntent;
+    private String dateIntent;
+    private String locationIntent;
+    private String notesIntent;
+    private String fromWalletIntent;
+
+    private static final String TAG = "EditExpense";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_new_expense);
+        setContentView(R.layout.activity_edit_expense);
+
+        Intent intent = getIntent();
+        idIntent = intent.getIntExtra("id", -1);
+        catIntent = intent.getStringExtra("cat");
+        amountIntent = intent.getDoubleExtra("amount", 0);
+        dateIntent = intent.getStringExtra("date");
+        locationIntent = intent.getStringExtra("location");
+        notesIntent = intent.getStringExtra("notes");
+        fromWalletIntent = intent.getStringExtra("fromWallet");
 
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        fab = findViewById(R.id.newExpensefab);
+        fab = findViewById(R.id.editExpensefab);
         fab.setOnClickListener(checkFabOnClick);
 
-        amountET = findViewById(R.id.amountNewExpenseET);
+        amountET = findViewById(R.id.amountEditExpenseET);
+        amountET.setText(-amountIntent+"");
 
-        locationET = findViewById(R.id.locationNewExpenseET);
+        locationET = findViewById(R.id.locationEditExpenseET);
+        locationET.setText(locationIntent);
 
-        notesET = findViewById(R.id.notesNewExpenseET);
+        notesET = findViewById(R.id.notesEditExpenseET);
+        notesET.setText(notesIntent);
 
         //Category Spinner
-        categorySpinner = findViewById(R.id.categoryNewExpenseSpinner);
+        categorySpinner = findViewById(R.id.categoryEditExpenseSpinner);
 
         ArrayList<SpinnerItem> categoryItemList = initCategoryList();
         SpinnerAdapter categoryAdapter = new SpinnerAdapter(this, categoryItemList);
@@ -59,7 +79,7 @@ public class NewExpense extends AppCompatActivity {
         categorySpinner.setOnItemSelectedListener(av);
 
         //Wallet Spinner
-        walletSpinner = findViewById(R.id.walletNewExpenseSpinner);
+        walletSpinner = findViewById(R.id.walletEditExpenseSpinner);
 
         ArrayList<SpinnerItem> walletItemList = initWalletList();
         SpinnerAdapter walletAdapter = new SpinnerAdapter(this, walletItemList);
@@ -68,10 +88,9 @@ public class NewExpense extends AppCompatActivity {
 
 
         //Date
-        dateTV = findViewById(R.id.dateNewExpenseTV);
+        dateTV = findViewById(R.id.dateEditExpenseTV);
         dateTV.setOnClickListener(dateListener);
-        SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
-        dateTV.setText(sdf.format(Calendar.getInstance().getTime()));
+        dateTV.setText(dateIntent);
 
 
     }
@@ -83,7 +102,12 @@ public class NewExpense extends AppCompatActivity {
 
         ArrayList<SpinnerItem> categoryItemList = new ArrayList<>();
 
+        AppCategory cat = Home.app.getCategory(catIntent);
+        categoryItemList.add(new SpinnerItem(cat.getName(), cat.getIcon()));
+
         List<AppCategory> categoriesList = Home.app.allCatTypeOrdered(AppBudgetType.EXPENSE);
+        categoriesList.remove(cat);
+
         for(AppCategory category : categoriesList){
             categoryItemList.add(new SpinnerItem(category.getName(), category.getIcon()));
         }
@@ -98,8 +122,13 @@ public class NewExpense extends AppCompatActivity {
     ////Wallet Spinner////
     //////////////////////
     private ArrayList<SpinnerItem> initWalletList(){
-        List<AppWallet> walletsList = Home.app.getWalletsList();
+
         ArrayList<SpinnerItem> walletItemList = new ArrayList<>();
+        AppWallet w = Home.app.getWallet(fromWalletIntent);
+        walletItemList.add(new SpinnerItem(w.getName(), w.getIcon()));
+
+        List<AppWallet> walletsList = Home.app.getWalletsList();
+        walletsList.remove(w);
 
         for(AppWallet wallet : walletsList){
             walletItemList.add(new SpinnerItem(wallet.getName(), wallet.getIcon()));
@@ -162,10 +191,10 @@ public class NewExpense extends AppCompatActivity {
         @Override
         public void onClick(View view) {
             Log.d(TAG, "check clicked");
-            Intent transactions = new Intent(NewExpense.this, Transactions.class);
+            Intent transactions = new Intent(EditExpense.this, Transactions.class);
 
-            transactions.putExtra("transactionType", "NewExpense");
-            transactions.putExtra("id", -1);
+            transactions.putExtra("transactionType", "EditExpense");
+            transactions.putExtra("id", idIntent);
             String amount = amountET.getText().toString();
             if(amount.equals("")){
                 amount = 0.0+"";

@@ -27,8 +27,6 @@ public class Budget extends AppCompatActivity
     private ListView budgetProgressionLV;
     private  ArrayList<BudgetProgression> budgetProgressionList;
 
-    private ImageView filterIcon;
-
     private FloatingActionButton addFab, incomeFab, expenseFab;
     private Float translationY = 100f;
     private OvershootInterpolator interpolator = new OvershootInterpolator();
@@ -99,7 +97,7 @@ public class Budget extends AppCompatActivity
     //personalize toolbar
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_filter_toolbar, menu);
+        getMenuInflater().inflate(R.menu.menu_appname_toolbar, menu);
         return true;
     }
 

@@ -1,7 +1,5 @@
 package com.bluebudget.bluebugdet;
 
-import android.util.Log;
-
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
@@ -13,7 +11,7 @@ public class AppTransactionList {
 
     private Map<Integer, AppTransaction> transactions = new HashMap<>();
 
-    private static final String TAG = "APPTRANSACTIONLIST";
+    private static final String TAG = "AppTransactionList";
 
 
     public AppTransactionList() {}
@@ -26,6 +24,19 @@ public class AppTransactionList {
         transactions.put(t.getId(), t);
     }
 
+    public void updateIncome(int id, double value, Calendar date, AppCategory category, String notes , String location,
+                          String wallet) {
+        AppTransaction t = transactions.get(id);
+
+        t.setValue(value);
+        t.setDate(date);
+        t.setCategory(category);
+        t.setNotes(notes);
+        t.setLocation(location);
+        t.setWallet(wallet);
+    }
+
+
     public void addExpense(double value, Calendar date, AppCategory category, String notes , String location,
                           String wallet) {
         AppTransaction t = new AppTransaction(-value, date, category, notes, location, wallet,
@@ -33,11 +44,36 @@ public class AppTransactionList {
         transactions.put(t.getId(), t);
     }
 
+    public void updateExpense(int id, double value, Calendar date, AppCategory category, String notes , String location,
+                             String wallet) {
+
+        AppTransaction t = transactions.get(id);
+
+        t.setValue(-value);
+        t.setDate(date);
+        t.setCategory(category);
+        t.setNotes(notes);
+        t.setLocation(location);
+        t.setWallet(wallet);
+    }
+
     public void addTransfer(double value, Calendar date, String notes , String location,
                           String wallet, String recipientWallet) {
         AppTransaction t = new AppTransaction(-value, date, null, notes, location, wallet,
                 recipientWallet, AppTransactionType.TRANSFER);
         transactions.put(t.getId(), t);
+    }
+
+    public void updateTransfer(int id, double value, Calendar date, String notes , String location,
+                             String wallet, String recipientWallet) {
+        AppTransaction t = transactions.get(id);
+
+        t.setValue(value);
+        t.setDate(date);
+        t.setNotes(notes);
+        t.setLocation(location);
+        t.setWallet(wallet);
+        t.setRecipientWallet(recipientWallet);
     }
 
     public void removeTransaction(int id){
@@ -81,8 +117,8 @@ public class AppTransactionList {
             */
 
             if (tr.getDate().compareTo(minDate) >= 0 && tr.getDate().compareTo(maxDate) <= 0){
-                Log.i(TAG, "(categories == null) "+(categories == null));
-                Log.i(TAG, "(tr.getCategory() == null) "+(tr.getCategory() == null));
+                //Log.i(TAG, "(categories == null) "+(categories == null));
+                //Log.i(TAG, "(tr.getCategory() == null) "+(tr.getCategory() == null));
                 if (categories == null || tr.getCategory()==null || categories.contains(tr.getCategory().getName()) || categories.contains(tr.getCategory().getParent())){
                     if (locations == null || locations.contains(tr.getLocation())){
                         if (type == null || tr.getType() == type) {

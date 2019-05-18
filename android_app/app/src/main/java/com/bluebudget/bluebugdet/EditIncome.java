@@ -19,7 +19,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
-public class NewExpense extends AppCompatActivity {
+public class EditIncome extends AppCompatActivity {
 
     private Toolbar toolbar;
 
@@ -31,82 +31,111 @@ public class NewExpense extends AppCompatActivity {
     private EditText notesET;
     private Spinner walletSpinner;
 
-    private static final String TAG = "NewExpense";
+    private ArrayList<SpinnerItem> categoryItemList;
+    private ArrayList<SpinnerItem> walletItemList;
+
+    private int idIntent;
+    private String catIntent;
+    private double amountIntent;
+    private String dateIntent;
+    private String locationIntent;
+    private String notesIntent;
+    private String fromWalletIntent;
+
+    private static final String TAG = "EditIncome";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_new_expense);
+        setContentView(R.layout.activity_edit_income);
+
+        Intent intent = getIntent();
+        idIntent = intent.getIntExtra("id", -1);
+        catIntent = intent.getStringExtra("cat");
+        amountIntent = intent.getDoubleExtra("amount", 0);
+        dateIntent = intent.getStringExtra("date");
+        locationIntent = intent.getStringExtra("location");
+        notesIntent = intent.getStringExtra("notes");
+        fromWalletIntent = intent.getStringExtra("fromWallet");
 
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        fab = findViewById(R.id.newExpensefab);
+
+        fab = findViewById(R.id.editIncomefab);
         fab.setOnClickListener(checkFabOnClick);
 
-        amountET = findViewById(R.id.amountNewExpenseET);
+        amountET = findViewById(R.id.amountEditIncomeET);
+        amountET.setText(amountIntent+"");
 
-        locationET = findViewById(R.id.locationNewExpenseET);
+        locationET = findViewById(R.id.locationEditIncomeET);
+        locationET.setText(locationIntent);
 
-        notesET = findViewById(R.id.notesNewExpenseET);
+        notesET = findViewById(R.id.notesEditIncomeET);
+        notesET.setText(notesIntent);
 
         //Category Spinner
-        categorySpinner = findViewById(R.id.categoryNewExpenseSpinner);
+        categorySpinner = findViewById(R.id.categoryEditIncomeSpinner);
+        initCategoryList();
 
-        ArrayList<SpinnerItem> categoryItemList = initCategoryList();
-        SpinnerAdapter categoryAdapter = new SpinnerAdapter(this, categoryItemList);
-        categorySpinner.setAdapter(categoryAdapter);
-        categorySpinner.setOnItemSelectedListener(av);
-
-        //Wallet Spinner
-        walletSpinner = findViewById(R.id.walletNewExpenseSpinner);
-
-        ArrayList<SpinnerItem> walletItemList = initWalletList();
-        SpinnerAdapter walletAdapter = new SpinnerAdapter(this, walletItemList);
-        walletSpinner.setAdapter(walletAdapter);
-        walletSpinner.setOnItemSelectedListener(av);
+        //wallet Spinner
+        walletSpinner = findViewById(R.id.walletEditIncomeSpinner);
+        initWalletList();
 
 
         //Date
-        dateTV = findViewById(R.id.dateNewExpenseTV);
+        dateTV = findViewById(R.id.dateEditIncomeTV);
         dateTV.setOnClickListener(dateListener);
-        SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
-        dateTV.setText(sdf.format(Calendar.getInstance().getTime()));
-
+        dateTV.setText(dateIntent);
 
     }
 
     //////////////////////
     ///Category Spinner///
     //////////////////////
-    private ArrayList<SpinnerItem> initCategoryList(){
+    private void initCategoryList(){
 
-        ArrayList<SpinnerItem> categoryItemList = new ArrayList<>();
+        categoryItemList = new ArrayList<>();
 
-        List<AppCategory> categoriesList = Home.app.allCatTypeOrdered(AppBudgetType.EXPENSE);
+        AppCategory cat = Home.app.getCategory(catIntent);
+        categoryItemList.add(new SpinnerItem(cat.getName(), cat.getIcon()));
+
+        List<AppCategory> categoriesList = Home.app.allCatTypeOrdered(AppBudgetType.INCOME);
+        categoriesList.remove(cat);
+
         for(AppCategory category : categoriesList){
             categoryItemList.add(new SpinnerItem(category.getName(), category.getIcon()));
         }
         categoryItemList.add(new SpinnerItem("add new category", R.drawable.empty));
         categoryItemList.add(new SpinnerItem("add new sub-category", R.drawable.empty));
 
-        return categoryItemList;
-    }
 
+        SpinnerAdapter categoryAdapter = new SpinnerAdapter(this, categoryItemList);
+        categorySpinner.setAdapter(categoryAdapter);
+        categorySpinner.setOnItemSelectedListener(av);
+    }
 
     //////////////////////
     ////Wallet Spinner////
     //////////////////////
-    private ArrayList<SpinnerItem> initWalletList(){
+    private void initWalletList(){
+
+        walletItemList = new ArrayList<>();
+        AppWallet w = Home.app.getWallet(fromWalletIntent);
+        walletItemList.add(new SpinnerItem(w.getName(), w.getIcon()));
+
         List<AppWallet> walletsList = Home.app.getWalletsList();
-        ArrayList<SpinnerItem> walletItemList = new ArrayList<>();
+        walletsList.remove(w);
 
         for(AppWallet wallet : walletsList){
             walletItemList.add(new SpinnerItem(wallet.getName(), wallet.getIcon()));
         }
         walletItemList.add(new SpinnerItem("add new wallet", R.drawable.empty));
 
-        return walletItemList;
+
+        SpinnerAdapter walletAdapter = new SpinnerAdapter(this, walletItemList);
+        walletSpinner.setAdapter(walletAdapter);
+        walletSpinner.setOnItemSelectedListener(av);
     }
 
     AdapterView.OnItemSelectedListener av = new AdapterView.OnItemSelectedListener() {
@@ -115,7 +144,7 @@ public class NewExpense extends AppCompatActivity {
             SpinnerItem clickedItem = (SpinnerItem) parent.getItemAtPosition(position);
             String clickedName = clickedItem.getName();
 
-            Log.i(TAG, "category " + view.getId() + " " + clickedName+ " selected");
+            Log.i(TAG, "category " + clickedName+ " selected !!!!!!!!!!!!!!!!!!!!!!!!!!");
         }
 
         @Override
@@ -123,7 +152,6 @@ public class NewExpense extends AppCompatActivity {
 
         }
     };
-
 
     //////////////////////
     /////////Date/////////
@@ -155,17 +183,14 @@ public class NewExpense extends AppCompatActivity {
     };
 
 
-    //////////////////////
-    /////////FAB//////////
-    //////////////////////
     View.OnClickListener checkFabOnClick = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
             Log.d(TAG, "check clicked");
-            Intent transactions = new Intent(NewExpense.this, Transactions.class);
+            Intent transactions = new Intent(EditIncome.this, Transactions.class);
 
-            transactions.putExtra("transactionType", "NewExpense");
-            transactions.putExtra("id", -1);
+            transactions.putExtra("transactionType", "EditIncome");
+            transactions.putExtra("id", idIntent);
             String amount = amountET.getText().toString();
             if(amount.equals("")){
                 amount = 0.0+"";
@@ -174,7 +199,7 @@ public class NewExpense extends AppCompatActivity {
             transactions.putExtra("date", dateTV.getText().toString());
 
             SpinnerItem csi = (SpinnerItem) categorySpinner.getSelectedItem();
-            transactions.putExtra("category", csi.getName() );
+            transactions.putExtra("category",csi.getName());
             transactions.putExtra("location", locationET.getText().toString());
             transactions.putExtra("notes", notesET.getText().toString());
             SpinnerItem wsi = (SpinnerItem) walletSpinner.getSelectedItem();

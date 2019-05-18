@@ -23,8 +23,7 @@ import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.List;
 
-public class Transactions extends AppCompatActivity
-                            implements PopupDialogEdit.PopupDialogListener{
+public class Transactions extends AppCompatActivity {
 
     private FloatingActionButton addFab, incomeFab, expenseFab, transferFab;
     private Float translationY = 100f;
@@ -105,6 +104,7 @@ public class Transactions extends AppCompatActivity
 
         if (transactionType != null) {
 
+            int id = incomingIntent.getIntExtra("id", -1);
             Double amount = incomingIntent.getDoubleExtra("amount", 0);
             String date = incomingIntent.getStringExtra("date");
             String [] a = date.split("-");
@@ -115,7 +115,8 @@ public class Transactions extends AppCompatActivity
             String wallet = incomingIntent.getStringExtra("wallet");
             String recipientWallet = incomingIntent.getStringExtra("recipientWallet");
 
-            Log.i(TAG, transactionType + " " + amount + " " + date + " " + category + " " + notes + " " + location + " " + wallet + " " + recipientWallet);
+            //Log.i(TAG, "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+            //Log.i(TAG, transactionType + " " + amount + " " + date + " " + category + " " + notes + " " + location + " " + wallet + " " + recipientWallet);
 
             //add transactions
             if(amount>0) {
@@ -128,6 +129,15 @@ public class Transactions extends AppCompatActivity
                 else if(transactionType.equals("NewTransfer")){
                     Home.app.addTransfer(amount, calendar, notes, location, wallet, recipientWallet);
                     Log.i(TAG, "added new transfer");
+                }
+                else if(transactionType.equals("EditExpense")){
+                    Home.app.updateExpense(id, amount, calendar, Home.app.getCategory(category), notes, location, wallet);
+                }
+                else if(transactionType.equals("EditIncome")){
+                    Home.app.updateIncome(id, amount, calendar, Home.app.getCategory(category), notes, location, wallet);
+                }
+                else if(transactionType.equals("EditTransfer")){
+                    Home.app.updateTransfer(id,amount, calendar, notes, location, wallet, recipientWallet);
                 }
             }
         }
@@ -146,22 +156,27 @@ public class Transactions extends AppCompatActivity
             Format formatter = new SimpleDateFormat("dd-MM-yyyy");
             String date = formatter.format(t.getDate().getTime());
 
-            //Log.i(TAG, t.getValue()+"");
-            //Log.i(TAG, t.getType()+"");
-
 
             String description;
             int icon;
+            String recipientWallet = null;
             if(t.getType() == AppTransactionType.TRANSFER){
                 description = "from " + t.getWallet() + "\nto " + t.getRecipientWallet();
                 icon = R.drawable.ic_compare_arrows_black_24dp;
+                recipientWallet = t.getRecipientWallet();
             }else{
                 description = t.getCategory().getName();
                 icon = Home.app.getCategory(description).getIcon();
             }
 
+            int id = t.getId();
+            String location = t.getLocation();
+            String notes = t.getNotes();
+            String fromWallet = t.getWallet();
 
-            TransactionsHistory th = new TransactionsHistory(date, icon, description, Double.toString(t.getValue()));
+            TransactionsHistory th = new TransactionsHistory(id, date, icon, description,
+                                                                Double.toString(t.getValue()),
+                                                                location, notes, fromWallet, recipientWallet);
             transactionsHistoryList.add(th);
         }
         transactionsHistoryList.add(null);
@@ -183,24 +198,51 @@ public class Transactions extends AppCompatActivity
             if(transactionsHistoryList.get(position)!=null){
                 Log.i(TAG, "pos="+position+"; "+transactionsHistoryList.get(position).getDescription());
 
-                openDialog("Edit", " ");
+                TransactionsHistory transactionsHistory = transactionsHistoryList.get(position);
+
+                Intent transactions;
+
+                int icon = transactionsHistory.getIcon();
+                int trans_id = transactionsHistory.getId();
+                String cat = transactionsHistory.getDescription();
+                String parentCat = cat.split(":")[0]; //parent cat
+                double amount = Double.parseDouble(transactionsHistory.getAmount());
+                String date = transactionsHistory.getDate();
+                String location = transactionsHistory.getLocation();
+                String notes = transactionsHistory.getNotes();
+                String fromWallet = transactionsHistory.getFromWallet();
+                String recipientWallet = transactionsHistory.getRecipientWallet();
+
+                //is transfer
+                if (icon == R.drawable.ic_compare_arrows_black_24dp){
+                    transactions = new Intent(Transactions.this, EditTransfer.class);
+                }
+                //is income
+                else if(parentCat.equals("Income")){
+                    transactions = new Intent(Transactions.this, EditIncome.class);
+                }
+                //is expense
+                else{
+                    transactions = new Intent(Transactions.this, EditExpense.class);
+                }
+
+                transactions.putExtra("id", trans_id);
+                transactions.putExtra("cat", cat);
+                transactions.putExtra("amount", amount);
+                transactions.putExtra("date", date);
+                transactions.putExtra("location", location);
+                transactions.putExtra("notes", notes);
+                transactions.putExtra("fromWallet", fromWallet);
+                transactions.putExtra("recipientWallet", recipientWallet);
+
+                startActivity(transactions);
+
                 Log.i(TAG, "item clicked");
             }
         }
     };
 
-    public void openDialog( String title, String tip) {
-        PopupDialogEdit dialog = new PopupDialogEdit();
-        dialog.setTitle(title);
-        //dialog.setTipTV(tip);
 
-        dialog.show(getSupportFragmentManager(), TAG+"-> openDialog-> Popup Dialog");
-    }
-
-    @Override
-    public void applyTexts(String name, Double amount) {
-
-    }
 
 
 

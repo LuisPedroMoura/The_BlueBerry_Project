@@ -155,6 +155,10 @@ public class App {
     // WALLETS -------------------------------------------------------------------------------------
     // ---------------------------------------------------------------------------------------------
 
+    public AppWallet getWallet(String name){
+        return wallets.getWallet(name);
+    }
+
     public void addWallet(String name, int icon, Double initialBalance){
         wallets.addWallet(name, icon, initialBalance);
     }
@@ -182,14 +186,29 @@ public class App {
         transactions.addIncome(value, date, category, notes , location, wallet);
     }
 
+    public void updateIncome(int id, double value, Calendar date, AppCategory category, String notes , String location,
+                          String wallet) {
+        transactions.updateIncome(id, value, date, category, notes , location, wallet);
+    }
+
     public void addExpense(double value, Calendar date, AppCategory category, String notes , String location,
                            String wallet) {
         transactions.addExpense(value, date, category, notes , location, wallet);
     }
 
+    public void updateExpense(int id, double value, Calendar date, AppCategory category, String notes , String location,
+                           String wallet) {
+        transactions.updateExpense(id, value, date, category, notes , location, wallet);
+    }
+
     public void addTransfer(double value, Calendar date, String notes , String location,
                           String wallet, String recipientWallet) {
         transactions.addTransfer(value, date, notes , location, wallet, recipientWallet);
+    }
+
+    public void updateTransfer(int id, double value, Calendar date, String notes , String location,
+                            String wallet, String recipientWallet) {
+        transactions.updateTransfer(id, value, date, notes , location, wallet, recipientWallet);
     }
 
     public List<AppTransaction> getTransactions(Calendar minDate, Calendar maxDate,
