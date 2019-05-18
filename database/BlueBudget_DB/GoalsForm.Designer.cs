@@ -38,7 +38,7 @@
             this.Categories_comboBox = new System.Windows.Forms.ComboBox();
             this.Subcategories_comboBox = new System.Windows.Forms.ComboBox();
             this.term_label = new System.Windows.Forms.Label();
-            this.Goalstate_label = new System.Windows.Forms.TextBox();
+            this.Goalstate_label2 = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // Goals_label
@@ -132,24 +132,23 @@
             this.term_label.TabIndex = 10;
             this.term_label.Text = "deadline";
             // 
-            // Goalstate_label
+            // Goalstate_label2
             // 
-            this.Goalstate_label.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.Goalstate_label.ForeColor = System.Drawing.SystemColors.HotTrack;
-            this.Goalstate_label.Location = new System.Drawing.Point(292, 218);
-            this.Goalstate_label.Margin = new System.Windows.Forms.Padding(2);
-            this.Goalstate_label.Name = "Goalstate_label";
-            this.Goalstate_label.ReadOnly = true;
-            this.Goalstate_label.Size = new System.Drawing.Size(249, 26);
-            this.Goalstate_label.TabIndex = 13;
-            this.Goalstate_label.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.Goalstate_label2.AutoSize = true;
+            this.Goalstate_label2.Font = new System.Drawing.Font("Microsoft Sans Serif", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.Goalstate_label2.Location = new System.Drawing.Point(347, 190);
+            this.Goalstate_label2.Name = "Goalstate_label2";
+            this.Goalstate_label2.Size = new System.Drawing.Size(66, 29);
+            this.Goalstate_label2.TabIndex = 14;
+            this.Goalstate_label2.Text = "label";
+            this.Goalstate_label2.TextAlign = System.Drawing.ContentAlignment.TopCenter;
             // 
             // GoalsForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(600, 366);
-            this.Controls.Add(this.Goalstate_label);
+            this.Controls.Add(this.Goalstate_label2);
             this.Controls.Add(this.term_label);
             this.Controls.Add(this.Subcategories_comboBox);
             this.Controls.Add(this.Categories_comboBox);
@@ -180,6 +179,6 @@
         private System.Windows.Forms.ComboBox Categories_comboBox;
         private System.Windows.Forms.ComboBox Subcategories_comboBox;
         private System.Windows.Forms.Label term_label;
-        private System.Windows.Forms.TextBox Goalstate_label;
+        private System.Windows.Forms.Label Goalstate_label2;
     }
 }

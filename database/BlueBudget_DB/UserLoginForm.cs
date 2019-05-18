@@ -201,7 +201,7 @@ namespace BlueBudget_DB
             string account_name = account_textbox.ForeColor == Color.Black ? account_textbox.Text : "";
             int account_id = CURRENT_USER_ACCOUNTS[account_name];
 
-            // verify if account exists already
+            // verify if account exists before trying to delete
             var exists = DB_API.ExistsMoneyAccount(account_id);
             if (!exists)
             {
@@ -210,7 +210,17 @@ namespace BlueBudget_DB
             }
 
             // delete money account
-            DB_API.DeleteMoneyAccount(account_id);
+            bool sure = ErrorMessenger.OKCancel("Deleting a Money Account will permanently" +
+                "delete all its transaction, categories," +
+                "loans, goals and stock. Are you sure you want to delete?");
+            if (sure)
+            {
+                DB_API.DeleteMoneyAccount(account_id);
+            }
+            else
+            {
+                return;
+            }
 
             // repopulate accounts_listbox
             Populate_moneyAccounts_listBox(CURRENT_USER);
@@ -297,6 +307,9 @@ namespace BlueBudget_DB
 
             // delete user access to account
             DB_API.MoneyAccountRemoveUser(account_id, user);
+
+            // repopulate accounts_listbox
+            Populate_moneyAccounts_listBox(CURRENT_USER);
         }
 
 

@@ -60,6 +60,7 @@
             this.TRdate_col = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.TRcategory_col = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.TRamount_col = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.wallet2_comboBox = new System.Windows.Forms.ComboBox();
             this.SuspendLayout();
             // 
             // Transactions_label
@@ -116,9 +117,9 @@
             // 
             // location_textBox
             // 
-            this.location_textBox.Location = new System.Drawing.Point(440, 147);
+            this.location_textBox.Location = new System.Drawing.Point(296, 147);
             this.location_textBox.Name = "location_textBox";
-            this.location_textBox.Size = new System.Drawing.Size(139, 20);
+            this.location_textBox.Size = new System.Drawing.Size(138, 20);
             this.location_textBox.TabIndex = 7;
             this.location_textBox.Enter += new System.EventHandler(this.Location_textBox_Enter);
             this.location_textBox.Leave += new System.EventHandler(this.Location_textBox_Leave);
@@ -130,6 +131,7 @@
             this.type_comboBox.Name = "type_comboBox";
             this.type_comboBox.Size = new System.Drawing.Size(138, 21);
             this.type_comboBox.TabIndex = 8;
+            this.type_comboBox.SelectedIndexChanged += new System.EventHandler(this.type_comboBox_SelectedIndexChanged);
             // 
             // wallet_comboBox
             // 
@@ -342,11 +344,20 @@
             this.TRamount_col.Text = "amount";
             this.TRamount_col.Width = 90;
             // 
+            // wallet2_comboBox
+            // 
+            this.wallet2_comboBox.FormattingEnabled = true;
+            this.wallet2_comboBox.Location = new System.Drawing.Point(440, 146);
+            this.wallet2_comboBox.Name = "wallet2_comboBox";
+            this.wallet2_comboBox.Size = new System.Drawing.Size(139, 21);
+            this.wallet2_comboBox.TabIndex = 32;
+            // 
             // TransactionsForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(600, 461);
+            this.Controls.Add(this.wallet2_comboBox);
             this.Controls.Add(this.Transactions_listView);
             this.Controls.Add(this.Refresh_btn);
             this.Controls.Add(this.filtertype_comboBox);
@@ -417,5 +428,6 @@
         private System.Windows.Forms.ColumnHeader TRdate_col;
         private System.Windows.Forms.ColumnHeader TRcategory_col;
         private System.Windows.Forms.ColumnHeader TRamount_col;
+        private System.Windows.Forms.ComboBox wallet2_comboBox;
     }
 }

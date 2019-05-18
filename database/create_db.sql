@@ -1,76 +1,76 @@
----------------------------------------------------------------
---- RETURN ERROR RULES ----------------------------------------
----------------------------------------------------------------
-/*
--1 : Missing Argument
--2 : Row to insert already exists
--3 : Row to update does not exist
--4 : Row to delete does not exist
--5 : Argument to select does not exist
--6 : Invalid argument
-*/
---select * from Project.budgets;
---exec pr_select_budgets_by_category_id @account_id=1, @category_id=300;
 
 --------------------------------------------------------------------
 -- CREATE CLEANING PROCEDURE and CLEAN PROJECT ---------------------
 --------------------------------------------------------------------
-CREATE PROC clean_procedures_and_functions
-AS
-BEGIN
-	DROP PROC pr_insert_user;
-	DROP PROC pr_update_user;
-	DROP PROC pr_delete_subscription;
-	DROP PROC pr_delete_user;
-	DROP PROC pr_select_users;
-	DROP PROC pr_exists_user;
+-- because of permissions we are unable to drop database or schema directly
+-- (or because of SQL Server safety rules). The following sequence of 'drops'
+-- allows an easy refactor of the database during database debugging.
+-- This is only to be used during implementation, and should be commented
+-- after 'installation' otherwise all tables data will be lost.
 
-	DROP PROC pr_select_recurrences;
-	DROP PROC pr_select_recurrence_id;
+DROP TRIGGER IF EXISTS Project.tr_insert_base_wallets_on_new_money_account_insert;
+DROP TRIGGER IF EXISTS Project.tr_insert_new_wallet_on_goal_insert;
+DROP TRIGGER IF EXISTS Project.tr_update_goal_completion_with_wallet_transfer;
+DROP TRIGGER IF EXISTS Project.tr_update_account_patrimony_on_wallet_balance_update
+DROP TRIGGER IF EXISTS Project.tr_update_account_patrimony_on_loans_insert;
+DROP TRIGGER IF EXISTS Project.tr_update_account_patrimony_on_loans_update;
+DROP TRIGGER IF EXISTS Project.tr_update_account_patrimony_on_purchased_stock_insert;
+DROP TRIGGER IF EXISTS Project.tr_update_account_patrimony_on_purchased_stock_delete;
+DROP TRIGGER IF EXISTS Project.tr_update_account_balance_on_wallet_balance_update;
+DROP TRIGGER IF EXISTS Project.tr_update_wallet_balance_on_transaction_insert;
+DROP TRIGGER IF EXISTS Project.tr_update_wallet_balance_on_transaction_delete;
+DROP TRIGGER IF EXISTS Project.tr_update_wallet_balance_on_transfer_insert;
 
-	DROP PROC pr_insert_money_account;
-	DROP PROC pr_delete_money_account;
-	DROP PROC pr_select_money_accounts;
-	DROP PROC pr_select_user_money_accounts;
-	DROP PROC pr_money_account_add_user;
-	DROP PROC pr_money_account_remove_user;
-	DROP PROC pr_exists_money_account;
+DROP PROC IF EXISTS pr_insert_user;
+DROP PROC IF EXISTS pr_update_user;
+DROP PROC IF EXISTS pr_delete_subscription;
+DROP PROC IF EXISTS pr_delete_user;
+DROP PROC IF EXISTS pr_select_users;
+DROP PROC IF EXISTS pr_exists_user;
 
-	DROP PROC pr_insert_wallet;
-	DROP PROC pr_select_wallets;
+DROP PROC IF EXISTS pr_select_recurrences;
+DROP PROC IF EXISTS pr_select_recurrence_id;
 
-	DROP PROC pr_select_categories;
-	DROP PROC pr_insert_category;
-	DROP PROC pr_insert_subcategory;
-	DROP PROC pr_delete_category;
-	DROP PROC pr_select_category_types;
+DROP PROC IF EXISTS pr_insert_money_account;
+DROP PROC IF EXISTS pr_delete_money_account;
+DROP PROC IF EXISTS pr_select_money_accounts;
+DROP PROC IF EXISTS pr_select_user_money_accounts;
+DROP PROC IF EXISTS pr_money_account_add_user;
+DROP PROC IF EXISTS pr_money_account_remove_user;
+DROP PROC IF EXISTS pr_exists_money_account;
+DROP PROC IF EXISTS pr_recalculate_patrimony;
 
-	DROP PROC pr_select_loans;
-	DROP PROC pr_exists_loan;
-	DROP PROC pr_insert_loan;
+DROP PROC IF EXISTS pr_insert_wallet;
+DROP PROC IF EXISTS pr_select_wallets;
 
-	DROP PROC pr_select_budgets;
-	DROP PROC pr_insert_budget;
-	DROP PROC pr_select_budgets_by_category_id;
+DROP PROC IF EXISTS pr_select_categories;
+DROP PROC IF EXISTS pr_insert_category;
+DROP PROC IF EXISTS pr_insert_subcategory;
+DROP PROC IF EXISTS pr_delete_category;
+DROP PROC IF EXISTS pr_select_category_types;
 
-	DROP PROC pr_insert_goal;
-	DROP PROC pr_select_goals;
+DROP PROC IF EXISTS pr_select_loans;
+DROP PROC IF EXISTS pr_exists_loan;
+DROP PROC IF EXISTS pr_insert_loan;
+DROP PROC IF EXISTS pr_loan_payment;
 
-	DROP PROC pr_select_transactions;
-	DROP PROC pr_insert_transaction;
-	DROP PROC pr_select_transaction_types;
-	DROP PROC pr_delete_transaction;
+DROP PROC IF EXISTS pr_select_budgets;
+DROP PROC IF EXISTS pr_insert_budget;
+DROP PROC IF EXISTS pr_select_budgets_by_category_id;
 
-	DROP PROC pr_update_stocks_values;
-	DROP PROC pr_select_purchased_stocks;
-	DROP PROC pr_select_stocks;
-	DROP PROC pr_insert_purchased_stock;
-	DROP PROC pr_delete_purchased_stocks;
+DROP PROC IF EXISTS pr_insert_goal;
+DROP PROC IF EXISTS pr_select_goals;
 
-	DROP TRIGGER Project.tr_insert_base_categories_on_new_money_account_insert;
-	DROP TRIGGER Project.tr_insert_base_wallets_on_new_money_account_insert;
-	DROP TRIGGER Project.tr_insert_new_wallet_on_goal_insert;
-END
+DROP PROC IF EXISTS pr_select_transactions;
+DROP PROC IF EXISTS pr_insert_transaction;
+DROP PROC IF EXISTS pr_select_transaction_types;
+DROP PROC IF EXISTS pr_delete_transaction;
+
+DROP PROC IF EXISTS pr_update_stocks_values;
+DROP PROC IF EXISTS pr_select_purchased_stocks;
+DROP PROC IF EXISTS pr_select_stocks;
+DROP PROC IF EXISTS pr_insert_purchased_stock;
+DROP PROC IF EXISTS pr_delete_purchased_stocks;
 GO
 
 CREATE PROC clean_project
@@ -118,15 +118,7 @@ BEGIN
 		drop table Project.stocks;
 		drop table Project.purchased_stocks;
 
-		EXEC clean_procedures_and_functions;
-		DROP PROC clean_procedures_and_functions;
-
 		drop schema Project; -- this procedure is droped when droping schema
-	END
-	
-	ELSE
-	BEGIN
-		DROP PROC clean_procedures_and_functions;
 	END
 	
 END
@@ -165,15 +157,18 @@ CREATE PROC pr_insert_user (
 ) AS
 BEGIN
 
-	INSERT INTO Project.users(email, [user_name], active_subscription)
-	VALUES (@email, @user_name, @active_subscription);
+	BEGIN TRANSACTION;
 
-	IF @active_subscription=1
-	BEGIN
-		INSERT INTO Project.subscriptions(card_number, email, term, fname, mname, lname, periodicity)
-		VALUES (@card_number, @email, @term, @fname, @mname, @lname, @periodicity);
-	END
+		INSERT INTO Project.users(email, [user_name], active_subscription)
+		VALUES (@email, @user_name, @active_subscription);
 
+		IF @active_subscription=1
+		BEGIN
+			INSERT INTO Project.subscriptions(card_number, email, term, fname, mname, lname, periodicity)
+			VALUES (@card_number, @email, @term, @fname, @mname, @lname, @periodicity);
+		END
+
+	COMMIT;
 END
 GO
 
@@ -191,8 +186,14 @@ CREATE PROC pr_delete_user (
 ) AS
 BEGIN
 	
-	EXEC pr_delete_subscription @email;
-	DELETE FROM Project.users WHERE email=@email;
+	BEGIN TRANSACTION;
+		DELETE FROM Project.users_money_accounts
+		WHERE user_email=@email;
+
+		EXEC pr_delete_subscription @email;
+
+		DELETE FROM Project.users WHERE email=@email;
+	COMMIT;
 END
 GO
 
@@ -209,52 +210,54 @@ CREATE PROC pr_update_user (
 ) AS
 BEGIN
 	
-	-- verify that email was given
-	IF @email IS NULL
-		RETURN -1
+	BEGIN TRANSACTION;
+		-- verify that email was given
+		IF @email IS NULL
+			RETURN -1
 
-	-- verify if user exists
-	IF NOT EXISTS (SELECT email FROM Project.users WHERE email=@email)
-		RETURN -2
+		-- verify if user exists
+		IF NOT EXISTS (SELECT email FROM Project.users WHERE email=@email)
+			RETURN -2
 
-	-- verify if user was subscribed
-	DECLARE @subscribed BIT;
-	SET @subscribed = (SELECT active_subscription FROM Project.users WHERE email=@email);
+		-- verify if user was subscribed
+		DECLARE @subscribed BIT;
+		SET @subscribed = (SELECT active_subscription FROM Project.users WHERE email=@email);
 
-	-- update 'users' table
-	UPDATE Project.users
-	SET
-		[user_name]=ISNULL(@user_name, [user_name]),
-		active_subscription=ISNULL(@active_subscription, active_subscription)
-	WHERE email=@email;
-
-	IF @subscribed=1 AND (@active_subscription=1 OR @active_subscription IS NULL)
-	BEGIN
-
-		UPDATE Project.subscriptions
+		-- update 'users' table
+		UPDATE Project.users
 		SET
-			card_number=ISNULL(@card_number, card_number),
-			term=ISNULL(@term, term),
-			fname=ISNULL(@fname, fname),
-			mname=ISNULL(@mname, mname),
-			lname=ISNULL(@lname, lname),
-			periodicity=ISNULL(@periodicity, periodicity)
+			[user_name]=ISNULL(@user_name, [user_name]),
+			active_subscription=ISNULL(@active_subscription, active_subscription)
 		WHERE email=@email;
-	END
 
-	IF @subscribed=1 AND @active_subscription=0
-	BEGIN
-		IF @subscribed=1
+		IF @subscribed=1 AND (@active_subscription=1 OR @active_subscription IS NULL)
 		BEGIN
-			EXEC pr_delete_subscription @email;
-		END
-	END
 
-	IF @subscribed=0 AND @active_subscription=1
+			UPDATE Project.subscriptions
+			SET
+				card_number=ISNULL(@card_number, card_number),
+				term=ISNULL(@term, term),
+				fname=ISNULL(@fname, fname),
+				mname=ISNULL(@mname, mname),
+				lname=ISNULL(@lname, lname),
+				periodicity=ISNULL(@periodicity, periodicity)
+			WHERE email=@email;
+		END
+
+		IF @subscribed=1 AND @active_subscription=0
+		BEGIN
+			IF @subscribed=1
+			BEGIN
+				EXEC pr_delete_subscription @email;
+			END
+		END
+
+		IF @subscribed=0 AND @active_subscription=1
 	BEGIN
 		INSERT INTO Project.subscriptions (card_number, email,term, fname, mname, lname, periodicity)
 		VALUES (@card_number, @email, @term, @fname, @mname, @lname, @periodicity);
 	END	
+	COMMIT;
 END
 GO
 
@@ -341,28 +344,31 @@ CREATE PROC pr_insert_money_account (
 	@patrimony MONEY = 0.0
 ) AS
 BEGIN
-	-- verify that user does not have a money account with same name
-	IF EXISTS (
-		SELECT *
-		FROM
-			Project.money_accounts AS M LEFT JOIN Project.users_money_accounts AS U
-			ON M.account_id=U.account_id
-		WHERE M.account_name=@account_name AND U.user_email=@user_email)
-			RETURN -1
+	
+	BEGIN TRANSACTION;
+		-- verify that user does not have a money account with same name
+		IF EXISTS (
+			SELECT *
+			FROM
+				Project.money_accounts AS M LEFT JOIN Project.users_money_accounts AS U
+				ON M.account_id=U.account_id
+			WHERE M.account_name=@account_name AND U.user_email=@user_email)
+				RETURN -1
 
-	-- insert new money_account
-	INSERT INTO Project.money_accounts(account_name, balance, patrimony)
-	VALUES (@account_name, @balance, @patrimony);
+		-- insert new money_account
+		INSERT INTO Project.money_accounts(account_name, balance, patrimony)
+		VALUES (@account_name, @balance, @patrimony);
 
-	-- get new money_account id
-	DECLARE @account_id INT;
-	SET @account_id = SCOPE_IDENTITY();
+		-- get new money_account id
+		DECLARE @account_id INT;
+		SET @account_id = SCOPE_IDENTITY();
 
-	-- create relation between money account and user
-	INSERT INTO Project.users_money_accounts([user_email], account_id)
-	VALUES (@user_email, @account_id);
+		-- create relation between money account and user
+		INSERT INTO Project.users_money_accounts([user_email], account_id)
+		VALUES (@user_email, @account_id);
 
-	-- A trigger (tr_create_basic_categories_on_user_insert) will insert standard categories in the database.
+		-- A trigger (tr_create_basic_categories_on_user_insert) will insert standard categories in the database.
+	COMMIT;
 END
 GO
 
@@ -370,17 +376,35 @@ CREATE PROC pr_delete_money_account (
 	@account_id INT
 ) AS
 BEGIN
+	
+	BEGIN TRANSACTION;
+		DELETE FROM Project.budgets
+		WHERE account_id=@account_id;
+	
+		DELETE FROM Project.goals
+		WHERE account_id=@account_id;
 
-	-- verify that given account id exists
-	IF NOT EXISTS (SELECT account_id FROM Project.money_accounts WHERE id=@account_id)
-		RETURN -2
+		DELETE FROM Project.loans
+		WHERE account_id=@account_id;
 
-	-- delete money_account
-	DELETE FROM Project.users_money_accounts
-	WHERE account_id=@account_id;
+		DELETE FROM Project.purchased_stocks
+		WHERE account_id=@account_id;
 
-	DELETE FROM Project.money_accounts
-	WHERE account_id=@account_id;
+		DELETE FROM Project.transactions
+		WHERE account_id=@account_id;
+	
+		DELETE FROM Project.wallets
+		WHERE account_id=@account_id;
+
+		DELETE FROM Project.users_money_accounts
+		WHERE account_id=@account_id;
+
+		DELETE FROM Project.categories
+		WHERE account_id=@account_id;
+
+		DELETE FROM Project.money_accounts
+		WHERE account_id=@account_id;
+	COMMIT;
 END
 GO
 
@@ -412,11 +436,8 @@ CREATE PROC pr_select_user_money_accounts (
 ) AS
 BEGIN
 	
-	IF @user_email IS NOT NULL
-	BEGIN
-		IF NOT EXISTS (SELECT * FROM Project.users WHERE email=@user_email)
-			RETURN -5
-	END
+	IF @user_email IS NULL
+		RETURN;
 
 	SELECT UMA.user_email AS user_email, MA.account_id AS account_id, MA.account_name AS account_name, MA.balance AS balance, MA.patrimony AS patrimony
 	FROM
@@ -435,10 +456,10 @@ CREATE PROC pr_money_account_add_user (
 BEGIN
 	
 	IF NOT EXISTS (SELECT * FROM Project.users WHERE email=@user_email)
-		RETURN -5
+		RETURN -5;
 
 	IF NOT EXISTS (SELECT * FROM Project.money_accounts WHERE account_id=@account_id)
-		RETURN -5
+		RETURN -5;
 
 	INSERT INTO Project.users_money_accounts(account_id, user_email)
 	VALUES (@account_id, @user_email)
@@ -476,6 +497,22 @@ BEGIN
 		SET @exists = 0;
 		SELECT @exists;
 	END
+END
+GO
+
+CREATE PROC pr_recalculate_patrimony (
+	@account_id MONEY
+) AS
+BEGIN
+	
+	BEGIN TRANSACTION;
+		DECLARE @patrimony MONEY;
+		SET @patrimony = COALESCE((SELECT SUM(purchase_price) FROM Project.purchased_stocks WHERE account_id=@account_id), 0.0);
+		SET @patrimony = @patrimony - COALESCE((SELECT SUM(current_debt) FROM Project.loans WHERE account_id=@account_id), 0.0);
+		SET @patrimony = @patrimony + COALESCE((SELECT SUM(balance) FROM Project.wallets WHERE account_id=@account_id), 0.0);
+
+		UPDATE Project.money_accounts SET patrimony=@patrimony WHERE account_id=@account_id;
+	COMMIT;
 END
 GO
 
@@ -543,17 +580,19 @@ CREATE PROC pr_insert_category (
 ) AS
 BEGIN
 	
-	-- calculate new category id
-	DECLARE @category_id INT;
-	SET @category_id = (
-		SELECT MAX(category_id)
-		FROM Project.categories
-		WHERE account_id=@account_id
-	);
-	SET @category_id = ((@category_id%100)+1)*100;
+	BEGIN TRANSACTION;
+		-- calculate new category id
+		DECLARE @category_id INT;
+		SET @category_id = (
+			SELECT MAX(category_id)
+			FROM Project.categories
+			WHERE account_id=@account_id
+		);
+		SET @category_id = ((@category_id%100)+1)*100;
 
-	INSERT INTO Project.categories (category_id, category_type_id, account_id, [name])
-	VALUES (@category_id, @category_type_id, @account_id, @name);
+		INSERT INTO Project.categories (category_id, category_type_id, account_id, [name])
+		VALUES (@category_id, @category_type_id, @account_id, @name);
+	COMMIT;
 END
 GO
 
@@ -565,20 +604,22 @@ CREATE PROC pr_insert_subcategory (
 ) AS
 BEGIN
 	
-	-- calculate new category id
-	DECLARE @subcategory_id INT;
-	SET @subcategory_id = (
-		SELECT MAX(category_id)
-		FROM Project.categories
-		WHERE
-				account_id=@account_id
-			AND category_id>(@category_id%100)*100
-			AND category_id<((@category_id%100)+1)*100
-	);	
-	SET @category_id = @category_id + 1;
+	BEGIN TRANSACTION;
+		-- calculate new category id
+		DECLARE @subcategory_id INT;
+		SET @subcategory_id = (
+			SELECT MAX(category_id)
+			FROM Project.categories
+			WHERE
+					account_id=@account_id
+				AND category_id>(@category_id%100)*100
+				AND category_id<((@category_id%100)+1)*100
+		);	
+		SET @category_id = @category_id + 1;
 
-	INSERT INTO Project.categories (category_id, category_type_id, account_id, [name])
-	VALUES (@category_id, @category_type_id, @account_id, @name);
+		INSERT INTO Project.categories (category_id, category_type_id, account_id, [name])
+		VALUES (@category_id, @category_type_id, @account_id, @name);
+	COMMIT;
 END
 GO
 
@@ -675,7 +716,7 @@ CREATE PROC pr_insert_loan (
 	@account_id INT,
 	@name VARCHAR(20),
 	@initial_amount MONEY,
-	@current_debt MONEY = 0.0,
+	@current_debt MONEY = @initial_amount,
 	@term DATE = NULL,
 	@interest DECIMAL(5,2) = NULL
 ) AS
@@ -685,12 +726,25 @@ BEGIN
 	IF NOT EXISTS (SELECT * FROM Project.money_accounts WHERE account_id=@account_id)
 		RETURN -2
 
-	-- verify if loan already exists
-	--IF EXISTS (SELECT * FROM Project.loans WHERE account_id=@account_id AND [name]=@name)
-	--	RETURN -2
-
 	INSERT INTO Project.loans (account_id, [name], initial_amount, current_debt, term, interest)
 	VALUES (@account_id, @name, @initial_amount, @current_debt, @term, @interest)
+END
+GO
+
+CREATE PROC pr_loan_payment (
+	@account_id INT,
+	@name VARCHAR(20) = NULL,
+	@payment MONEY = NULL
+) AS
+BEGIN
+	
+	BEGIN TRANSACTION;
+		DECLARE @current_debt MONEY;
+		SET @current_debt = (SELECT current_debt FROM Project.loans WHERE account_id=@account_id AND name=@name);
+		SET @current_debt -= @payment;
+
+		UPDATE Project.loans SET current_debt=@current_debt WHERE account_id=@account_id AND name=@name;
+	COMMIT;
 END
 GO
 
@@ -729,7 +783,6 @@ CREATE PROC pr_select_budgets_by_category_id (
 BEGIN
 	
 	DECLARE @base_id INT = @category_id/100;
-	PRINT @category_id%100;
 
 	IF (@category_id%100 = 0)
 	BEGIN
@@ -774,9 +827,9 @@ CREATE PROC pr_insert_goal (
 	@name VARCHAR(20),
 	@category_id INT,
 	@account_id INT,
-	@amount INT = 0.0,
+	@amount MONEY = 0.0,
 	@term DATE = NULL,
-	@accomplished BIT = 0
+	@accomplished MONEY = 0.0
 ) AS
 BEGIN
 	
@@ -881,7 +934,8 @@ GO
 CREATE PROC pr_insert_transaction (
 	@account_id INT,
 	@category_id INT,
-	@wallet_id INT,
+	@from_wallet_id INT,
+	@to_wallet_id INT = NULL,
 	@transaction_type_id INT,
 	@amount MONEY = 0.0,
 	@date DATE = NULL,
@@ -889,12 +943,24 @@ CREATE PROC pr_insert_transaction (
 	@location VARCHAR(50) = NULL
 ) AS
 BEGIN
+	
+	BEGIN TRANSACTION;
+		IF @date IS NULL
+		SET @date = GETDATE();
 
-	IF @date IS NULL
-	SET @date = GETDATE();
+		INSERT INTO Project.transactions (account_id, category_id, wallet_id, transaction_type_id, amount, [date], notes, [location])
+		VALUES (@account_id, @category_id, @from_wallet_id, @transaction_type_id, @amount, @date, @notes, @location)
 
-	INSERT INTO Project.transactions (account_id, category_id, wallet_id, transaction_type_id, amount, [date], notes, [location])
-	VALUES (@account_id, @category_id, @wallet_id, @transaction_type_id, @amount, @date, @notes, @location)
+		DECLARE @transaction_id INT;
+		SET @transaction_id = SCOPE_IDENTITY();
+
+		IF @transaction_type_id = 0
+		BEGIN
+			INSERT INTO Project.transfers (transaction_id, recipient_wallet_id)
+			VALUES (@transaction_id, @to_wallet_id)
+			;
+		END
+	COMMIT;
 END
 GO
 
@@ -1029,6 +1095,8 @@ BEGIN
 END
 GO
 
+
+
 ------------------------------------------------------------------------------------------------------------------------
 -- CREATE DATABASE TABLES ----------------------------------------------------------------------------------------------
 ------------------------------------------------------------------------------------------------------------------------
@@ -1048,7 +1116,7 @@ CREATE TABLE Project.wallets
 	wallet_id INT IDENTITY(1,1),
 	[name] VARCHAR(20),
 	account_id INT,
-	balance MONEY,	
+	balance MONEY,
 	CONSTRAINT PK_WALLETS PRIMARY KEY (wallet_id),
 	CONSTRAINT FK_WALLETS_MONEYACCOUNTS FOREIGN KEY (account_id) REFERENCES Project.money_accounts(account_id)
 		ON DELETE NO ACTION ON UPDATE CASCADE
@@ -1137,7 +1205,6 @@ CREATE TABLE Project.transactions
 	account_id INT,
 	transaction_type_id INT,
 	wallet_id INT,
-	CHECK(amount>0),
 	CONSTRAINT PK_TRANSACTIONS PRIMARY KEY (transaction_id),
 	CONSTRAINT FK_TRANSACTIONS_CATEGORIES FOREIGN KEY (category_id, account_id) REFERENCES Project.categories(category_id, account_id)
 		ON DELETE NO ACTION ON UPDATE CASCADE,
@@ -1179,9 +1246,9 @@ CREATE TABLE Project.goals
 	[name] VARCHAR(20),
 	category_id INT,
 	account_id INT,
-	amount INT DEFAULT 0,
+	amount MONEY DEFAULT 0,
 	term DATE,
-	accomplished BIT,
+	accomplished MONEY DEFAULT 0,
 	CHECK([name] != ''),
 	CONSTRAINT PK_GOALS PRIMARY KEY ([name], category_id, account_id),
 	CONSTRAINT FK_GOALS_CATEGORIES FOREIGN KEY (category_id, account_id) REFERENCES Project.categories(category_id, account_id)
@@ -1303,27 +1370,31 @@ BEGIN
 	
 	SET NOCOUNT ON
 
-	DECLARE @account_id INT;
-	SET @account_id = (SELECT account_id FROM INSERTED);
+	BEGIN TRANSACTION;
+		DECLARE @account_id INT;
+		SET @account_id = (SELECT account_id FROM INSERTED);
 
-	INSERT INTO Project.categories(category_id, account_id, category_type_id, [name])
-	VALUES (0, @account_id, 1, 'Income');
-	INSERT INTO Project.categories(category_id, account_id, category_type_id, [name])
-	VALUES (100, @account_id, -1, 'Transports');
-	INSERT INTO Project.categories(category_id, account_id, category_type_id, [name])
-	VALUES (101, @account_id, -1, 'Car gas');
-	INSERT INTO Project.categories(category_id, account_id, category_type_id, [name])
-	VALUES (102, @account_id, -1, 'Car maintenance');
-	INSERT INTO Project.categories(category_id, account_id, category_type_id, [name])
-	VALUES (200, @account_id, -1, 'Groceries');
-	INSERT INTO Project.categories(category_id, account_id, category_type_id, [name])
-	VALUES (300, @account_id, -1, 'Personal');
-	INSERT INTO Project.categories(category_id, account_id, category_type_id, [name])
-	VALUES (301, @account_id, -1, 'Hobbies');
-	INSERT INTO Project.categories(category_id, account_id, category_type_id, [name])
-	VALUES (302, @account_id, -1, 'Restaurant');
-	INSERT INTO Project.categories(category_id, account_id, category_type_id, [name])
-	VALUES (303, @account_id, -1, 'Night out');
+		INSERT INTO Project.categories(category_id, account_id, category_type_id, [name])
+		VALUES (0, @account_id, 1, 'Income');
+		INSERT INTO Project.categories(category_id, account_id, category_type_id, [name])
+		VALUES (100, @account_id, -1, 'Transports');
+		INSERT INTO Project.categories(category_id, account_id, category_type_id, [name])
+		VALUES (101, @account_id, -1, 'Car gas');
+		INSERT INTO Project.categories(category_id, account_id, category_type_id, [name])
+		VALUES (102, @account_id, -1, 'Car maintenance');
+		INSERT INTO Project.categories(category_id, account_id, category_type_id, [name])
+		VALUES (200, @account_id, -1, 'Groceries');
+		INSERT INTO Project.categories(category_id, account_id, category_type_id, [name])
+		VALUES (300, @account_id, -1, 'Personal');
+		INSERT INTO Project.categories(category_id, account_id, category_type_id, [name])
+		VALUES (301, @account_id, -1, 'Hobbies');
+		INSERT INTO Project.categories(category_id, account_id, category_type_id, [name])
+		VALUES (302, @account_id, -1, 'Restaurant');
+		INSERT INTO Project.categories(category_id, account_id, category_type_id, [name])
+		VALUES (303, @account_id, -1, 'Night out');
+		INSERT INTO Project.categories(category_id, account_id, category_type_id, [name])
+	VALUES (400, @account_id, -1, 'Loans');
+	COMMIT;
 END
 GO
 
@@ -1335,12 +1406,14 @@ BEGIN
 	
 	SET NOCOUNT ON
 
-	DECLARE @in_account_id INT;
-	SET @in_account_id = (SELECT account_id FROM INSERTED);
+	BEGIN TRANSACTION;
+		DECLARE @in_account_id INT;
+		SET @in_account_id = (SELECT account_id FROM INSERTED);
 
-	exec pr_insert_wallet @account_id=@in_account_id, @name='Current';
-	exec pr_insert_wallet @account_id=@in_account_id, @name='Irregular Expenses';
-	exec pr_insert_wallet @account_id=@in_account_id, @name='Savings';
+		exec pr_insert_wallet @account_id=@in_account_id, @name='Current';
+		exec pr_insert_wallet @account_id=@in_account_id, @name='Irregular Expenses';
+		exec pr_insert_wallet @account_id=@in_account_id, @name='Savings';
+	COMMIT;
 END
 GO
 
@@ -1352,12 +1425,46 @@ BEGIN
 
 	SET NOCOUNT ON
 
-	DECLARE @wallet_account_id INT;
-	SET @wallet_account_id = (SELECT account_id FROM INSERTED);
-	DECLARE @wallet_name VARCHAR(20);
-	SET @wallet_name = CONCAT('Goal: ', (SELECT [name] FROM INSERTED));
+	BEGIN TRANSACTION;
+		DECLARE @wallet_account_id INT;
+		SET @wallet_account_id = (SELECT account_id FROM INSERTED);
+		DECLARE @wallet_name VARCHAR(20);
+		SET @wallet_name = (SELECT [name] FROM INSERTED);
 
-	EXEC pr_insert_wallet @account_id=@wallet_account_id, @name=@wallet_name
+		EXEC pr_insert_wallet @account_id=@wallet_account_id, @name=@wallet_name;
+	COMMIT;
+END
+GO
+
+CREATE TRIGGER tr_update_goal_completion_with_wallet_transfer
+ON Project.transactions
+AFTER INSERT
+AS
+BEGIN
+	
+	SET NOCOUNT ON
+
+	DECLARE @transaction_type_id INT;
+	DECLARE @amount MONEY;
+	DECLARE @account_id INT;
+	DECLARE @wallet_id INT;
+	DECLARE @wallet_name VARCHAR(20);
+
+	BEGIN TRANSACTION;
+		SELECT
+			@transaction_type_id= transaction_type_id,
+			@amount=amount,
+			@account_id=account_id,
+			@wallet_id=wallet_id
+		FROM INSERTED
+
+		IF @transaction_type_id=0
+		BEGIN
+			SELECT @wallet_name=[name] FROM Project.wallets WHERE wallet_id=@wallet_id;
+
+			UPDATE Project.goals SET accomplished=accomplished+@amount WHERE [name]=@wallet_name;
+		END
+	COMMIT;
 END
 GO
 
@@ -1369,27 +1476,80 @@ BEGIN
 
 	SET NOCOUNT ON
 
-	DECLARE @account_id INT = (SELECT account_id FROM INSERTED);
-	DECLARE @patrimony MONEY;
-	SET @patrimony = COALESCE((SELECT SUM(purchase_price) FROM Project.purchased_stocks WHERE account_id=@account_id), 0.0);
-	SET @patrimony = @patrimony - COALESCE((SELECT SUM(current_debt) FROM Project.loans WHERE account_id=@account_id), 0.0);
-	SET @patrimony = @patrimony + COALESCE((SELECT SUM(balance) FROM Project.wallets WHERE account_id=@account_id), 0.0);
-
-	UPDATE Project.money_accounts SET patrimony=@patrimony WHERE account_id=@account_id;
-
+	DECLARE @acct_id INT = (SELECT account_id FROM INSERTED);
+	EXEC pr_recalculate_patrimony @account_id=@acct_id;
 END
 GO
 
+CREATE TRIGGER tr_update_account_patrimony_on_loans_insert
+ON Project.loans
+AFTER INSERT
+AS
+BEGIN
+	
+	SET NOCOUNT ON
 
---CREATE TRIGGER tr_update_account_patrimony_on_loans_stocks_insert
---ON Project.loans, Project.purchased_stocks
---AFTER INSERT
---AS
---BEGIN
+	DECLARE @acct_id INT = (SELECT account_id FROM INSERTED);
+	EXEC pr_recalculate_patrimony @account_id=@acct_id;
+END
+GO
 
---END
---GO
+CREATE TRIGGER tr_update_account_patrimony_on_loans_update
+ON Project.loans
+AFTER UPDATE
+AS
+BEGIN
+	
+	SET NOCOUNT ON
 
+	DECLARE @acct_id INT = (SELECT account_id FROM INSERTED);
+	EXEC pr_recalculate_patrimony @account_id=@acct_id;
+END
+GO
+
+CREATE TRIGGER tr_update_account_patrimony_on_purchased_stock_insert
+ON Project.purchased_stocks
+AFTER INSERT
+AS
+BEGIN
+	
+	SET NOCOUNT ON
+
+	DECLARE @acct_id INT = (SELECT account_id FROM INSERTED);
+	EXEC pr_recalculate_patrimony @account_id=@acct_id;
+END
+GO
+
+CREATE TRIGGER tr_update_account_patrimony_on_purchased_stock_delete
+ON Project.purchased_stocks
+AFTER DELETE
+AS
+BEGIN
+	
+	SET NOCOUNT ON
+
+	DECLARE @acct_id INT = (SELECT account_id FROM DELETED);
+	EXEC pr_recalculate_patrimony @account_id=@acct_id;
+END
+GO
+
+CREATE TRIGGER tr_update_account_balance_on_wallet_balance_update
+ON Project.wallets
+AFTER UPDATE
+AS
+BEGIN
+
+	SET NOCOUNT ON
+
+	BEGIN TRANSACTION;
+		DECLARE @account_id INT = (SELECT account_id FROM INSERTED);
+		DECLARE @balance MONEY;
+		SET @balance = COALESCE((SELECT SUM(balance) FROM Project.wallets WHERE account_id=@account_id), 0.0);
+
+		UPDATE Project.money_accounts SET balance=balance+@balance WHERE account_id=@account_id;
+	COMMIT;
+END
+GO
 
 CREATE TRIGGER tr_update_wallet_balance_on_transaction_insert
 ON Project.transactions
@@ -1399,15 +1559,26 @@ BEGIN
 	
 	SET NOCOUNT ON
 
-	DECLARE @value MONEY;
-	DECLARE @wallet_id INT;
-	SELECT @value=amount, @wallet_id=wallet_id FROM INSERTED;
+	BEGIN TRANSACTION;
+		DECLARE @value MONEY;
+		DECLARE @wallet_id INT;
+		DECLARE @transaction_type_id INT;
+		SELECT @value=amount, @wallet_id=wallet_id, @transaction_type_id=transaction_type_id FROM INSERTED;
 
-	PRINT(@value);
+		IF @transaction_type_id = -1
+		BEGIN
+			UPDATE Project.wallets
+			SET balance = balance - COALESCE(@value, 0)
+			WHERE wallet_id=@wallet_id;
+		END
 
-	UPDATE Project.wallets
-	SET balance=COALESCE(balance, 0) + COALESCE(@value, 0)
-	WHERE wallet_id=@wallet_id;
+		ELSE IF @transaction_type_id = 1
+		BEGIN
+			UPDATE Project.wallets
+			SET balance = balance + COALESCE(@value, 0)
+			WHERE wallet_id=@wallet_id;
+		END
+	COMMIT;
 END
 GO
 
@@ -1419,15 +1590,60 @@ BEGIN
 
 	SET NOCOUNT ON
 
-	DECLARE @value MONEY;
-	DECLARE @wallet_id INT;
-	SELECT @value=amount, @wallet_id=wallet_id FROM DELETED;
+	BEGIN TRANSACTION;
+		DECLARE @value MONEY;
+		DECLARE @wallet_id INT;
+		SELECT @value=amount, @wallet_id=wallet_id FROM DELETED;
 
-	UPDATE Project.wallets
-	SET balance=COALESCE(balance, 0) + COALESCE(@value, 0)
-	WHERE wallet_id=@wallet_id
+		UPDATE Project.wallets
+		SET balance=balance + COALESCE(@value, 0)
+		WHERE wallet_id=@wallet_id
+		;
+	COMMIT;
 END
 GO
+
+CREATE TRIGGER tr_update_wallet_balance_on_transfer_insert
+ON Project.transfers
+AFTER INSERT
+AS
+BEGIN
+	
+	BEGIN TRANSACTION;
+		DECLARE @transaction_id INT;
+		DECLARE @recipient_wallet_id INT;
+		SELECT
+			@transaction_id=transaction_id,
+			@recipient_wallet_id=recipient_wallet_id
+		FROM INSERTED;
+	
+		DECLARE @value MONEY;
+		SELECT @value=amount
+		FROM Project.transactions
+		WHERE transaction_id=@transaction_id
+		;
+	
+		UPDATE Project.wallets
+		SET balance = balance + COALESCE(@value, 0)
+		WHERE wallet_id=@recipient_wallet_id
+		;
+
+		DECLARE @from_wallet_id INT;
+		SELECT
+			@from_wallet_id=wallet_id,
+			@value=amount
+		FROM Project.transactions
+		WHERE transaction_id=@transaction_id
+		;
+
+		UPDATE Project.wallets
+		SET balance = balance - COALESCE(@value, 0)
+		WHERE wallet_id=@from_wallet_id
+		;
+	COMMIT;
+END
+GO
+
 --------------------------------------------------------------------
 -- POPULATE DATABASE -----------------------------------------------
 --------------------------------------------------------------------
@@ -1439,5 +1655,3 @@ EXEC pr_insert_money_account @user_email='user1@ua.pt', @account_name='u1_person
 EXEC pr_insert_money_account @user_email='user2@ua.pt', @account_name='u2_personal';
 EXEC pr_insert_money_account @user_email='user1@ua.pt', @account_name='u1_shared';
 EXEC pr_money_account_add_user @account_id=3, @user_email='user2@ua.pt'
-
-select * from Project.loans;

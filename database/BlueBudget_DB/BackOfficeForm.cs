@@ -144,6 +144,7 @@ namespace BlueBudget_DB
 
             // update listBox
             PopulateUsersListView();
+            DefaultTextboxes();
         }
 
         // -------------------------------------------------------------------
@@ -181,28 +182,42 @@ namespace BlueBudget_DB
             var res = new List<Object>();
             while (rdr.Read())
             {
-                res.Add(rdr[DB_API.UserEnt.email.ToString()].ToString());
-                res.Add(rdr[DB_API.UserEnt.user_name.ToString()].ToString());
-                res.Add(rdr[DB_API.UserEnt.fname.ToString()].ToString());
-                res.Add(rdr[DB_API.UserEnt.mname.ToString()].ToString());
-                res.Add(rdr[DB_API.UserEnt.lname.ToString()].ToString());
-                res.Add(rdr[DB_API.UserEnt.card_number.ToString()].ToString());
+
+                Console.WriteLine("---> email: " + rdr[DB_API.UserEnt.email.ToString()].ToString());
+                email_textbox.Text = rdr[DB_API.UserEnt.email.ToString()].ToString();
+                email_textbox.ForeColor = email_textbox.Text.Equals("") ? Color.Gray : Color.Black;
+                email_textbox.Text = email_textbox.Text.Equals("") ? "email" : email_textbox.Text;
+                username_textbox.Text = rdr[DB_API.UserEnt.user_name.ToString()].ToString();
+                username_textbox.ForeColor = username_textbox.Text.Equals("") ? Color.Gray : Color.Black;
+                username_textbox.Text = username_textbox.Text.Equals("") ? "username" : username_textbox.Text;
+                firstname_textbox.Text = rdr[DB_API.UserEnt.fname.ToString()].ToString();
+                firstname_textbox.ForeColor = firstname_textbox.Text.Equals("") ? Color.Gray : Color.Black;
+                firstname_textbox.Text = firstname_textbox.Text.Equals("") ? "first name" : firstname_textbox.Text;
+                middlename_textbox.Text = rdr[DB_API.UserEnt.mname.ToString()].ToString();
+                middlename_textbox.ForeColor = middlename_textbox.Text.Equals("") ? Color.Gray : Color.Black;
+                middlename_textbox.Text = middlename_textbox.Text.Equals("") ? "middle name" : middlename_textbox.Text;
+                lastname_textbox.Text = rdr[DB_API.UserEnt.lname.ToString()].ToString();
+                lastname_textbox.ForeColor = lastname_textbox.Text.Equals("") ? Color.Gray : Color.Black;
+                lastname_textbox.Text = lastname_textbox.Text.Equals("") ? "last name" : lastname_textbox.Text;
+                cardnumber_textbox.Text = rdr[DB_API.UserEnt.card_number.ToString()].ToString();
+                cardnumber_textbox.ForeColor = cardnumber_textbox.Text.Equals("") ? Color.Gray : Color.Black;
+                cardnumber_textbox.Text = cardnumber_textbox.Text.Equals("") ? "card number" : cardnumber_textbox.Text;
                 bool activeSubscription = (bool)rdr[DB_API.UserEnt.active_subscription.ToString()];
+                Console.WriteLine("---> active subscription: " + activeSubscription);
                 if (!activeSubscription)
                 {
-                    res.Add(1); // periodicity
-                    res.Add(DateTime.Today); // term
-                    res.Add(false); // active
+                    Periodicity_comboBox.Text = DB_API.SelectRecurrenceById(1);
+                    term_dateTimePicker.Value = DateTime.Today;
+                    active_checkBox.Checked = false;
                 }
                 else
                 {
-                    res.Add(rdr[DB_API.UserEnt.periodicity.ToString()]);
-                    res.Add(DateTime.Parse(rdr[DB_API.UserEnt.term.ToString()].ToString()));
-                    res.Add(Boolean.Parse(rdr[DB_API.UserEnt.active_subscription.ToString()].ToString()));
+                    Console.WriteLine("---> " + rdr[DB_API.UserEnt.periodicity.ToString()].ToString());
+                    Periodicity_comboBox.Text = DB_API.SelectRecurrenceById((int)rdr[DB_API.UserEnt.periodicity.ToString()]);
+                    term_dateTimePicker.Value = (DateTime)rdr[DB_API.UserEnt.term.ToString()];
+                    active_checkBox.Checked = true;
                 }
             }
-            //PopulateUsersListView();
-            Update_textBoxes(res);
         }
 
         // -------------------------------------------------------------------
@@ -218,43 +233,6 @@ namespace BlueBudget_DB
                 res.Add((string)rdr[DB_API.RecurrenceEnt.designation.ToString()]);
             }
             Periodicity_comboBox.DataSource = res;
-        }
-
-        private void Update_textBoxes(List<Object> values)
-        {
-            DefaultTextboxes();
-
-            email_textbox.Text = (string)values[0]; email_textbox.ForeColor = Color.Black;
-
-            if (values.Count > 1)
-            {
-                username_textbox.Text = (string)values[1];
-                username_textbox.ForeColor = !"".Equals(values[1]) ? Color.Black : Color.Gray;
-            }
-
-            if (values.Count > 2)
-            {
-                firstname_textbox.Text = (string)values[2];
-                firstname_textbox.ForeColor = !"".Equals(values[2]) ? Color.Black : Color.Gray;
-
-                middlename_textbox.Text = (string)values[3];
-                middlename_textbox.ForeColor = !"".Equals(values[3]) ? Color.Black : Color.Gray;
-
-                lastname_textbox.Text = (string)values[4];
-                lastname_textbox.ForeColor = !"".Equals(values[4]) ? Color.Black : Color.Gray;
-
-                cardnumber_textbox.Text = (string)values[5];
-                cardnumber_textbox.ForeColor = !"".Equals(values[5]) ? Color.Black : Color.Gray;
-
-                Periodicity_comboBox.Text = DB_API.SelectRecurrenceById((int)values[6]);
-                if (values[7].Equals(""))
-                {
-                    values[7] = DateTime.Today.ToString();
-                }
-                term_dateTimePicker.Value = (DateTime)values[7];
-            }
-            
-            active_checkBox.Checked = (bool)values[8];
         }
 
         // -------------------------------------------------------------------

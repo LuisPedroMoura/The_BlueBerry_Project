@@ -18,7 +18,6 @@ namespace BlueBudget_DB
         int account_id;
         IDictionary<string, int> categoriesStrInt;
         IDictionary<int, string> categoriesIntStr;
-        IDictionary<string, int> transactionDict;
         string none = "--- none ---";
 
         public TransactionsForm(string user_email, int account_id)
@@ -44,6 +43,7 @@ namespace BlueBudget_DB
             filtersubcategory_comboBox.DropDownStyle = ComboBoxStyle.DropDownList;
             type_comboBox.DropDownStyle = ComboBoxStyle.DropDownList;
             wallet_comboBox.DropDownStyle = ComboBoxStyle.DropDownList;
+            wallet2_comboBox.DropDownStyle = ComboBoxStyle.DropDownList;
             filtertype_comboBox.DropDownStyle = ComboBoxStyle.DropDownList;
             filterwallet_comboBox.DropDownStyle = ComboBoxStyle.DropDownList;
 
@@ -54,6 +54,7 @@ namespace BlueBudget_DB
             filtersubcategory_comboBox.FlatStyle = FlatStyle.Popup;
             type_comboBox.FlatStyle = FlatStyle.Popup;
             wallet_comboBox.FlatStyle = FlatStyle.Popup;
+            wallet2_comboBox.FlatStyle = FlatStyle.Popup;
             filtertype_comboBox.FlatStyle = FlatStyle.Popup;
             filterwallet_comboBox.FlatStyle = FlatStyle.Popup;
         }
@@ -64,67 +65,50 @@ namespace BlueBudget_DB
 
         private void Save_btn_Click(object sender, EventArgs e)
         {   
-            // get fields info
+            // get categories fields info
             int category_id = categoriesStrInt[category_comboBox.SelectedItem.ToString()];
             int subcategory_id = subcategory_comboBox.SelectedItem.ToString().Equals(this.none) ||
                 subcategory_comboBox.SelectedItem.ToString().Equals("") ?
                 -1 : categoriesStrInt[subcategory_comboBox.SelectedItem.ToString()];
+            // get amount
             string amt = amount_textBox.ForeColor == Color.Black ? amount_textBox.Text.Substring(1) : "";
             if (amt.Equals(""))
             {
                 ErrorMessenger.EmptyField("Amount");
                 return;
             }
-            double amount = 0.0;
-            try
-            {
-                amount = Double.Parse(amt);
-            }
-            catch
-            {
-                ErrorMessenger.WrongFormat("Amount");
-                return;
-            }
+            double amount = DB_API.UnMoneyfy(amount_textBox.Text);
+            // get date
             DateTime date = dateTimePicker.Value;
+            // get notes and location
             string notes = notes_textBox.ForeColor == Color.Black ? notes_textBox.Text : "";
-            int transaction_type_id = -1;
-            try
-            {
-                transaction_type_id = DB_API.SelectTransactionTypeIdByName(type_comboBox.SelectedItem.ToString());
-            }
-            catch (SqlException ex)
-            {
-                ErrorMessenger.Exception(ex);
-            }
-            int wallet_id = -1;
-            try
-            {
-                var rdr = DB_API.SelectWalletByName(account_id, wallet_comboBox.SelectedItem.ToString());
-                while (rdr.Read())
-                {
-                    wallet_id = (int)rdr[DB_API.WalletEnt.wallet_id.ToString()];
-                    break;
-                }
-            }
-            catch (SqlException ex)
-            {
-                ErrorMessenger.Exception(ex);
-            }
             string location = location_textBox.ForeColor == Color.Black ? location_textBox.Text : "";
+            // get transaction type
+            int transaction_type_id = -1;
+            transaction_type_id = DB_API.SelectTransactionTypeIdByName(type_comboBox.SelectedItem.ToString());
+            // get wallet
+            string from_wallet_name = wallet_comboBox.SelectedItem.ToString();
+            string to_wallet_name = wallet2_comboBox.SelectedItem.ToString();
+            int from_wallet_id = -1;
+            int to_wallet_id = -1;
+            var rdr = DB_API.SelectWalletByName(account_id, from_wallet_name);
+            while (rdr.Read())
+            {
+                from_wallet_id = (int)rdr[DB_API.WalletEnt.wallet_id.ToString()];
+                break;
+            }
+            rdr = DB_API.SelectWalletByName(account_id, to_wallet_name);
+            while (rdr.Read())
+            {
+                to_wallet_id = (int)rdr[DB_API.WalletEnt.wallet_id.ToString()];
+                break;
+            }
 
             // insert new transaction
             int cat_id = subcategory_id != -1 ? subcategory_id : category_id;
-            try
-            {
-                DB_API.InsertTransaction(account_id, cat_id, wallet_id, transaction_type_id,
+            DB_API.InsertTransaction(account_id, cat_id, from_wallet_id, to_wallet_id, transaction_type_id,
                     amount, date, location, notes);
-            }
-            catch (SqlException ex)
-            {
-                ErrorMessenger.Exception(ex);
-                return;
-            }
-
+            
             // update transactions listBox
             PopulateTransactionsListView();
         }
@@ -141,15 +125,7 @@ namespace BlueBudget_DB
                 ErrorMessenger.Warning("A transaction must be selected from the list");
                 return;
             }
-            try
-            {
-                DB_API.DeleteTransaction(transaction_id);
-            }
-            catch (SqlException ex)
-            {
-                ErrorMessenger.Exception(ex);
-                return;
-            }
+            DB_API.DeleteTransaction(transaction_id);
 
             // populate transactions listBox
             PopulateTransactionsListView();
@@ -186,64 +162,25 @@ namespace BlueBudget_DB
             int? transaction_type_id = null;
             if (!filtertype_comboBox.SelectedItem.ToString().Equals(this.none))
             {
-                try
-                {
-                    transaction_type_id = DB_API.SelectTransactionTypeIdByName(filtertype_comboBox.SelectedItem.ToString());
-                }
-                catch (SqlException ex)
-                {
-                    ErrorMessenger.Exception(ex);
-                    return;
-                }
+                transaction_type_id = DB_API.SelectTransactionTypeIdByName(filtertype_comboBox.SelectedItem.ToString());
             }
             int? wallet_id = null;
             if (!wallet_comboBox.SelectedItem.ToString().Equals(this.none))
             {
-                try
+                var rdr = DB_API.SelectWalletByName(account_id, filterwallet_comboBox.SelectedItem.ToString());
+                while (rdr.Read())
                 {
-                    var rdr = DB_API.SelectWalletByName(account_id, filterwallet_comboBox.SelectedItem.ToString());
-                    while (rdr.Read())
-                    {
-                        wallet_id = (int)rdr[DB_API.WalletEnt.wallet_id.ToString()];
-                        break;
-                    }
-                }
-                catch (SqlException ex)
-                {
-                    ErrorMessenger.Exception(ex);
-                    return;
+                    wallet_id = (int)rdr[DB_API.WalletEnt.wallet_id.ToString()];
+                    break;
                 }
             }
 
             // min and max amount
             string minamt = filterminamount_textBox.ForeColor == Color.Black ? filterminamount_textBox.Text.Substring(1) : "";
             string maxamt = filtermaxamount_textBox.ForeColor == Color.Black ? filtermaxamount_textBox.Text.Substring(1) : "";
-            double? minamount = null;
-            double? maxamount = null;
-            if (!minamt.Equals(""))
-            {
-                try
-                {
-                    minamount = Double.Parse(minamt);
-                }
-                catch
-                {
-                    ErrorMessenger.WrongFormat("Min amount");
-                    return;
-                }
-            }
-            if (!maxamt.Equals(""))
-            {
-                try
-                {
-                    maxamount = Double.Parse(maxamt);
-                }
-                catch
-                {
-                    ErrorMessenger.WrongFormat("Max amount");
-                    return;
-                }
-            }
+            double? minamount = DB_API.UnMoneyfy(minamt);
+            double? maxamount = DB_API.UnMoneyfy(minamt);
+
             if (minamount != null && maxamount != null && minamount > maxamount)
             {
                 ErrorMessenger.Error("Min amount must be less or equal than Max amount");
@@ -318,6 +255,18 @@ namespace BlueBudget_DB
             }
         }
 
+        private void type_comboBox_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (type_comboBox.SelectedItem.ToString().Equals("transfer"))
+            {
+                wallet2_comboBox.Enabled = true;
+            }
+            else
+            {
+                wallet2_comboBox.Enabled = false;
+            }
+        }
+
         private void PopulateSubCategoryComboBox(int cat_id)
         {
             var res = new List<string>();
@@ -363,16 +312,19 @@ namespace BlueBudget_DB
 
         private void PopulateWalletsComboBox()
         {
-            var res = new List<string>();
+            var fromres = new List<string>();
+            var tores = new List<string>();
             var filterRes = new List<string>();
             filterRes.Add(this.none);
             var rdr = DB_API.SelectAccountWallets(account_id);
             while (rdr.Read())
             {
-                res.Add(rdr[DB_API.WalletEnt.name.ToString()].ToString());
+                fromres.Add(rdr[DB_API.WalletEnt.name.ToString()].ToString());
+                tores.Add(rdr[DB_API.WalletEnt.name.ToString()].ToString());
                 filterRes.Add(rdr[DB_API.WalletEnt.name.ToString()].ToString());
             }
-            wallet_comboBox.DataSource = res;
+            wallet_comboBox.DataSource = fromres;
+            wallet2_comboBox.DataSource = tores;
             filterwallet_comboBox.DataSource = filterRes;
         }
 
@@ -563,6 +515,5 @@ namespace BlueBudget_DB
                 filtermaxamount_textBox.ForeColor = Color.Gray;
             }
         }
-
     }
 }

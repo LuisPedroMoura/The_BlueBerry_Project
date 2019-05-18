@@ -91,6 +91,8 @@ namespace BlueBudget_DB
             account_id,
             category_id,
             wallet_id,
+            from_wallet_id,
+            to_wallet_id,
             transaction_id,
             transaction_type_id,
             amount,
@@ -135,6 +137,23 @@ namespace BlueBudget_DB
         public static string Moneyfy(double value)
         {
             return String.Format(System.Globalization.CultureInfo.CurrentCulture, "{0:C2}", value);
+        }
+
+        public static double UnMoneyfy(string value)
+        {
+            double res;
+            try
+            {
+                res = Double.Parse(value.Substring(1));
+            }
+            catch
+            {
+                value = value.Substring(2);
+                value = value.Remove(value.Length-2);
+                res = -Double.Parse(value);
+            }
+
+            return res;
         }
 
             
@@ -543,7 +562,7 @@ public static bool ExistsUser(string email)
             {
                 { DB_API.TransactionEnt.account_id, account_id },
                 { DB_API.TransactionEnt.category_id, category_id },
-                { DB_API.TransactionEnt.wallet_id, wallet_id },
+                { DB_API.TransactionEnt.from_wallet_id, wallet_id },
                 { DB_API.TransactionEnt.transaction_id, transaction_id },
                 { DB_API.TransactionEnt.transaction_type_id, transaction_type_id },
                 { DB_API.TransactionEnt.min_amount, min_amount },
@@ -555,14 +574,15 @@ public static bool ExistsUser(string email)
             return DB_IO.SelectReader(DB_IO.DB_Interface.pr_select_transactions, attrValue);
         }
 
-        public static void InsertTransaction(int account_id, int category_id, int wallet_id,
+        public static void InsertTransaction(int account_id, int category_id, int from_wallet_id, int to_wallet_id,
             int transaction_type_id, double amount, DateTime date, string location, string notes)
         {
             var attrValue = new Dictionary<System.Enum, Object>
             {
                 { TransactionEnt.account_id, account_id },
                 { TransactionEnt.category_id, category_id },
-                { TransactionEnt.wallet_id, wallet_id },
+                { TransactionEnt.from_wallet_id, from_wallet_id },
+                { TransactionEnt.to_wallet_id, to_wallet_id },
                 { TransactionEnt.transaction_type_id, transaction_type_id },
                 { TransactionEnt.amount, amount },
                 { TransactionEnt.date, date },

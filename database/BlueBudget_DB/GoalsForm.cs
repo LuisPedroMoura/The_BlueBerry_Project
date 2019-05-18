@@ -25,13 +25,24 @@ namespace BlueBudget_DB
             InitializeComponent();
             this.user_email = user_email;
             this.account_id = account_id;
+        }
+
+        private void Goals_Load(object sender, EventArgs e)
+        {
             UpdateCategories();
             PopulateCategoryComboBox();
             PopulateGoalsListBox();
             DefaultTextboxes();
+
+            // disable typing in comboBoxes by changing style
+            Categories_comboBox.DropDownStyle = ComboBoxStyle.DropDownList;
+            Subcategories_comboBox.DropDownStyle = ComboBoxStyle.DropDownList;
+            // make comboBoxes white again
+            Categories_comboBox.FlatStyle = FlatStyle.Popup;
+            Subcategories_comboBox.FlatStyle = FlatStyle.Popup;
         }
 
-       
+
         // -------------------------------------------------------------------
         // BUTTONS -----------------------------------------------------------
         // -------------------------------------------------------------------
@@ -46,11 +57,9 @@ namespace BlueBudget_DB
             // get values from textboxes
             string goal_name = goalname_textBox.ForeColor == Color.Black ? goalname_textBox.Text : "";
             string amount = goalamount_textBox.ForeColor == Color.Black ? goalamount_textBox.Text : "";
-            double goal_amount;
+            double goal_amount = DB_API.UnMoneyfy(amount);
             int cat_id = categories[Categories_comboBox.SelectedItem.ToString()];
             DateTime term = term_dateTimePicker.Value;
-
-            Console.WriteLine("---> " + goal_name + ", " + amount);
 
             // verify if field is filled
             if (goal_name.Equals(""))
@@ -61,17 +70,6 @@ namespace BlueBudget_DB
             if (amount.Equals(""))
             {
                 ErrorMessenger.EmptyField("Goal amount");
-                return;
-            }
-
-            // verify if goal amount is correctly formatted
-            try
-            {
-                goal_amount = Double.Parse(amount);
-            }
-            catch
-            {
-                ErrorMessenger.WrongFormat("Goal amount");
                 return;
             }
 
@@ -195,11 +193,11 @@ namespace BlueBudget_DB
 
                 if (balance < goal_amount)
                 {
-                    Goalstate_label.Text = "Keep going!\r\n"+(balance/goal_amount*100)+"% complete! "+(goal_amount-balance)+"$ to go!";
+                    Goalstate_label2.Text = "Keep going!\r\n" + (balance / goal_amount * 100) + "% complete!\r\n" + (goal_amount - balance) + "$ to go!";
                 }
                 if (balance >= goal_amount)
                 {
-                    Goalstate_label.Text = "Congratulations!\r\nGoal reached! Saved " + balance + "!";
+                    Goalstate_label2.Text = "Congratulations!\r\nGoal reached!\r\nSaved " + balance + "!";
                 }
             }
 
@@ -246,6 +244,7 @@ namespace BlueBudget_DB
             goalname_textBox.ForeColor = Color.Gray;
             goalamount_textBox.Text = "goal value";
             goalamount_textBox.ForeColor = Color.Gray;
+            Goalstate_label2.Text = "";
         }
 
         private void Goalname_textBox_Enter(object sender, EventArgs e)
@@ -269,6 +268,8 @@ namespace BlueBudget_DB
         }
         private void Goalamount_textBox_Leave(object sender, EventArgs e)
         {
+            goalamount_textBox.Text = DB_API.Moneyfy(goalamount_textBox.Text);
+
             if (goalamount_textBox.Text.Equals(""))
             {
                 goalamount_textBox.Text = "goal value";
@@ -276,9 +277,6 @@ namespace BlueBudget_DB
             }
         }
 
-        private void Goals_Load(object sender, EventArgs e)
-        {
-
-        }
+        
     }
 }
