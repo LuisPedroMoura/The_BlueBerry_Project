@@ -88,9 +88,9 @@ namespace BlueBudget_DB
                 {
                 }
             }
-            catch (Exception ex)
+            catch
             {
-                Console.WriteLine("An error has ocurred connecting to the DB: " + ex.ToString());
+                ErrorMessenger.Error("Could not connect to database!");
             }
 
             return cnx;
@@ -156,8 +156,6 @@ namespace BlueBudget_DB
             // step 2: parameterize cmd
             CmdParameterizer(cmd, attrValue);
 
-            Console.WriteLine("####### ####### " + cmd.CommandText);
-
             // step 3: execute
             return ExecuteNonQuery(cnx, cmd);
         }
@@ -174,8 +172,6 @@ namespace BlueBudget_DB
 
             // step 2: parameterize cmd
             CmdParameterizer(cmd, attrValue);
-
-            Console.WriteLine("####### ####### "+cmd.CommandText);
 
             // step 3: execute
             return ExecuteReader(cnx, cmd);
@@ -194,8 +190,6 @@ namespace BlueBudget_DB
             // step 2: parameterize cmd
             CmdParameterizer(cmd, attrValue);
 
-            Console.WriteLine("####### ####### " + cmd.CommandText);
-
             // step 3: execute
             return ExecuteScalar(cnx, cmd);
         }
@@ -213,8 +207,6 @@ namespace BlueBudget_DB
             // step 2: parameterize cmd
             CmdParameterizer(cmd, attrValue);
 
-            Console.WriteLine("####### ####### " + cmd.CommandText);
-
             // step 3: execute
             return Convert.ToBoolean(ExecuteScalar(cnx, cmd));
         }
@@ -230,7 +222,6 @@ namespace BlueBudget_DB
             try
             {
                 rows = cmd.ExecuteNonQuery();
-                Console.WriteLine("Query executed successfully");
             }
             catch (SqlException ex)
             {
@@ -251,7 +242,6 @@ namespace BlueBudget_DB
                 SqlDataReader rdr = cmd.ExecuteReader();
                 dt.Load(rdr);
                 rdr.Close();
-                Console.WriteLine("Query executed successfully");
             }
             catch (SqlException ex)
             {
@@ -270,7 +260,6 @@ namespace BlueBudget_DB
             try
             {
                 res = cmd.ExecuteScalar();
-                Console.WriteLine("Query executed successfully");
             }
             catch (SqlException ex)
             {

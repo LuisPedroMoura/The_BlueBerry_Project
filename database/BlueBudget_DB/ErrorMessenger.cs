@@ -74,6 +74,14 @@ namespace BlueBudget_DB
             MessageBox.Show(message, caption);
         }
 
+        public static bool OKCancel(string message)
+        {
+            string caption = "WARNING";
+            MessageBoxButtons buttons = MessageBoxButtons.OKCancel;
+            DialogResult click = MessageBox.Show(message, caption, buttons);
+            return click == DialogResult.OK ? true : false;
+        }
+
 
     }
 }
