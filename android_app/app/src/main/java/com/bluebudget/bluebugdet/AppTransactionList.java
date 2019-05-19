@@ -1,5 +1,7 @@
 package com.bluebudget.bluebugdet;
 
+import android.util.Log;
+
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
@@ -68,12 +70,14 @@ public class AppTransactionList {
                              String wallet, String recipientWallet) {
         AppTransaction t = transactions.get(id);
 
-        t.setValue(value);
+        t.setValue(-value);
         t.setDate(date);
         t.setNotes(notes);
         t.setLocation(location);
         t.setWallet(wallet);
         t.setRecipientWallet(recipientWallet);
+        Log.i(TAG, "update - wallet " + wallet + "#######################################");
+        Log.i(TAG, "update - recipientWallet " + recipientWallet + "#######################################");
     }
 
     public void removeTransaction(int id){

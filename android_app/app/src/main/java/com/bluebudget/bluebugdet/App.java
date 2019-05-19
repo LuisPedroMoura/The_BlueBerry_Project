@@ -192,8 +192,8 @@ public class App {
     }
 
     public void addExpense(double value, Calendar date, AppCategory category, String notes , String location,
-                           String wallet) {
-        transactions.addExpense(value, date, category, notes , location, wallet);
+                String wallet) {
+            transactions.addExpense(value, date, category, notes , location, wallet);
     }
 
     public void updateExpense(int id, double value, Calendar date, AppCategory category, String notes , String location,
