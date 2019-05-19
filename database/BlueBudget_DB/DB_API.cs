@@ -652,10 +652,12 @@ public static bool ExistsUser(string email)
             DB_IO.Delete(DB_IO.DB_Interface.pr_delete_purchased_stocks, attrValue);
         }
 
-        public static void DeleteStocksByCompany(string company)
+        public static void DeleteStocksByCompany(string company, double purchasePrice, double askPrice)
         {
             var attrValue = DB_IO.AttrValue();
             attrValue[DB_API.StockEnt.company] = company;
+            attrValue[DB_API.StockEnt.purchase_price] = purchasePrice;
+            attrValue[DB_API.StockEnt.ask_price] = askPrice;
             DB_IO.Delete(DB_IO.DB_Interface.pr_delete_purchased_stocks, attrValue);
         }
     }
