@@ -13,6 +13,7 @@ import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -66,7 +67,7 @@ public class EditTransfer extends AppCompatActivity {
         fab.setOnClickListener(checkFabOnClick);
 
         amountET = findViewById(R.id.amountEditTransferET);
-        amountET.setText(amountIntent+"");
+        amountET.setText(-amountIntent+"");
 
         locationET = findViewById(R.id.locationEditTransferET);
         locationET.setText(locationIntent);
@@ -101,10 +102,9 @@ public class EditTransfer extends AppCompatActivity {
     ////Wallet Spinner////
     //////////////////////
     private ArrayList<SpinnerItem> initWalletList(boolean fromWallet){
-        ArrayList<SpinnerItem> walletItemList = new ArrayList<>();
-        AppWallet w;
-        List<AppWallet> walletsList = Home.app.getWalletsList();
 
+        AppWallet w;
+        Log.i(TAG, "fromWallet "+fromWallet+ "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
         if(fromWallet){
             w = Home.app.getWallet(fromWalletIntent);
         }
@@ -112,8 +112,12 @@ public class EditTransfer extends AppCompatActivity {
             w = Home.app.getWallet(recipientWalletIntent);
         }
 
+        ArrayList<SpinnerItem> walletItemList = new ArrayList<>();
         walletItemList.add(new SpinnerItem(w.getName(), w.getIcon()));
-        walletsList.remove(w);
+
+        List<AppWallet> walletsList = Home.app.getWalletsList();
+        boolean removed = walletsList.remove(w);
+        Log.i(TAG, "w.getName() "+w.getName()+" removed "+removed+ "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
 
         for(AppWallet wallet : walletsList){
             walletItemList.add(new SpinnerItem(wallet.getName(), wallet.getIcon()));
@@ -129,8 +133,8 @@ public class EditTransfer extends AppCompatActivity {
         public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
             SpinnerItem clickedItem = (SpinnerItem) parent.getItemAtPosition(position);
             String clickedName = clickedItem.getName();
-
-            Log.i(TAG, "category " + clickedName+ " selected");
+            showSpinnerToast(view, clickedName);
+            Log.i(TAG, "wallet " + clickedName+ " selected");
         }
 
         @Override
@@ -138,6 +142,19 @@ public class EditTransfer extends AppCompatActivity {
 
         }
     };
+
+    private void showSpinnerToast(View view, String clickedName){
+        switch (clickedName){
+            case "add new category":
+            case "add new sub-category":
+            case "add new wallet":
+                CharSequence text = "To be implemented";
+                int duration = Toast.LENGTH_SHORT;
+
+                Toast toast = Toast.makeText(view.getContext(), text, duration);
+                toast.show();
+        }
+    }
 
 
     //////////////////////
@@ -184,6 +201,7 @@ public class EditTransfer extends AppCompatActivity {
             if(amount.equals("")){
                 amount = 0.0+"";
             }
+
             transactions.putExtra("amount", Double.parseDouble(amount));
             transactions.putExtra("date", dateTV.getText().toString());
 
@@ -194,7 +212,19 @@ public class EditTransfer extends AppCompatActivity {
             SpinnerItem rwsi = (SpinnerItem) recipientWalletSpinner.getSelectedItem();
             transactions.putExtra("recipientWallet", rwsi.getName());
 
+            //Log.i(TAG, "send edited- amount " + amount + "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+            Log.i(TAG, "send edited - from wallet " + wsi.getName() + "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+            Log.i(TAG, "send edited - recipient wallet " + rwsi.getName() + "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+
             startActivity(transactions);
         }
     };
+
+    public void editTransferDeleteBtnClicked(View view) {
+        CharSequence text = "To be implemented";
+        int duration = Toast.LENGTH_LONG;
+
+        Toast toast = Toast.makeText(this, text, duration);
+        toast.show();
+    }
 }

@@ -10,62 +10,81 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
+            android:windowSoftInputMode="adjustResize"
             android:name=".Filter"
             android:label="@string/title_activity_filter"
             android:theme="@style/AppTheme.NoActionBar"></activity>
         <activity
+            android:windowSoftInputMode="adjustResize"
             android:name=".ScrollingActivity"
             android:label="@string/title_activity_scrolling"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".WalkthroughBudget" />
-        <activity android:name=".WalkthroughIncome">
+        <activity android:name=".WalkthroughBudget"
+            android:windowSoftInputMode="adjustResize" />
+        <activity android:name=".WalkthroughIncome"
+            android:windowSoftInputMode="adjustResize" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".CalendarPopUp" />
+        <activity android:name=".CalendarPopUp"
+            android:windowSoftInputMode="adjustResize" />
         <activity
             android:name=".testTabbedActivity"
             android:label="@string/title_activity_test_tabbed"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="adjustResize" />
         <activity
             android:name=".NewTransfer"
             android:label="New Transfer"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="adjustResize" />
         <activity
             android:name=".NewExpense"
             android:label="New Expense"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="adjustResize" />
         <activity
             android:name=".NewIncome"
             android:label="New Income"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="adjustResize" />
         <activity
             android:name=".EditTransfer"
             android:label="Edit Transfer"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="adjustResize" />
         <activity
             android:name=".EditExpense"
             android:label="Edit Expense"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="adjustResize" />
         <activity
             android:name=".EditIncome"
             android:label="Edit Income"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="adjustResize" />
         <activity
             android:name=".NewTransaction"
             android:label="New transaction"
-            android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".AddIncomeBudget" />
-        <activity android:name=".AddExpenseBudget" />
+            android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="adjustResize" />
+        <activity android:name=".AddIncomeBudget"
+            android:windowSoftInputMode="adjustResize" />
+        <activity android:name=".AddExpenseBudget"
+            android:windowSoftInputMode="adjustResize" />
         <activity
             android:name=".Home"
-            android:label="@string/app_name" />
-        <activity android:name=".Transactions" />
-        <activity android:name=".Budget" />
-        <activity android:name=".Stats" />
+            android:label="@string/app_name"
+            android:windowSoftInputMode="adjustResize" />
+        <activity android:name=".Transactions"
+            android:windowSoftInputMode="adjustResize" />
+        <activity android:name=".Budget"
+            android:windowSoftInputMode="adjustResize" />
+        <activity android:name=".Stats"
+            android:windowSoftInputMode="adjustResize" />
     </application>
 
 </manifest>

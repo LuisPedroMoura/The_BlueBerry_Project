@@ -144,6 +144,7 @@ public class Home extends AppCompatActivity {
                 null, AppTransactionType.TRANSFER);
 
         double transfersAmount = Home.app.calculateBalance(transfers);
+        transfersAmount = transfersAmount<0? -transfersAmount : transfersAmount;
         transfersOverviewTV.setText(transfersAmount+"€");
     }
 

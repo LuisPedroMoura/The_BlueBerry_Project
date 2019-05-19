@@ -13,6 +13,7 @@ import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -96,7 +97,7 @@ public class NewTransfer extends AppCompatActivity {
         public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
             SpinnerItem clickedItem = (SpinnerItem) parent.getItemAtPosition(position);
             String clickedName = clickedItem.getName();
-
+            showSpinnerToast(view, clickedName);
             Log.i(TAG, "category " + clickedName+ " selected");
         }
 
@@ -106,6 +107,19 @@ public class NewTransfer extends AppCompatActivity {
         }
     };
 
+
+    private void showSpinnerToast(View view, String clickedName){
+        switch (clickedName){
+            case "add new category":
+            case "add new sub-category":
+            case "add new wallet":
+                CharSequence text = "To be implemented";
+                int duration = Toast.LENGTH_SHORT;
+
+                Toast toast = Toast.makeText(view.getContext(), text, duration);
+                toast.show();
+        }
+    }
 
     //////////////////////
     /////////Date/////////
@@ -160,6 +174,9 @@ public class NewTransfer extends AppCompatActivity {
             SpinnerItem rwsi = (SpinnerItem) recipientWalletSpinner.getSelectedItem();
             transactions.putExtra("recipientWallet", rwsi.getName());
 
+            //Log.i(TAG, "send new- amount " + amount + "*******************************************");
+            Log.i(TAG, "send new - from wallet " + wsi.getName() + "*******************************************");
+            Log.i(TAG, "send new - recipient wallet " + rwsi.getName() + "*******************************************");
             startActivity(transactions);
         }
     };
