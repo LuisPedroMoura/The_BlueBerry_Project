@@ -163,7 +163,7 @@ namespace BlueBudget_DB
 // USERS ----------------------------------------------------------------------------------------
 // ----------------------------------------------------------------------------------------------
 
-public static bool ExistsUser(string email)
+        public static bool ExistsUser(string email)
         {
             var attrValue = DB_IO.AttrValue();
             attrValue[DB_API.UserEnt.email] = email;
@@ -645,16 +645,20 @@ public static bool ExistsUser(string email)
             return DB_IO.SelectReader(DB_IO.DB_Interface.pr_select_stocks, DB_IO.AttrValue());
         }
 
-        public static void DeleteStockByTicker(int ticker)
+        public static void DeleteStockByTicker(int accountID, int ticker, double purchasePrice, double askPrice)
         {
             var attrValue = DB_IO.AttrValue();
+            attrValue[DB_API.StockEnt.account_id] = accountID;
             attrValue[DB_API.StockEnt.ticker] = ticker;
+            attrValue[DB_API.StockEnt.purchase_price] = purchasePrice;
+            attrValue[DB_API.StockEnt.ask_price] = askPrice;
             DB_IO.Delete(DB_IO.DB_Interface.pr_delete_purchased_stocks, attrValue);
         }
 
-        public static void DeleteStocksByCompany(string company, double purchasePrice, double askPrice)
+        public static void DeleteStocksByCompany(int accountID, string company, double purchasePrice, double askPrice)
         {
             var attrValue = DB_IO.AttrValue();
+            attrValue[DB_API.StockEnt.account_id] = accountID;
             attrValue[DB_API.StockEnt.company] = company;
             attrValue[DB_API.StockEnt.purchase_price] = purchasePrice;
             attrValue[DB_API.StockEnt.ask_price] = askPrice;

@@ -58,8 +58,21 @@ namespace BlueBudget_DB
                 (Stock)MyStocks_listView.SelectedItems[0].Tag : null;
             if (stock == null) { return; } // to handle listView idiot 2 step item selection process
 
+            // get the current price
+            double askPrice = 0.0;
+            for (int i = 0; i < StockMarket_listView.Items.Count; i++)
+            {
+                Stock s = (Stock)StockMarket_listView.Items[i].Tag;
+                if (s.Company.Equals(stock.Company))
+                {
+                    askPrice = (double)s.AskPrice;
+                    break;
+                }
+            }
+
             // make the sell
-            DB_API.DeleteStockByTicker((int)stock.Ticker);
+            Console.WriteLine(stock.PurchasePrice + ", " + askPrice);
+            DB_API.DeleteStockByTicker(account_id, (int)stock.Ticker, (double)stock.PurchasePrice, askPrice);
 
             // update MyStocks listView
             PopulateMyStocksListView();
@@ -84,7 +97,8 @@ namespace BlueBudget_DB
             }
 
             // make the sell
-            DB_API.DeleteStocksByCompany(stock.Company, (double)stock.PurchasePrice, askPrice);
+            Console.WriteLine(stock.PurchasePrice + ", " + askPrice);
+            DB_API.DeleteStocksByCompany(account_id, stock.Company, (double)stock.PurchasePrice, askPrice);
 
             // update MyStocks listView
             PopulateMyStocksListView();

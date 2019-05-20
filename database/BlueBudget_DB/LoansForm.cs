@@ -94,16 +94,16 @@ namespace BlueBudget_DB
 
         private void Pay_btn_Click(object sender, EventArgs e)
         {
+            // verify that
+            
             // get loan name and payment value
-            string name = ((Loan)Loans_listView.SelectedItems[0].Tag).Name;
-            double payment = 0.0;
-            try
+            string name = Name_textBox.ForeColor == Color.Black ? Name_textBox.Text : "";
+            double payment = DB_API.UnMoneyfy(Pay_textBox.Text);
+            Console.WriteLine(payment);
+            // verify that a name is given
+            if (name.Equals(""))
             {
-                payment = Double.Parse(Pay_textBox.Text);
-            }
-            catch
-            {
-                ErrorMessenger.WrongFormat("Payment");
+                ErrorMessenger.EmptyField("Name");
             }
 
             // make payment
@@ -249,6 +249,8 @@ namespace BlueBudget_DB
         }
         private void Pay_textBox_Leave(object sender, EventArgs e)
         {
+            Pay_textBox.Text = DB_API.Moneyfy(Pay_textBox.Text);
+
             if (Pay_textBox.Text.Equals(""))
             {
                 Pay_textBox.Text = "payment";
