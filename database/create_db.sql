@@ -42,6 +42,7 @@ DROP PROC IF EXISTS pr_recalculate_patrimony;
 
 DROP PROC IF EXISTS pr_insert_wallet;
 DROP PROC IF EXISTS pr_select_wallets;
+DROP PROC IF EXISTS pr_add_balance_to_wallet;
 
 DROP PROC IF EXISTS pr_select_categories;
 DROP PROC IF EXISTS pr_insert_category;
@@ -481,7 +482,7 @@ GO
 -- selects all money account belonging to one user
 CREATE PROC pr_select_user_money_accounts (
 	@account_id INT = NULL,
-	@user_email VARCHAR(50)
+	@user_email VARCHAR(50) = NULL
 ) AS
 BEGIN
 
@@ -549,13 +550,14 @@ BEGIN
 	BEGIN TRY
 		BEGIN TRANSACTION
 		SAVE TRANSACTION recalculate_patrimony_savepoint
-
+			
 			DECLARE @patrimony MONEY;
 			SET @patrimony = COALESCE((SELECT SUM(purchase_price) FROM Project.purchased_stocks WHERE account_id=@account_id), 0.0);
 			SET @patrimony = @patrimony - COALESCE((SELECT SUM(current_debt) FROM Project.loans WHERE account_id=@account_id), 0.0);
 			SET @patrimony = @patrimony + COALESCE((SELECT SUM(balance) FROM Project.wallets WHERE account_id=@account_id), 0.0);
 
 			UPDATE Project.money_accounts SET patrimony=@patrimony WHERE account_id=@account_id;
+
 		COMMIT
 	END TRY
 	BEGIN CATCH
@@ -599,6 +601,22 @@ BEGIN
 			(account_id=@account_id OR @account_id IS NULL)
 		AND ([name]=@name OR @name IS NULL)
 		AND (wallet_id=@wallet_id OR @wallet_id IS NULL)
+END
+GO
+
+-- add money to wallet balance
+CREATE PROC pr_add_balance_to_wallet(
+	@amount MONEY,
+	@wallet_id INT
+) AS
+BEGIN
+
+	IF @amount IS NOT NULL
+	BEGIN
+		UPDATE Project.wallets
+		SET balance = balance + @amount
+		WHERE wallet_id = @wallet_id
+	END
 END
 GO
 
@@ -825,12 +843,16 @@ BEGIN
 		SAVE TRANSACTION loan_payment_savepoint
 
 			DECLARE @current_debt MONEY;
-			SET @current_debt = (SELECT current_debt FROM Project.loans WHERE account_id=@account_id AND name=@name);
+			SELECT @current_debt=current_debt FROM Project.loans WHERE account_id=@account_id AND [name]=@name;
+			
 			SET @current_debt -= @payment;
 
+			IF @current_debt < 0
+				SET @current_debt = 0;
+				
 			UPDATE Project.loans
 			SET current_debt=@current_debt
-			WHERE account_id=@account_id AND name=@name
+			WHERE account_id=@account_id AND [name]=@name
 			;
 		COMMIT
 	END TRY
@@ -1198,18 +1220,52 @@ BEGIN
 
 	INSERT INTO Project.purchased_stocks (account_id, company, purchase_price)
 	VALUES (@account_id, @company, @purchase_price)
+
+	DECLARE @wall_id INT;
+	SELECT @wall_id=min(wallet_id) FROM Project.wallets WHERE account_id=@account_id;
+
+	SET @purchase_price = -@purchase_price;
+	EXEC pr_add_balance_to_wallet @amount=@purchase_price, @wallet_id=@wall_id;
 END
 GO
 
+-- select * from Project.loans;
+--select * from Project.purchased_stocks;
+--select * from Project.wallets;
+--select * from Project.money_accounts;
+--exec pr_delete_purchased_stocks @account_id=1, @ticker=1, @ask_price=30;
+
+
 -- deletes one purchased stock
+-- in order to not lose the profit value, the wallet balnce must be updated
+-- from within the procedure. Then a trigger will activate and 
+-- update the patrimony of the oney acciunt associated with the stock
 CREATE PROC pr_delete_purchased_stocks (
+	@account_id INT,
 	@ticker INT = NULL,
-	@company VARCHAR(50) = NULL
+	@company VARCHAR(50) = NULL,
+	@purchase_price MONEY = NULL,
+	@ask_price MONEY = NULL
 ) AS
 BEGIN
+	
+	BEGIN TRY
+		BEGIN TRANSACTION
+		SAVE TRANSACTION del_purchased_stocks_savepoint
+			DELETE FROM Project.purchased_stocks
+			WHERE
+					(ticker=@ticker OR company=@company)
+				AND (purchase_price=@purchase_price OR @purchase_price IS NULL)
+			;
 
-	DELETE FROM Project.purchased_stocks
-	WHERE ticker=@ticker OR company=@company
+			DECLARE @wall_id INT;
+			SELECT @wall_id=min(wallet_id) FROM Project.wallets WHERE account_id=@account_id;
+			EXEC pr_add_balance_to_wallet @amount=@ask_price, @wallet_id=@wall_id;
+		COMMIT
+	END TRY
+	BEGIN CATCH
+		ROLLBACK
+	END CATCH
 END
 GO
 
@@ -1599,8 +1655,8 @@ AS
 BEGIN
 
 	SET NOCOUNT ON
-
-	DECLARE @acct_id INT = (SELECT account_id FROM INSERTED);
+	DECLARE @acct_id INT;
+	SELECT @acct_id=account_id FROM INSERTED;
 	EXEC pr_recalculate_patrimony @account_id=@acct_id;
 END
 GO
@@ -1608,7 +1664,7 @@ GO
 -- account patrimony is affected by many tables, so in order to easely
 -- access its total value, the same is updated whenever there is an
 -- update in one of those tables.
-CREATE TRIGGER tr_update_account_patrimony_on_loans_insert
+CREATE TRIGGER tr_update_wallet_balance_on_loans_insert
 ON Project.loans
 AFTER INSERT
 AS
@@ -1616,15 +1672,21 @@ BEGIN
 	
 	SET NOCOUNT ON
 
-	DECLARE @acct_id INT = (SELECT account_id FROM INSERTED);
-	EXEC pr_recalculate_patrimony @account_id=@acct_id;
+	DECLARE @acct_id INT;
+	DECLARE @loan MONEY;
+	SELECT @acct_id=account_id, @loan=current_debt FROM INSERTED;
+
+	DECLARE @wall_id INT;
+	SELECT @wall_id=min(wallet_id) FROM Project.wallets WHERE account_id=@acct_id;
+
+	EXEC pr_add_balance_to_wallet @amount=@loan, @wallet_id=@wall_id;
 END
 GO
 
 -- account patrimony is affected by many tables, so in order to easely
 -- access its total value, the same is updated whenever there is an
 -- update in one of those tables.
-CREATE TRIGGER tr_update_account_patrimony_on_loans_update
+CREATE TRIGGER tr_update_wallet_balance_on_loans_update
 ON Project.loans
 AFTER UPDATE
 AS
@@ -1632,40 +1694,19 @@ BEGIN
 	
 	SET NOCOUNT ON
 
-	DECLARE @acct_id INT = (SELECT account_id FROM INSERTED);
-	EXEC pr_recalculate_patrimony @account_id=@acct_id;
-END
-GO
+	DECLARE @acct_id INT;
+	DECLARE @old_debt MONEY;
+	DECLARE @new_debt MONEY;
+	SELECT @old_debt=current_debt FROM DELETED;
+	SELECT @acct_id=account_id, @new_debt=current_debt FROM INSERTED;
 
--- account patrimony is affected by many tables, so in order to easely
--- access its total value, the same is updated whenever there is an
--- update in one of those tables.
-CREATE TRIGGER tr_update_account_patrimony_on_purchased_stock_insert
-ON Project.purchased_stocks
-AFTER INSERT
-AS
-BEGIN
-	
-	SET NOCOUNT ON
+	DECLARE @balance MONEY;
+	SET @balance = -(@old_debt - @new_debt);
 
-	DECLARE @acct_id INT = (SELECT account_id FROM INSERTED);
-	EXEC pr_recalculate_patrimony @account_id=@acct_id;
-END
-GO
+	DECLARE @wall_id INT;
+	SELECT @wall_id=min(wallet_id) FROM Project.wallets WHERE account_id=@acct_id;
 
--- account patrimony is affected by many tables, so in order to easely
--- access its total value, the same is updated whenever there is an
--- update in one of those tables.
-CREATE TRIGGER tr_update_account_patrimony_on_purchased_stock_delete
-ON Project.purchased_stocks
-AFTER DELETE
-AS
-BEGIN
-	
-	SET NOCOUNT ON
-
-	DECLARE @acct_id INT = (SELECT account_id FROM DELETED);
-	EXEC pr_recalculate_patrimony @account_id=@acct_id;
+	EXEC pr_add_balance_to_wallet @amount=@balance, @wallet_id=@wall_id;
 END
 GO
 
@@ -1680,11 +1721,15 @@ BEGIN
 
 	SET NOCOUNT ON
 
-	DECLARE @account_id INT = (SELECT account_id FROM INSERTED);
-	DECLARE @balance MONEY;
-	SET @balance = COALESCE((SELECT SUM(balance) FROM Project.wallets WHERE account_id=@account_id), 0.0);
+	DECLARE @account_id INT;
+	SELECT @account_id=account_id FROM INSERTED;
 
-	UPDATE Project.money_accounts SET balance=balance+@balance WHERE account_id=@account_id;
+	DECLARE @balance MONEY;
+	SELECT @balance=SUM(balance) FROM Project.wallets WHERE account_id=@account_id;
+	SET @balance = COALESCE(@balance, 0.0);
+
+	UPDATE Project.money_accounts SET balance=@balance WHERE account_id=@account_id;
+
 END
 GO
 

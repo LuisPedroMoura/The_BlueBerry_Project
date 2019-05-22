@@ -41,16 +41,9 @@ namespace BlueBudget_DB
             int quantity = (int)quantity_numericupdown.Value;
 
             // make the buy (insert new purchased stock)
-            try
+            for (int i = 0; i < quantity; i++)
             {
-                for (int i = 0; i < quantity; i++)
-                {
-                    DB_API.InsertPurchasedStock(this.account_id, stock.Company, (double)stock.AskPrice);
-                }
-            }
-            catch( SqlException ex)
-            {
-                ErrorMessenger.Exception(ex);
+                DB_API.InsertPurchasedStock(this.account_id, stock.Company, (double)stock.AskPrice);
             }
 
             // update MyStocks listView
@@ -60,18 +53,26 @@ namespace BlueBudget_DB
 
         private void Sell_btn_Click(object sender, EventArgs e)
         {
-            //get selected item values
-            Stock stock = (Stock)MyStocks_listView.SelectedItems[0].Tag;
+            // get selected item value
+            Stock stock = MyStocks_listView.SelectedItems.Count > 0 ?
+                (Stock)MyStocks_listView.SelectedItems[0].Tag : null;
+            if (stock == null) { return; } // to handle listView idiot 2 step item selection process
+
+            // get the current price
+            double askPrice = 0.0;
+            for (int i = 0; i < StockMarket_listView.Items.Count; i++)
+            {
+                Stock s = (Stock)StockMarket_listView.Items[i].Tag;
+                if (s.Company.Equals(stock.Company))
+                {
+                    askPrice = (double)s.AskPrice;
+                    break;
+                }
+            }
 
             // make the sell
-            try
-            {
-                DB_API.DeleteStockByTicker((int)stock.Ticker);
-            }
-            catch(SqlException ex)
-            {
-                ErrorMessenger.Exception(ex);
-            }
+            Console.WriteLine(stock.PurchasePrice + ", " + askPrice);
+            DB_API.DeleteStockByTicker(account_id, (int)stock.Ticker, (double)stock.PurchasePrice, askPrice);
 
             // update MyStocks listView
             PopulateMyStocksListView();
@@ -79,18 +80,25 @@ namespace BlueBudget_DB
 
         private void SellAll_btn_Click(object sender, EventArgs e)
         {
-            //get selected item values
-            Stock stock = (Stock)MyStocks_listView.SelectedItems[0].Tag;
+            // get selected item value
+            Stock stock = MyStocks_listView.SelectedItems.Count > 0 ?
+                (Stock)MyStocks_listView.SelectedItems[0].Tag : null;
+            if (stock == null) { return; } // to handle listView idiot 2 step item selection process
+
+            // get the current price
+            double askPrice = 0.0;
+            for (int i = 0; i < StockMarket_listView.Items.Count; i++)
+            {
+                Stock s = (Stock)StockMarket_listView.Items[i].Tag;
+                if (s.Company.Equals(stock.Company)){
+                    askPrice = (double)s.AskPrice;
+                    break;
+                }
+            }
 
             // make the sell
-            try
-            {
-                DB_API.DeleteStocksByCompany(stock.Company);
-            }
-            catch (SqlException ex)
-            {
-                ErrorMessenger.Exception(ex);
-            }
+            Console.WriteLine(stock.PurchasePrice + ", " + askPrice);
+            DB_API.DeleteStocksByCompany(account_id, stock.Company, (double)stock.PurchasePrice, askPrice);
 
             // update MyStocks listView
             PopulateMyStocksListView();

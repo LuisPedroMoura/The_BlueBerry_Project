@@ -20,13 +20,13 @@ namespace BlueBudget_DB
         public Stock(int? ticker = null, int? stockTypeId = null, string stockType = null, string company = null, double? askPrice = null,
             double? purchasePrice = null, int? accountId = null)
         {
-            this.Ticker = ticker;
-            this.StockTypeId = stockTypeId;
-            this.StockType = stockType;
-            this.Company = company;
-            this.AskPrice = askPrice;
-            this.PurchasePrice = purchasePrice;
-            this.AccountId = accountId;
+            Ticker = ticker;
+            StockTypeId = stockTypeId;
+            StockType = stockType;
+            Company = company;
+            AskPrice = askPrice;
+            PurchasePrice = purchasePrice;
+            AccountId = accountId;
         }
 
     }
