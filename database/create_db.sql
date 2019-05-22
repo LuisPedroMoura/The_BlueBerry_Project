@@ -13,13 +13,13 @@ DROP TRIGGER IF EXISTS Project.tr_insert_new_wallet_on_goal_insert;
 DROP TRIGGER IF EXISTS Project.tr_update_goal_completion_with_wallet_transfer;
 DROP TRIGGER IF EXISTS Project.tr_update_account_patrimony_on_wallet_balance_update
 DROP TRIGGER IF EXISTS Project.tr_update_account_patrimony_on_loans_insert;
-DROP TRIGGER IF EXISTS Project.tr_update_account_patrimony_on_loans_update;
 DROP TRIGGER IF EXISTS Project.tr_update_account_patrimony_on_purchased_stock_insert;
 DROP TRIGGER IF EXISTS Project.tr_update_account_patrimony_on_purchased_stock_delete;
 DROP TRIGGER IF EXISTS Project.tr_update_account_balance_on_wallet_balance_update;
 DROP TRIGGER IF EXISTS Project.tr_update_wallet_balance_on_transaction_insert;
 DROP TRIGGER IF EXISTS Project.tr_update_wallet_balance_on_transaction_delete;
 DROP TRIGGER IF EXISTS Project.tr_update_wallet_balance_on_transfer_insert;
+DROP TRIGGER IF EXISTS Project.tr_insert_new_transaction_on_loan_payment_update;
 
 DROP PROC IF EXISTS pr_insert_user;
 DROP PROC IF EXISTS pr_update_user;
@@ -1683,33 +1683,6 @@ BEGIN
 END
 GO
 
--- account patrimony is affected by many tables, so in order to easely
--- access its total value, the same is updated whenever there is an
--- update in one of those tables.
-CREATE TRIGGER tr_update_wallet_balance_on_loans_update
-ON Project.loans
-AFTER UPDATE
-AS
-BEGIN
-	
-	SET NOCOUNT ON
-
-	DECLARE @acct_id INT;
-	DECLARE @old_debt MONEY;
-	DECLARE @new_debt MONEY;
-	SELECT @old_debt=current_debt FROM DELETED;
-	SELECT @acct_id=account_id, @new_debt=current_debt FROM INSERTED;
-
-	DECLARE @balance MONEY;
-	SET @balance = -(@old_debt - @new_debt);
-
-	DECLARE @wall_id INT;
-	SELECT @wall_id=min(wallet_id) FROM Project.wallets WHERE account_id=@acct_id;
-
-	EXEC pr_add_balance_to_wallet @amount=@balance, @wallet_id=@wall_id;
-END
-GO
-
 -- account_balance is affected by many wallets, so in order to easely
 -- access its balance, the same is updated whenever there is an
 -- update in one of those walets. 
@@ -1824,6 +1797,36 @@ BEGIN
 	SET balance = balance - COALESCE(@value, 0)
 	WHERE wallet_id=@from_wallet_id
 	;
+END
+GO
+
+CREATE TRIGGER tr_insert_new_transaction_on_loan_payment_update
+ON Project.loans
+AFTER UPDATE
+AS
+BEGIN
+	
+	DECLARE @old_debt MONEY;
+	DECLARE @new_debt MONEY;
+	DECLARE @payment MONEY;
+	DECLARE @acct_id INT;
+	DECLARE @wall_id INT;
+	DECLARE @loan_name VARCHAR(20);
+	DECLARE @today DATE;
+	DECLARE @note VARCHAR(50);
+
+	SELECT @old_debt=current_debt, @loan_name=[name] FROM DELETED;
+	SELECT @new_debt=current_debt, @acct_id=account_id FROM INSERTED;
+	SELECT @wall_id=MIN(wallet_id) FROM Project.wallets WHERE account_id=@acct_id;
+	SET @payment = @old_debt - @new_debt;
+	SET @today = CONVERT(VARCHAR(10), getdate(), 111);
+	SET @note = CONCAT(@loan_name,' Loan Payment')
+
+
+	EXEC pr_insert_transaction @account_id=@acct_id, @category_id=400, @from_wallet_id=@wall_id, @transaction_type_id=-1, @amount=@payment,
+	@date=@today, @notes=@note;
+
+
 END
 GO
 
