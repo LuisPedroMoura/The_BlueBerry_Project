@@ -14,6 +14,7 @@ import android.view.View;
 import android.view.animation.OvershootInterpolator;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.TextView;
 
 
 import java.text.Format;
@@ -29,6 +30,9 @@ public class Transactions extends AppCompatActivity {
     private Float translationY = 100f;
     private OvershootInterpolator interpolator = new OvershootInterpolator();
     private Boolean isMenuOpen = false;
+
+    private TextView currentBalanceTV;
+    private TextView monthlyBalanceTV;
 
     private Toolbar toolbar;
     private BottomNavigationView navigation;
@@ -46,6 +50,9 @@ public class Transactions extends AppCompatActivity {
         toolbar = findViewById(R.id.transactionToolbar);
         setSupportActionBar(toolbar);
 
+        currentBalanceTV = findViewById(R.id.currentBalanceTransactions);
+        monthlyBalanceTV = findViewById(R.id.monthlyBalanceTransactions);
+
         //get the icon selected and go to the respective activity
         navigation = findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
@@ -58,6 +65,8 @@ public class Transactions extends AppCompatActivity {
         getNewTransactionInfo();
 
         initHistoryListView();
+
+        initBlances();
 
         initFabMenu();
 
@@ -358,5 +367,25 @@ public class Transactions extends AppCompatActivity {
             startActivity(filter);
         }
         return super.onOptionsItemSelected(item);
+    }
+
+
+    public void initBlances(){
+
+        //incomes
+        List<AppTransaction> incomes = Home.app.getTransactions(null, null, null, null,
+                null, AppTransactionType.INCOME);
+        double incomeBalance = Home.app.calculateBalance(incomes);
+
+
+        //expenses
+        List<AppTransaction> expenses = Home.app.getTransactions(null, null, null, null,
+                null, AppTransactionType.EXPENSE);
+        double expensesBalance = Home.app.calculateBalance(expenses);
+
+
+        currentBalanceTV.setText((incomeBalance+expensesBalance)+"€"); //expenses are a negative value
+        monthlyBalanceTV.setText((incomeBalance+expensesBalance)+"€"); //expenses are a negative value
+
     }
 }
