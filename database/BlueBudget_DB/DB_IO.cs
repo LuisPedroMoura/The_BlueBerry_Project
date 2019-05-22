@@ -67,8 +67,10 @@ namespace BlueBudget_DB
             pr_select_purchased_stocks,
             pr_select_stocks,
             pr_insert_purchased_stock,
-            pr_delete_purchased_stocks
-
+            pr_delete_purchased_stocks,
+            //---
+            udf_annual_statistics,
+            pr_annual_statistics
         }
 
         // ----------------------------------------------------------------------------------------------
@@ -136,6 +138,21 @@ namespace BlueBudget_DB
         public static bool Exists(System.Enum proc, IDictionary<System.Enum, Object> attrValue)
         {
             return ExecProcExists(proc.ToString(), attrValue);
+        }
+
+        public static DataTableReader SelectFromUDFTable(System.Enum udfName, IDictionary<System.Enum, Object> attrValue)
+        {
+            SqlConnection cnx = DBconnect();
+
+            // step 1: create stored procedure command (cmd)
+            SqlCommand cmd = new SqlCommand("SELECT * FROM "+udfName.ToString()+"("+attrValue[DB_API.Statistics.year]+")", cnx);
+            Console.WriteLine("---> " + cmd.CommandText);
+
+            // step 2: parameterize cmd
+            //CmdParameterizer(cmd, attrValue);
+
+            // step 3: execute
+            return ExecuteReader(cnx, cmd);
         }
 
 
@@ -210,7 +227,6 @@ namespace BlueBudget_DB
             // step 3: execute
             return Convert.ToBoolean(ExecuteScalar(cnx, cmd));
         }
-
 
         // ----------------------------------------------------------------------------------------------
         // QUERY EXECUTION METHODS ----------------------------------------------------------------------

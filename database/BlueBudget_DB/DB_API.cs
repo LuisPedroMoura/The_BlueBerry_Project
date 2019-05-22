@@ -120,6 +120,15 @@ namespace BlueBudget_DB
             stock_type_id,
             stock_type
         }
+        public enum Statistics
+        {
+            year,
+            date_year,
+            date_month,
+            income,
+            expenses,
+            balance
+        }
 
         // ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
         // API METHODS ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -663,6 +672,17 @@ namespace BlueBudget_DB
             attrValue[DB_API.StockEnt.purchase_price] = purchasePrice;
             attrValue[DB_API.StockEnt.ask_price] = askPrice;
             DB_IO.Delete(DB_IO.DB_Interface.pr_delete_purchased_stocks, attrValue);
+        }
+
+        // ----------------------------------------------------------------------------------------------
+        // STATS ----------------------------------------------------------------------------------------
+        // ----------------------------------------------------------------------------------------------
+
+        public static DataTableReader SelectAnnualStatistics(int year)
+        {
+            var attrValue = DB_IO.AttrValue();
+            attrValue[DB_API.Statistics.year] = year;
+            return DB_IO.SelectFromUDFTable(DB_IO.DB_Interface.udf_annual_statistics, attrValue);
         }
     }
 }

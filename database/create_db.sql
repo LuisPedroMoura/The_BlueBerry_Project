@@ -72,6 +72,9 @@ DROP PROC IF EXISTS pr_select_purchased_stocks;
 DROP PROC IF EXISTS pr_select_stocks;
 DROP PROC IF EXISTS pr_insert_purchased_stock;
 DROP PROC IF EXISTS pr_delete_purchased_stocks;
+
+DROP FUNCTION IF EXISTS udf_annual_statistics;
+DROP PROC IF EXISTS pr_annual_statistics;
 GO
 
 CREATE PROC clean_project
@@ -1023,6 +1026,8 @@ BEGIN
 			AND ([date]>=@start_date OR @start_date IS NULL)
 			AND ([date]<=@end_date OR @end_date IS NULL)
 			AND ([location]=@location OR @location IS NULL)
+		ORDER BY [date]
+		;
 	END
 
 	ELSE
@@ -1044,6 +1049,8 @@ BEGIN
 			AND ([date]>=@start_date OR @start_date IS NULL)
 			AND ([date]<=@end_date OR @end_date IS NULL)
 			AND ([location]=@location OR @location IS NULL)
+		ORDER BY [date]
+		;
 	END
 END
 GO
@@ -1819,17 +1826,70 @@ BEGIN
 	SELECT @new_debt=current_debt, @acct_id=account_id FROM INSERTED;
 	SELECT @wall_id=MIN(wallet_id) FROM Project.wallets WHERE account_id=@acct_id;
 	SET @payment = @old_debt - @new_debt;
-	SET @today = CONVERT(VARCHAR(10), getdate(), 111);
+	SET @today = CONVERT(DATE, GETDATE());
 	SET @note = CONCAT(@loan_name,' Loan Payment')
 
 
 	EXEC pr_insert_transaction @account_id=@acct_id, @category_id=400, @from_wallet_id=@wall_id, @transaction_type_id=-1, @amount=@payment,
 	@date=@today, @notes=@note;
-
-
 END
 GO
 
+CREATE FUNCTION udf_annual_statistics (
+	@year INT
+)
+RETURNS @table TABLE (
+	date_year INT,
+	date_month INT,
+	income MONEY,
+	expenses MONEY,
+	balance MONEY
+)
+AS
+BEGIN
+	
+	DECLARE @year_str VARCHAR(4);
+	SELECT @year_str=CAST(@year as varchar(10));
+
+	INSERT @table(date_year, date_month, income, expenses, balance)
+	SELECT @year, I.mes, inc, expe, (inc-expe)
+	FROM (
+		(SELECT MONTH([date]) AS mes, SUM(amount) AS inc
+		FROM Project.transactions
+		WHERE
+				transaction_type_id=1
+			AND YEAR([date])=@year_str
+		GROUP BY MONTH([date])
+		) AS I
+		
+		JOIN
+		
+		(SELECT MONTH([date]) AS mes, SUM(amount) AS expe
+		FROM Project.transactions
+		WHERE
+				transaction_type_id=-1
+				AND YEAR([date])=@year_str
+		GROUP BY MONTH([date])
+		) AS E
+
+		ON I.mes=E.mes
+	);
+	
+	RETURN;
+END
+GO
+
+-- SQL Server has a bug that creates an error 2809 when calling some
+-- UDF from C#. The UDF above works in Management Studio. It is wrapped
+-- in here to provided access for C# code.
+CREATE PROC pr_annual_statistics(
+	@year INT
+) AS
+BEGIN
+
+	SELECT * FROM udf_annual_statistics(@year);
+END
+GO
 --------------------------------------------------------------------
 -- POPULATE DATABASE -----------------------------------------------
 --------------------------------------------------------------------
@@ -1841,3 +1901,45 @@ EXEC pr_insert_money_account @user_email='user1@ua.pt', @account_name='u1_person
 EXEC pr_insert_money_account @user_email='user2@ua.pt', @account_name='u2_personal';
 EXEC pr_insert_money_account @user_email='user1@ua.pt', @account_name='u1_shared';
 EXEC pr_money_account_add_user @account_id=3, @user_email='user2@ua.pt'
+
+EXEC pr_insert_transaction @account_id=1, @category_id=0, @from_wallet_id=1, @transaction_type_id=1, @amount=1000, @date='01/01/2019';
+EXEC pr_insert_transaction @account_id=1, @category_id=0, @from_wallet_id=1, @transaction_type_id=1, @amount=1000, @date='02/01/2019';
+EXEC pr_insert_transaction @account_id=1, @category_id=0, @from_wallet_id=1, @transaction_type_id=1, @amount=1000, @date='03/01/2019';
+EXEC pr_insert_transaction @account_id=1, @category_id=0, @from_wallet_id=1, @transaction_type_id=1, @amount=1000, @date='04/01/2019';
+EXEC pr_insert_transaction @account_id=1, @category_id=0, @from_wallet_id=1, @transaction_type_id=1, @amount=1000, @date='05/01/2019';
+EXEC pr_insert_transaction @account_id=1, @category_id=0, @from_wallet_id=1, @transaction_type_id=1, @amount=1000, @date='06/01/2019';
+EXEC pr_insert_transaction @account_id=1, @category_id=0, @from_wallet_id=1, @transaction_type_id=1, @amount=1000, @date='07/01/2019';
+EXEC pr_insert_transaction @account_id=1, @category_id=0, @from_wallet_id=1, @transaction_type_id=1, @amount=1000, @date='08/01/2019';
+EXEC pr_insert_transaction @account_id=1, @category_id=0, @from_wallet_id=1, @transaction_type_id=1, @amount=1000, @date='09/01/2019';
+EXEC pr_insert_transaction @account_id=1, @category_id=0, @from_wallet_id=1, @transaction_type_id=1, @amount=1000, @date='10/01/2019';
+EXEC pr_insert_transaction @account_id=1, @category_id=0, @from_wallet_id=1, @transaction_type_id=1, @amount=1000, @date='11/01/2019';
+EXEC pr_insert_transaction @account_id=1, @category_id=0, @from_wallet_id=1, @transaction_type_id=1, @amount=1000, @date='12/01/2019';
+
+EXEC pr_insert_transaction @account_id=1, @category_id=100, @from_wallet_id=1, @transaction_type_id=-1, @amount=250, @date='01/01/2019';
+EXEC pr_insert_transaction @account_id=1, @category_id=100, @from_wallet_id=1, @transaction_type_id=-1, @amount=500, @date='01/01/2019';
+EXEC pr_insert_transaction @account_id=1, @category_id=100, @from_wallet_id=1, @transaction_type_id=-1, @amount=600, @date='02/01/2019';
+EXEC pr_insert_transaction @account_id=1, @category_id=100, @from_wallet_id=1, @transaction_type_id=-1, @amount=500, @date='02/01/2019';
+EXEC pr_insert_transaction @account_id=1, @category_id=100, @from_wallet_id=1, @transaction_type_id=-1, @amount=300, @date='03/01/2019';
+EXEC pr_insert_transaction @account_id=1, @category_id=100, @from_wallet_id=1, @transaction_type_id=-1, @amount=500, @date='03/01/2019';
+EXEC pr_insert_transaction @account_id=1, @category_id=100, @from_wallet_id=1, @transaction_type_id=-1, @amount=350, @date='04/01/2019';
+EXEC pr_insert_transaction @account_id=1, @category_id=100, @from_wallet_id=1, @transaction_type_id=-1, @amount=500, @date='04/01/2019';
+EXEC pr_insert_transaction @account_id=1, @category_id=100, @from_wallet_id=1, @transaction_type_id=-1, @amount=600, @date='05/01/2019';
+EXEC pr_insert_transaction @account_id=1, @category_id=100, @from_wallet_id=1, @transaction_type_id=-1, @amount=600, @date='05/01/2019';
+EXEC pr_insert_transaction @account_id=1, @category_id=100, @from_wallet_id=1, @transaction_type_id=-1, @amount=550, @date='06/01/2019';
+EXEC pr_insert_transaction @account_id=1, @category_id=100, @from_wallet_id=1, @transaction_type_id=-1, @amount=600, @date='06/01/2019';
+EXEC pr_insert_transaction @account_id=1, @category_id=100, @from_wallet_id=1, @transaction_type_id=-1, @amount=250, @date='07/01/2019';
+EXEC pr_insert_transaction @account_id=1, @category_id=100, @from_wallet_id=1, @transaction_type_id=-1, @amount=500, @date='07/01/2019';
+EXEC pr_insert_transaction @account_id=1, @category_id=100, @from_wallet_id=1, @transaction_type_id=-1, @amount=600, @date='08/01/2019';
+EXEC pr_insert_transaction @account_id=1, @category_id=100, @from_wallet_id=1, @transaction_type_id=-1, @amount=500, @date='08/01/2019';
+EXEC pr_insert_transaction @account_id=1, @category_id=100, @from_wallet_id=1, @transaction_type_id=-1, @amount=300, @date='09/01/2019';
+EXEC pr_insert_transaction @account_id=1, @category_id=100, @from_wallet_id=1, @transaction_type_id=-1, @amount=500, @date='09/01/2019';
+EXEC pr_insert_transaction @account_id=1, @category_id=100, @from_wallet_id=1, @transaction_type_id=-1, @amount=350, @date='10/01/2019';
+EXEC pr_insert_transaction @account_id=1, @category_id=100, @from_wallet_id=1, @transaction_type_id=-1, @amount=500, @date='10/01/2019';
+EXEC pr_insert_transaction @account_id=1, @category_id=100, @from_wallet_id=1, @transaction_type_id=-1, @amount=600, @date='11/01/2019';
+EXEC pr_insert_transaction @account_id=1, @category_id=100, @from_wallet_id=1, @transaction_type_id=-1, @amount=600, @date='11/01/2019';
+EXEC pr_insert_transaction @account_id=1, @category_id=100, @from_wallet_id=1, @transaction_type_id=-1, @amount=550, @date='12/01/2019';
+EXEC pr_insert_transaction @account_id=1, @category_id=100, @from_wallet_id=1, @transaction_type_id=-1, @amount=600, @date='12/01/2019';
+
+
+SELECT * FROM udf_annual_statistics(2019);
+EXEC pr_annual_statistics @year=2019;
