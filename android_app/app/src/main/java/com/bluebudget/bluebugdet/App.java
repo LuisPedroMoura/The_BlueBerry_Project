@@ -40,7 +40,7 @@ public class App {
         addCategory(null, "Income", R.drawable.ic_trending_up_black_24dp, 0.0, 1, AppBudgetType.INCOME);
         addCategory(null, "Home", R.drawable.ic_home_black_24dp, 0.0, 1, AppBudgetType.EXPENSE);
         addCategory(null, "Food", R.drawable.ic_shopping_cart_black_24dp, 0.0, 1, AppBudgetType.EXPENSE);
-        addCategory(null, "Transports", R.drawable.ic_directions_car_black_24dp, 30.0, 1, AppBudgetType.EXPENSE);
+        addCategory(null, "Transports", R.drawable.ic_directions_car_black_24dp, 0.0, 1, AppBudgetType.EXPENSE);
     }
 
     public void example(){
