@@ -28,8 +28,21 @@ namespace BlueBudget_DB
             InitializeComponent();
             this.user_email = user_email;
             this.account_id = account_id;
+            
+        }
+
+        private void budget_Load(object sender, EventArgs e)
+        {
             PopulateCategoriesListBox();
             PopulateComboBoxes();
+
+            // disable typing in comboBoxes by changing style
+            StartMonth_comboBox.DropDownStyle = ComboBoxStyle.DropDownList;
+            EndMonth_comboBox.DropDownStyle = ComboBoxStyle.DropDownList;
+
+            // make comboBoxes white again
+            StartMonth_comboBox.FlatStyle = FlatStyle.Popup;
+            EndMonth_comboBox.FlatStyle = FlatStyle.Popup;
         }
 
         // -------------------------------------------------------------------
@@ -184,6 +197,15 @@ namespace BlueBudget_DB
 
         private void Categories_listbox_SelectedIndexChanged(object sender, EventArgs e)
         {
+            Category_textBox.ReadOnly = true;
+            Subcategory_textBox.ReadOnly = true;
+            Type_comboBox.Enabled = false;
+            Budget_textBox.ReadOnly = false;
+            StartMonth_comboBox.Enabled = true;
+            StartYear_numericBox.Enabled = true;
+            EndMonth_comboBox.Enabled = true;
+            EndYear_numericBox.Enabled = true;
+
             // get selected item value
             string selected = (string)Categories_listbox.SelectedItem;
             string cat_name = selected;
@@ -320,10 +342,7 @@ namespace BlueBudget_DB
             Type_comboBox.DataSource = res;
         }
 
-        private void budget_Load(object sender, EventArgs e)
-        {
-            
-        }
+        
 
         
     }

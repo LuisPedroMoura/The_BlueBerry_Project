@@ -98,12 +98,13 @@ namespace BlueBudget_DB
             
             // get loan name and payment value
             string name = Name_textBox.ForeColor == Color.Black ? Name_textBox.Text : "";
-            double payment = DB_API.UnMoneyfy(Pay_textBox.Text);
+            double payment = Pay_textBox.ForeColor == Color.Black ? DB_API.UnMoneyfy(Pay_textBox.Text) : 0;
             Console.WriteLine(payment);
             // verify that a name is given
             if (name.Equals(""))
             {
                 ErrorMessenger.EmptyField("Name");
+                return;
             }
 
             // make payment

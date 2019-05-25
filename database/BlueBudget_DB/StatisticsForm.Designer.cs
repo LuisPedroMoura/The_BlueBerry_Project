@@ -49,7 +49,8 @@
             this.BalanceChart.ChartAreas.Add(chartArea1);
             legend1.Name = "Legend1";
             this.BalanceChart.Legends.Add(legend1);
-            this.BalanceChart.Location = new System.Drawing.Point(2, 4);
+            this.BalanceChart.Location = new System.Drawing.Point(3, 5);
+            this.BalanceChart.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.BalanceChart.Name = "BalanceChart";
             this.BalanceChart.Palette = System.Windows.Forms.DataVisualization.Charting.ChartColorPalette.SeaGreen;
             this.BalanceChart.RightToLeft = System.Windows.Forms.RightToLeft.No;
@@ -70,7 +71,7 @@
             this.BalanceChart.Series.Add(series1);
             this.BalanceChart.Series.Add(series2);
             this.BalanceChart.Series.Add(series3);
-            this.BalanceChart.Size = new System.Drawing.Size(598, 318);
+            this.BalanceChart.Size = new System.Drawing.Size(797, 391);
             this.BalanceChart.TabIndex = 0;
             this.BalanceChart.Text = "Balance Chart";
             title1.Name = "Balance Chart";
@@ -79,10 +80,10 @@
             // 
             // Back_btn
             // 
-            this.Back_btn.Location = new System.Drawing.Point(504, 332);
-            this.Back_btn.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.Back_btn.Location = new System.Drawing.Point(672, 409);
+            this.Back_btn.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.Back_btn.Name = "Back_btn";
-            this.Back_btn.Size = new System.Drawing.Size(75, 23);
+            this.Back_btn.Size = new System.Drawing.Size(100, 28);
             this.Back_btn.TabIndex = 1;
             this.Back_btn.Text = "Back";
             this.Back_btn.UseVisualStyleBackColor = true;
@@ -90,16 +91,18 @@
             // 
             // Year_numericUpDown
             // 
-            this.Year_numericUpDown.Location = new System.Drawing.Point(172, 336);
+            this.Year_numericUpDown.Location = new System.Drawing.Point(229, 414);
+            this.Year_numericUpDown.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.Year_numericUpDown.Name = "Year_numericUpDown";
-            this.Year_numericUpDown.Size = new System.Drawing.Size(120, 20);
+            this.Year_numericUpDown.Size = new System.Drawing.Size(160, 22);
             this.Year_numericUpDown.TabIndex = 2;
             // 
             // Stats_btn
             // 
-            this.Stats_btn.Location = new System.Drawing.Point(298, 333);
+            this.Stats_btn.Location = new System.Drawing.Point(397, 410);
+            this.Stats_btn.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.Stats_btn.Name = "Stats_btn";
-            this.Stats_btn.Size = new System.Drawing.Size(88, 23);
+            this.Stats_btn.Size = new System.Drawing.Size(117, 28);
             this.Stats_btn.TabIndex = 3;
             this.Stats_btn.Text = "Get Statistics";
             this.Stats_btn.UseVisualStyleBackColor = true;
@@ -108,22 +111,24 @@
             // Year_label
             // 
             this.Year_label.AutoSize = true;
-            this.Year_label.Location = new System.Drawing.Point(139, 337);
+            this.Year_label.Location = new System.Drawing.Point(185, 415);
+            this.Year_label.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.Year_label.Name = "Year_label";
-            this.Year_label.Size = new System.Drawing.Size(27, 13);
+            this.Year_label.Size = new System.Drawing.Size(36, 17);
             this.Year_label.TabIndex = 4;
             this.Year_label.Text = "year";
             // 
             // StatisticsForm
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(600, 366);
+            this.ClientSize = new System.Drawing.Size(800, 450);
             this.Controls.Add(this.Year_label);
             this.Controls.Add(this.Stats_btn);
             this.Controls.Add(this.Year_numericUpDown);
             this.Controls.Add(this.Back_btn);
             this.Controls.Add(this.BalanceChart);
+            this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.Name = "StatisticsForm";
             this.Text = "StatisticsForm";
             this.Load += new System.EventHandler(this.StatisticsForm_Load);

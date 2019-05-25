@@ -1289,6 +1289,8 @@ CREATE TABLE Project.money_accounts
 	CHECK (account_name!=''),
 	CONSTRAINT PK_MONEYACCOUNTS PRIMARY KEY (account_id)
 );
+CREATE NONCLUSTERED INDEX IX_MONEY_ACCOUNTS_ACCOUNT_NAME ON Project.money_accounts
+(account_name) WITH (FILLFACTOR = 75, PAD_INDEX = ON);
 
 CREATE TABLE Project.wallets
 (
@@ -1316,6 +1318,8 @@ CREATE TABLE Project.users
 	CHECK([user_name] != ''),
 	CONSTRAINT PK_USERS PRIMARY KEY (email),
 );
+CREATE NONCLUSTERED INDEX IX_USERS_USER_NAME ON Project.users
+([user_name]) WITH (FILLFACTOR = 75, PAD_INDEX = ON);
 
 CREATE TABLE Project.subscriptions
 (
@@ -1333,6 +1337,8 @@ CREATE TABLE Project.subscriptions
 	CONSTRAINT FK_SUBSCRIPTIONS_RECURRENCE FOREIGN KEY (periodicity) REFERENCES Project.recurrence(periodicity)
 		ON DELETE NO ACTION ON UPDATE CASCADE	
 );
+CREATE NONCLUSTERED INDEX IX_SUBSCRIPTIONS_EMAIL ON Project.subscriptions
+(email) WITH (FILLFACTOR = 75, PAD_INDEX = ON);
 
 CREATE TABLE Project.users_money_accounts
 (
@@ -1344,6 +1350,8 @@ CREATE TABLE Project.users_money_accounts
 	CONSTRAINT FK_USERSMONEYACCOUNTS_MONEYACCOUNTS FOREIGN KEY (account_id) REFERENCES Project.money_accounts(account_id)
 		ON DELETE NO ACTION ON UPDATE CASCADE		
 );
+CREATE NONCLUSTERED INDEX IX_USERS_MONEY_ACCOUNTS_USER_EMAIL ON Project.users_money_accounts
+(user_email) WITH (FILLFACTOR = 75, PAD_INDEX = ON);
 
 CREATE TABLE Project.category_types
 (
@@ -1392,6 +1400,12 @@ CREATE TABLE Project.transactions
 	CONSTRAINT FK_TRANSACTIONS_WALLETS FOREIGN KEY (wallet_id) REFERENCES Project.wallets(wallet_id)
 		ON DELETE NO ACTION ON UPDATE NO ACTION
 );
+CREATE NONCLUSTERED INDEX IX_TRANSACTIONS_ACCOUNT_ID ON Project.transactions
+(account_id) WITH (FILLFACTOR = 75, PAD_INDEX = ON);
+CREATE NONCLUSTERED INDEX IX_TRANSACTIONS_CATEGORY_ID ON Project.transactions
+(category_id) WITH (FILLFACTOR = 75, PAD_INDEX = ON);
+CREATE NONCLUSTERED INDEX IX_TRANSACTIONS_WALLET_ID ON Project.transactions
+(wallet_id) WITH (FILLFACTOR = 75, PAD_INDEX = ON);
 
 CREATE TABLE Project.transfers
 (
@@ -1419,6 +1433,10 @@ CREATE TABLE Project.budgets
 	CONSTRAINT FK_BUDGETS_CATEGORIES FOREIGN KEY (category_id, account_id) REFERENCES Project.categories(category_id, account_id)
 		ON DELETE NO ACTION ON UPDATE CASCADE
 );
+CREATE NONCLUSTERED INDEX IX_BUDGETS_ACCOUNT_ID ON Project.budgets
+(account_id) WITH (FILLFACTOR = 75, PAD_INDEX = ON);
+CREATE NONCLUSTERED INDEX IX_BUDGETS_CATEGORY_ID ON Project.budgets
+(category_id) WITH (FILLFACTOR = 75, PAD_INDEX = ON);
 
 CREATE TABLE Project.goals
 (
@@ -1433,6 +1451,10 @@ CREATE TABLE Project.goals
 	CONSTRAINT FK_GOALS_CATEGORIES FOREIGN KEY (category_id, account_id) REFERENCES Project.categories(category_id, account_id)
 		ON DELETE NO ACTION ON UPDATE CASCADE
 );
+CREATE NONCLUSTERED INDEX IX_GOALS_CATEGORY_ID ON Project.goals
+(category_id) WITH (FILLFACTOR = 75, PAD_INDEX = ON);
+CREATE NONCLUSTERED INDEX IX_GOALS_ACCOUNT_ID ON Project.goals
+(account_id) WITH (FILLFACTOR = 75, PAD_INDEX = ON);
 
 CREATE TABLE Project.loans
 (
@@ -1445,7 +1467,7 @@ CREATE TABLE Project.loans
 	CHECK([name] != ''),
 	CHECK(initial_amount>=0),
 	CHECK(interest BETWEEN 0 AND 100),
-	CONSTRAINT PK_LOANS PRIMARY KEY ([name], account_id),
+	CONSTRAINT PK_LOANS PRIMARY KEY (account_id, [name]),
 	CONSTRAINT FK_LOANS_MONEYACCOUNTS FOREIGN KEY (account_id) REFERENCES Project.money_accounts(account_id)
 		ON DELETE NO ACTION ON UPDATE CASCADE
 );
@@ -1482,6 +1504,8 @@ CREATE TABLE Project.purchased_stocks
 	CONSTRAINT FK_PURCHASEDSTOCKS_MONEYACCOUNTS FOREIGN KEY (account_id) REFERENCES Project.money_accounts(account_id)
 		ON DELETE NO ACTION ON UPDATE CASCADE
 );
+CREATE NONCLUSTERED INDEX IX_PURCHASED_STOCKS_COMPANY ON Project.purchased_stocks
+(company) WITH (FILLFACTOR = 75, PAD_INDEX = ON);
 
 --------------------------------------------------------------------
 -- INSERTION OF BASIC VALUES ---------------------------------------
@@ -1940,6 +1964,40 @@ EXEC pr_insert_transaction @account_id=1, @category_id=100, @from_wallet_id=1, @
 EXEC pr_insert_transaction @account_id=1, @category_id=100, @from_wallet_id=1, @transaction_type_id=-1, @amount=550, @date='12/01/2019';
 EXEC pr_insert_transaction @account_id=1, @category_id=100, @from_wallet_id=1, @transaction_type_id=-1, @amount=600, @date='12/01/2019';
 
+EXEC pr_insert_transaction @account_id=1, @category_id=0, @from_wallet_id=1, @transaction_type_id=1, @amount=900, @date='01/01/2018';
+EXEC pr_insert_transaction @account_id=1, @category_id=0, @from_wallet_id=1, @transaction_type_id=1, @amount=900, @date='02/01/2018';
+EXEC pr_insert_transaction @account_id=1, @category_id=0, @from_wallet_id=1, @transaction_type_id=1, @amount=900, @date='03/01/2018';
+EXEC pr_insert_transaction @account_id=1, @category_id=0, @from_wallet_id=1, @transaction_type_id=1, @amount=900, @date='04/01/2018';
+EXEC pr_insert_transaction @account_id=1, @category_id=0, @from_wallet_id=1, @transaction_type_id=1, @amount=900, @date='05/01/2018';
+EXEC pr_insert_transaction @account_id=1, @category_id=0, @from_wallet_id=1, @transaction_type_id=1, @amount=900, @date='06/01/2018';
+EXEC pr_insert_transaction @account_id=1, @category_id=0, @from_wallet_id=1, @transaction_type_id=1, @amount=900, @date='07/01/2018';
+EXEC pr_insert_transaction @account_id=1, @category_id=0, @from_wallet_id=1, @transaction_type_id=1, @amount=900, @date='08/01/2018';
+EXEC pr_insert_transaction @account_id=1, @category_id=0, @from_wallet_id=1, @transaction_type_id=1, @amount=900, @date='09/01/2018';
+EXEC pr_insert_transaction @account_id=1, @category_id=0, @from_wallet_id=1, @transaction_type_id=1, @amount=900, @date='10/01/2018';
+EXEC pr_insert_transaction @account_id=1, @category_id=0, @from_wallet_id=1, @transaction_type_id=1, @amount=900, @date='11/01/2018';
+EXEC pr_insert_transaction @account_id=1, @category_id=0, @from_wallet_id=1, @transaction_type_id=1, @amount=900, @date='12/01/2018';
 
-SELECT * FROM udf_annual_statistics(2019);
-EXEC pr_annual_statistics @year=2019;
+EXEC pr_insert_transaction @account_id=1, @category_id=100, @from_wallet_id=1, @transaction_type_id=-1, @amount=200, @date='01/01/2018';
+EXEC pr_insert_transaction @account_id=1, @category_id=100, @from_wallet_id=1, @transaction_type_id=-1, @amount=550, @date='01/01/2018';
+EXEC pr_insert_transaction @account_id=1, @category_id=100, @from_wallet_id=1, @transaction_type_id=-1, @amount=500, @date='02/01/2018';
+EXEC pr_insert_transaction @account_id=1, @category_id=100, @from_wallet_id=1, @transaction_type_id=-1, @amount=450, @date='02/01/2018';
+EXEC pr_insert_transaction @account_id=1, @category_id=100, @from_wallet_id=1, @transaction_type_id=-1, @amount=350, @date='03/01/2018';
+EXEC pr_insert_transaction @account_id=1, @category_id=100, @from_wallet_id=1, @transaction_type_id=-1, @amount=500, @date='03/01/2018';
+EXEC pr_insert_transaction @account_id=1, @category_id=100, @from_wallet_id=1, @transaction_type_id=-1, @amount=350, @date='04/01/2018';
+EXEC pr_insert_transaction @account_id=1, @category_id=100, @from_wallet_id=1, @transaction_type_id=-1, @amount=500, @date='04/01/2018';
+EXEC pr_insert_transaction @account_id=1, @category_id=100, @from_wallet_id=1, @transaction_type_id=-1, @amount=450, @date='05/01/2018';
+EXEC pr_insert_transaction @account_id=1, @category_id=100, @from_wallet_id=1, @transaction_type_id=-1, @amount=550, @date='05/01/2018';
+EXEC pr_insert_transaction @account_id=1, @category_id=100, @from_wallet_id=1, @transaction_type_id=-1, @amount=550, @date='06/01/2018';
+EXEC pr_insert_transaction @account_id=1, @category_id=100, @from_wallet_id=1, @transaction_type_id=-1, @amount=600, @date='06/01/2018';
+EXEC pr_insert_transaction @account_id=1, @category_id=100, @from_wallet_id=1, @transaction_type_id=-1, @amount=300, @date='07/01/2018';
+EXEC pr_insert_transaction @account_id=1, @category_id=100, @from_wallet_id=1, @transaction_type_id=-1, @amount=450, @date='07/01/2018';
+EXEC pr_insert_transaction @account_id=1, @category_id=100, @from_wallet_id=1, @transaction_type_id=-1, @amount=650, @date='08/01/2018';
+EXEC pr_insert_transaction @account_id=1, @category_id=100, @from_wallet_id=1, @transaction_type_id=-1, @amount=550, @date='08/01/2018';
+EXEC pr_insert_transaction @account_id=1, @category_id=100, @from_wallet_id=1, @transaction_type_id=-1, @amount=250, @date='09/01/2018';
+EXEC pr_insert_transaction @account_id=1, @category_id=100, @from_wallet_id=1, @transaction_type_id=-1, @amount=450, @date='09/01/2018';
+EXEC pr_insert_transaction @account_id=1, @category_id=100, @from_wallet_id=1, @transaction_type_id=-1, @amount=400, @date='10/01/2018';
+EXEC pr_insert_transaction @account_id=1, @category_id=100, @from_wallet_id=1, @transaction_type_id=-1, @amount=500, @date='10/01/2018';
+EXEC pr_insert_transaction @account_id=1, @category_id=100, @from_wallet_id=1, @transaction_type_id=-1, @amount=600, @date='11/01/2018';
+EXEC pr_insert_transaction @account_id=1, @category_id=100, @from_wallet_id=1, @transaction_type_id=-1, @amount=650, @date='11/01/2018';
+EXEC pr_insert_transaction @account_id=1, @category_id=100, @from_wallet_id=1, @transaction_type_id=-1, @amount=500, @date='12/01/2018';
+EXEC pr_insert_transaction @account_id=1, @category_id=100, @from_wallet_id=1, @transaction_type_id=-1, @amount=500, @date='12/01/2018';

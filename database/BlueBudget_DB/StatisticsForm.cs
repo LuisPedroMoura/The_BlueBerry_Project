@@ -27,6 +27,7 @@ namespace BlueBudget_DB
         {
             Year_numericUpDown.Maximum = 3000;
             Year_numericUpDown.Minimum = 0;
+            Year_numericUpDown.Value = 2019;
         }
 
         private void Back_btn_Click(object sender, EventArgs e)
@@ -58,5 +59,6 @@ namespace BlueBudget_DB
             }
 
         }
+
     }
 }
