@@ -26,8 +26,8 @@ public class App {
         this.wallets = new AppWalletList();
         this.categories = new AppCategoryList();
 
-        defaultStart();
-        //example();
+        //defaultStart();
+        example();
 
     }
 
@@ -50,21 +50,35 @@ public class App {
         addWallet("Savings",R.drawable.ic_account_balance_wallet_black_24dp, -1.0);
 
         addCategory(null, "Income", R.drawable.ic_trending_up_black_24dp, 0.0, 1, AppBudgetType.INCOME);
-        addCategory("Income", "Income: salary", R.drawable.ic_trending_up_black_24dp, 1500.0, 1, AppBudgetType.INCOME);
+        addCategory("Income", "Income: salary", R.drawable.ic_trending_up_black_24dp, 1000.0, 1, AppBudgetType.INCOME);
+        updateCategory("Income", 1000.0, 1);
 
         addCategory(null, "Home", R.drawable.ic_home_black_24dp, 0.0, 1, AppBudgetType.EXPENSE);
-        addCategory("Home", "Home: cleaning services", R.drawable.ic_home_black_24dp, 25.0, 1, AppBudgetType.EXPENSE);
+        addCategory("Home", "Home: cleaning", R.drawable.ic_home_black_24dp, 20.0, 1, AppBudgetType.EXPENSE);
+        updateCategory("Home", 20.0, 1);
 
         addCategory(null, "Food", R.drawable.ic_shopping_cart_black_24dp, 0.0, 1, AppBudgetType.EXPENSE);
-        addCategory("Food", "Food: sweets", R.drawable.ic_shopping_cart_black_24dp, 5.0, 1, AppBudgetType.EXPENSE);
+        addCategory("Food", "Food: cake", R.drawable.ic_shopping_cart_black_24dp, 10.0, 1, AppBudgetType.EXPENSE);
+        updateCategory("Food", 10.0, 1);
 
-        addCategory(null, "Transports", R.drawable.ic_directions_car_black_24dp, 30.0, 1, AppBudgetType.EXPENSE);
+        addCategory(null, "Transports", R.drawable.ic_directions_car_black_24dp, 0.0, 1, AppBudgetType.EXPENSE);
         addCategory("Transports", "Transports: oil", R.drawable.ic_directions_car_black_24dp, 80.0, 1, AppBudgetType.EXPENSE);
+        updateCategory("Transports", 80.0, 1);
+
+        addCategory(null, "Birthdays", R.drawable.ic_directions_car_black_24dp, 10.0, 1, AppBudgetType.EXPENSE);
 
 
-        /*Calendar calendar = new GregorianCalendar(1998,9,21);
-        addIncome(10.0, calendar, getCategory("Income"), "", "", "Current");
-        addIncome(10.0, calendar, getCategory("Income"), "", "", "Savings");*/
+        Calendar calendar = new GregorianCalendar(2019,5,27);
+
+        addExpense(5.0, calendar, getCategory("Food: cake"), "chocolate cake", "Aveiro", "Future Expenses");
+        addIncome(1000.0, calendar, getCategory("Income"), "", "", "Current");
+
+        addCategory("Income", "Income: rent", R.drawable.ic_trending_up_black_24dp, 700.0, 1, AppBudgetType.INCOME);
+        updateCategory("Income", 1700.0, 1);
+
+        addExpense(85.0, calendar, getCategory("Transports: oil"), "", "", "Current");
+        addExpense(20.0, calendar, getCategory("Home: cleaning"), "", "", "Current");
+        addTransfer(5.0, calendar, "", "", "Future Expenses", "Current");
     }
 
 
