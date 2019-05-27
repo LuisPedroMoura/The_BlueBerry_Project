@@ -1427,7 +1427,7 @@ CREATE TABLE Project.budgets
 	periodicity INT,
 	[start_date] DATE,
 	end_date DATE,
-	CONSTRAINT PK_BUDGETS PRIMARY KEY (budget_id, category_id, account_id),
+	CONSTRAINT PK_BUDGETS PRIMARY KEY (budget_id),
 	CONSTRAINT FK_BUDGETS_RECURRENCE FOREIGN KEY (periodicity) REFERENCES Project.recurrence(periodicity)
 		ON DELETE NO ACTION ON UPDATE CASCADE,
 	CONSTRAINT FK_BUDGETS_CATEGORIES FOREIGN KEY (category_id, account_id) REFERENCES Project.categories(category_id, account_id)
