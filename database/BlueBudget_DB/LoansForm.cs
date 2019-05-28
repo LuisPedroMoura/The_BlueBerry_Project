@@ -40,7 +40,7 @@ namespace BlueBudget_DB
         }
 
         private void Save_btn_Click(object sender, EventArgs e)
-        {
+        {   //apaga este comentario
             string loan_name = Name_textBox.ForeColor == Color.Black ? Name_textBox.Text : "";
             string initial_amount = InitialAmount_textBox.ForeColor == Color.Black ? InitialAmount_textBox.Text.Substring(1) : "";
             string current_debt = CurrentDebt_textBox.ForeColor == Color.Black ? CurrentDebt_textBox.Text.Substring(1) : "";
