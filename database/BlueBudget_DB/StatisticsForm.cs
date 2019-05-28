@@ -44,7 +44,7 @@ namespace BlueBudget_DB
 
             int year = (int)Year_numericUpDown.Value;
 
-            var rdr = DB_API.SelectAnnualStatistics(year);
+            var rdr = DB_API.SelectAnnualStatistics(account_id, year);
             while (rdr.Read())
             {
                 Console.WriteLine(rdr[DB_API.Statistics.date_month.ToString()].ToString() + ", "+ rdr[DB_API.Statistics.expenses.ToString()]);

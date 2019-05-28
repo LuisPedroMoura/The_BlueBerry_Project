@@ -145,11 +145,10 @@ namespace BlueBudget_DB
             SqlConnection cnx = DBconnect();
 
             // step 1: create stored procedure command (cmd)
-            SqlCommand cmd = new SqlCommand("SELECT * FROM "+udfName.ToString()+"("+attrValue[DB_API.Statistics.year]+")", cnx);
-            Console.WriteLine("---> " + cmd.CommandText);
+            SqlCommand cmd = new SqlCommand("SELECT * FROM "+DB_Interface.udf_annual_statistics.ToString()+"(@account_id, @year)", cnx);
 
             // step 2: parameterize cmd
-            //CmdParameterizer(cmd, attrValue);
+            CmdParameterizer(cmd, attrValue);
 
             // step 3: execute
             return ExecuteReader(cnx, cmd);

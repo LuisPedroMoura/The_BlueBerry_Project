@@ -9,12 +9,11 @@
 -- after 'installation' otherwise all tables data will be lost.
 
 DROP TRIGGER IF EXISTS Project.tr_insert_base_wallets_on_new_money_account_insert;
+DROP TRIGGER IF EXISTS Project.tr_insert_base_categories_on_new_money_account_insert;
 DROP TRIGGER IF EXISTS Project.tr_insert_new_wallet_on_goal_insert;
 DROP TRIGGER IF EXISTS Project.tr_update_goal_completion_with_wallet_transfer;
 DROP TRIGGER IF EXISTS Project.tr_update_account_patrimony_on_wallet_balance_update
-DROP TRIGGER IF EXISTS Project.tr_update_account_patrimony_on_loans_insert;
-DROP TRIGGER IF EXISTS Project.tr_update_account_patrimony_on_purchased_stock_insert;
-DROP TRIGGER IF EXISTS Project.tr_update_account_patrimony_on_purchased_stock_delete;
+DROP TRIGGER IF EXISTS Project.tr_update_wallet_balance_on_loans_insert;
 DROP TRIGGER IF EXISTS Project.tr_update_account_balance_on_wallet_balance_update;
 DROP TRIGGER IF EXISTS Project.tr_update_wallet_balance_on_transaction_insert;
 DROP TRIGGER IF EXISTS Project.tr_update_wallet_balance_on_transaction_delete;
@@ -167,9 +166,10 @@ CREATE PROC pr_insert_user (
 ) AS
 BEGIN
 	
+	BEGIN TRANSACTION
+	SAVE TRANSACTION insert_user_savepoint
 	BEGIN TRY
-		BEGIN TRANSACTION
-		SAVE TRANSACTION insert_user_savepoint
+		
 
 			INSERT INTO Project.users(email, [user_name], active_subscription)
 			VALUES (@email, @user_name, @active_subscription);
@@ -182,7 +182,7 @@ BEGIN
 		COMMIT
 	END TRY
 	BEGIN CATCH
-		ROLLBACK
+		ROLLBACK TRANSACTION insert_user_savepoint
 	END CATCH
 END
 GO
@@ -204,10 +204,9 @@ CREATE PROC pr_delete_user (
 ) AS
 BEGIN
 	
+	BEGIN TRANSACTION
+	SAVE TRANSACTION delete_subscription_savepoint
 	BEGIN TRY
-		BEGIN TRANSACTION
-		SAVE TRANSACTION delete_subscription_savepoint
-
 			DELETE FROM Project.users_money_accounts
 			WHERE user_email=@email;
 
@@ -217,7 +216,7 @@ BEGIN
 		COMMIT
 	END TRY
 	BEGIN CATCH
-		ROLLBACK
+		ROLLBACK TRANSACTION delete_subscription_savepoint
 	END CATCH
 END
 GO
@@ -236,10 +235,10 @@ CREATE PROC pr_update_user (
 ) AS
 BEGIN
 	
+	BEGIN TRANSACTION
+	SAVE TRANSACTION update_user_savepoint
 	BEGIN TRY
-		BEGIN TRANSACTION
-		SAVE TRANSACTION update_user_savepoint
-
+	
 			-- verify if user is already subscribed
 			DECLARE @subscribed BIT;
 			SET @subscribed = (SELECT active_subscription FROM Project.users WHERE email=@email);
@@ -281,7 +280,7 @@ BEGIN
 		COMMIT
 	END TRY
 	BEGIN CATCH
-		ROLLBACK
+		ROLLBACK TRANSACTION update_user_savepoint
 	END CATCH
 END
 GO
@@ -377,6 +376,8 @@ CREATE PROC pr_insert_money_account (
 ) AS
 BEGIN
 	
+	BEGIN TRANSACTION
+	SAVE TRANSACTION insert_money_account_savepoint
 	BEGIN TRY
 
 		-- verify that user does not have a money account with same name
@@ -388,8 +389,8 @@ BEGIN
 			WHERE M.account_name=@account_name AND U.user_email=@user_email)
 		BEGIN
 				
-			BEGIN TRANSACTION
-			SAVE TRANSACTION insert_money_account_savepoint
+			
+			
 
 			-- insert new money_account
 			INSERT INTO Project.money_accounts(account_name, balance, patrimony)
@@ -409,7 +410,7 @@ BEGIN
 		-- A trigger (tr_create_basic_categories_on_user_insert) will insert standard categories in the database.
 	END TRY
 	BEGIN CATCH
-		ROLLBACK
+		ROLLBACK TRANSACTION insert_money_account_savepoint
 	END CATCH
 END
 GO
@@ -422,9 +423,10 @@ CREATE PROC pr_delete_money_account (
 ) AS
 BEGIN
 	
+	BEGIN TRANSACTION
+	SAVE TRANSACTION delete_money_account_savepoint
 	BEGIN TRY
-		BEGIN TRANSACTION
-		SAVE TRANSACTION delete_money_account_savepoint
+		
 			DELETE FROM Project.budgets
 			WHERE account_id=@account_id;
 	
@@ -454,7 +456,7 @@ BEGIN
 		COMMIT
 	END TRY
 	BEGIN CATCH
-		ROLLBACK
+		ROLLBACK TRANSACTION delete_money_account_savepoint
 	END CATCH
 END
 GO
@@ -550,10 +552,10 @@ CREATE PROC pr_recalculate_patrimony (
 ) AS
 BEGIN
 	
+	BEGIN TRANSACTION
+	SAVE TRANSACTION recalculate_patrimony_savepoint
 	BEGIN TRY
-		BEGIN TRANSACTION
-		SAVE TRANSACTION recalculate_patrimony_savepoint
-			
+		
 			DECLARE @patrimony MONEY;
 			SET @patrimony = COALESCE((SELECT SUM(purchase_price) FROM Project.purchased_stocks WHERE account_id=@account_id), 0.0);
 			SET @patrimony = @patrimony - COALESCE((SELECT SUM(current_debt) FROM Project.loans WHERE account_id=@account_id), 0.0);
@@ -564,7 +566,7 @@ BEGIN
 		COMMIT
 	END TRY
 	BEGIN CATCH
-		ROLLBACK
+		ROLLBACK TRANSACTION recalculate_patrimony_savepoint
 	END CATCH
 END
 GO
@@ -661,10 +663,10 @@ CREATE PROC pr_insert_category (
 ) AS
 BEGIN
 	
+	BEGIN TRANSACTION
+	SAVE TRANSACTION insert_category_savepoint
+	
 	BEGIN TRY
-		BEGIN TRANSACTION
-		SAVE TRANSACTION insert_category_savepoint
-
 			-- calculate new category id
 			DECLARE @category_id INT;
 			SET @category_id = (
@@ -679,7 +681,7 @@ BEGIN
 		COMMIT
 	END TRY
 	BEGIN CATCH
-		ROLLBACK
+		ROLLBACK TRANSACTION insert_category_savepoint
 	END CATCH
 END
 GO
@@ -694,10 +696,10 @@ CREATE PROC pr_insert_subcategory (
 ) AS
 BEGIN
 	
+	BEGIN TRANSACTION
+	SAVE TRANSACTION insert_subcategory_savepoint
 	BEGIN TRY
-		BEGIN TRANSACTION
-		SAVE TRANSACTION insert_subcategory_savepoint
-
+		
 			-- calculate new category id
 			DECLARE @subcategory_id INT;
 			SET @subcategory_id = (
@@ -715,7 +717,7 @@ BEGIN
 		COMMIT
 	END TRY
 	BEGIN CATCH
-		ROLLBACK
+		ROLLBACK TRANSACTION insert_subcategory_savepoint
 	END CATCH
 END
 GO
@@ -841,10 +843,10 @@ CREATE PROC pr_loan_payment (
 ) AS
 BEGIN
 	
+	BEGIN TRANSACTION
+	SAVE TRANSACTION loan_payment_savepoint
 	BEGIN TRY
-		BEGIN TRANSACTION
-		SAVE TRANSACTION loan_payment_savepoint
-
+		
 			DECLARE @current_debt MONEY;
 			SELECT @current_debt=current_debt FROM Project.loans WHERE account_id=@account_id AND [name]=@name;
 			
@@ -860,7 +862,7 @@ BEGIN
 		COMMIT
 	END TRY
 	BEGIN CATCH
-		ROLLBACK
+		ROLLBACK TRANSACTION loan_payment_savepoint
 	END CATCH
 END
 GO
@@ -960,9 +962,15 @@ BEGIN
 	
 	SAVE TRANSACTION insert_goal_savepoint -- stop rollback in case o trigger fail
 
-	INSERT INTO Project.goals ([name], category_id, account_id, amount, term, accomplished)
-	VALUES (@name, @category_id, @account_id, @amount, @term, @accomplished)
-	;
+	BEGIN TRY
+		INSERT INTO Project.goals ([name], category_id, account_id, amount, term, accomplished)
+		VALUES (@name, @category_id, @account_id, @amount, @term, @accomplished)
+		;
+	END TRY
+	BEGIN CATCH
+		ROLLBACK TRANSACTION  insert_goal_savepoint
+	END CATCH
+	
 END
 GO
 
@@ -1074,10 +1082,10 @@ CREATE PROC pr_insert_transaction (
 ) AS
 BEGIN
 	
+	BEGIN TRANSACTION
+	SAVE TRANSACTION insert_transaction_savepoint
 	BEGIN TRY
-		BEGIN TRANSACTION
-		SAVE TRANSACTION insert_transaction_savepoint
-
+		
 			IF @date IS NULL
 				SET @date = GETDATE();
 
@@ -1095,7 +1103,7 @@ BEGIN
 		COMMIT
 	END TRY
 	BEGIN CATCH
-		ROLLBACK
+		ROLLBACK TRANSACTION insert_transaction_savepoint
 	END CATCH
 END
 GO
@@ -1256,9 +1264,10 @@ CREATE PROC pr_delete_purchased_stocks (
 ) AS
 BEGIN
 	
-	BEGIN TRY
-		BEGIN TRANSACTION
-		SAVE TRANSACTION del_purchased_stocks_savepoint
+	BEGIN TRANSACTION
+	SAVE TRANSACTION del_purchased_stocks_savepoint
+	BEGIN TRY	
+
 			DELETE FROM Project.purchased_stocks
 			WHERE
 					(ticker=@ticker OR company=@company)
@@ -1271,7 +1280,7 @@ BEGIN
 		COMMIT
 	END TRY
 	BEGIN CATCH
-		ROLLBACK
+		ROLLBACK TRANSACTION del_purchased_stocks_savepoint
 	END CATCH
 END
 GO
@@ -1860,6 +1869,7 @@ END
 GO
 
 CREATE FUNCTION udf_annual_statistics (
+	@account_id INT,
 	@year INT
 )
 RETURNS @table TABLE (
@@ -1883,6 +1893,7 @@ BEGIN
 		WHERE
 				transaction_type_id=1
 			AND YEAR([date])=@year_str
+			AND account_id=@account_id
 		GROUP BY MONTH([date])
 		) AS I
 		
@@ -1893,6 +1904,7 @@ BEGIN
 		WHERE
 				transaction_type_id=-1
 				AND YEAR([date])=@year_str
+				AND account_id=@account_id
 		GROUP BY MONTH([date])
 		) AS E
 
@@ -1907,11 +1919,12 @@ GO
 -- UDF from C#. The UDF above works in Management Studio. It is wrapped
 -- in here to provided access for C# code.
 CREATE PROC pr_annual_statistics(
+	@account_id INT,
 	@year INT
 ) AS
 BEGIN
 
-	SELECT * FROM udf_annual_statistics(@year);
+	SELECT * FROM udf_annual_statistics(@account_id, @year);
 END
 GO
 --------------------------------------------------------------------

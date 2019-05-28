@@ -50,7 +50,7 @@
             legend1.Name = "Legend1";
             this.BalanceChart.Legends.Add(legend1);
             this.BalanceChart.Location = new System.Drawing.Point(3, 5);
-            this.BalanceChart.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.BalanceChart.Margin = new System.Windows.Forms.Padding(4);
             this.BalanceChart.Name = "BalanceChart";
             this.BalanceChart.Palette = System.Windows.Forms.DataVisualization.Charting.ChartColorPalette.SeaGreen;
             this.BalanceChart.RightToLeft = System.Windows.Forms.RightToLeft.No;
@@ -92,7 +92,7 @@
             // Year_numericUpDown
             // 
             this.Year_numericUpDown.Location = new System.Drawing.Point(229, 414);
-            this.Year_numericUpDown.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.Year_numericUpDown.Margin = new System.Windows.Forms.Padding(4);
             this.Year_numericUpDown.Name = "Year_numericUpDown";
             this.Year_numericUpDown.Size = new System.Drawing.Size(160, 22);
             this.Year_numericUpDown.TabIndex = 2;
@@ -100,7 +100,7 @@
             // Stats_btn
             // 
             this.Stats_btn.Location = new System.Drawing.Point(397, 410);
-            this.Stats_btn.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.Stats_btn.Margin = new System.Windows.Forms.Padding(4);
             this.Stats_btn.Name = "Stats_btn";
             this.Stats_btn.Size = new System.Drawing.Size(117, 28);
             this.Stats_btn.TabIndex = 3;
@@ -128,7 +128,7 @@
             this.Controls.Add(this.Year_numericUpDown);
             this.Controls.Add(this.Back_btn);
             this.Controls.Add(this.BalanceChart);
-            this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.Margin = new System.Windows.Forms.Padding(4);
             this.Name = "StatisticsForm";
             this.Text = "StatisticsForm";
             this.Load += new System.EventHandler(this.StatisticsForm_Load);

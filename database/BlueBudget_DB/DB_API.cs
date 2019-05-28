@@ -10,6 +10,7 @@ namespace BlueBudget_DB
     class DB_API
     {
 
+        // ENUMS are used to avoid passing strings as arguments. This greatly minimizes errors.
         public enum UserEnt
         {
             user_name,
@@ -127,7 +128,8 @@ namespace BlueBudget_DB
             date_month,
             income,
             expenses,
-            balance
+            balance,
+            account_id
         }
 
         // ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -678,9 +680,10 @@ namespace BlueBudget_DB
         // STATS ----------------------------------------------------------------------------------------
         // ----------------------------------------------------------------------------------------------
 
-        public static DataTableReader SelectAnnualStatistics(int year)
+        public static DataTableReader SelectAnnualStatistics(int account_id, int year)
         {
             var attrValue = DB_IO.AttrValue();
+            attrValue[DB_API.Statistics.account_id] = account_id;
             attrValue[DB_API.Statistics.year] = year;
             return DB_IO.SelectFromUDFTable(DB_IO.DB_Interface.udf_annual_statistics, attrValue);
         }
