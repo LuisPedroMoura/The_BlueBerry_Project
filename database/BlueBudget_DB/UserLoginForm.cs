@@ -72,10 +72,9 @@ namespace BlueBudget_DB
 
         private void Populate_moneyAccounts_listBox(string email)
         {
-            Console.WriteLine("Populate_moneyAccounts_listBox ENTERING");
             // get money accounts from DB
             var rdr = DB_API.SelectUserMoneyAccounts(email);
-            Console.WriteLine("Populate_moneyAccounts_listBox AFTER selecting UserMoneyAccounts from DB");
+
             // extract money acounts names for listBox
             var res = new List<String>();
             while (rdr.Read())
@@ -140,18 +139,17 @@ namespace BlueBudget_DB
 
         private void Findme_btn_Click(object sender, EventArgs e)
         {
-            Console.WriteLine("Findme_btn_Click ENTERING");
             // read value from textbox
             string email = userfindme_textbox.ForeColor == Color.Black ? userfindme_textbox.Text : "";
             CURRENT_USER = email;
-            Console.WriteLine("Findme_btn_Click ENTERING");
+
             // verify an email was given
             if (email.Equals(""))
             {
                 ErrorMessenger.EmptyField("Email");
                 return;
             }
-            Console.WriteLine("Findme_btn_Click ENTERING");
+
             // verify if user exists
             var exists = DB_API.ExistsUser(email);
             if (!exists)
@@ -159,9 +157,8 @@ namespace BlueBudget_DB
                 ErrorMessenger.Error("User does not exist!");
                 return;
             }
-            Console.WriteLine("Findme_btn_Click ENTERING");
+
             // populate account_listBox
-            Console.WriteLine("Findme_btn_Click BEFORE calling POpulate_moneyAccounts_listBox");
             Populate_moneyAccounts_listBox(email);
         }
 
@@ -218,6 +215,8 @@ namespace BlueBudget_DB
             if (sure)
             {
                 DB_API.DeleteMoneyAccount(account_id);
+                CURRENT_USER_ACCOUNTS.Remove(account_name);
+
             }
             else
             {

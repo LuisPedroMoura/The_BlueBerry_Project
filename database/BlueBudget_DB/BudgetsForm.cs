@@ -31,8 +31,22 @@ namespace BlueBudget_DB
             
         }
 
-        private void budget_Load(object sender, EventArgs e)
+        private void Budget_Load(object sender, EventArgs e)
         {
+            StartYear_numericBox.Maximum = 5000;
+            EndYear_numericBox.Maximum = 5000;
+            StartYear_numericBox.Minimum = 0;
+            EndYear_numericBox.Minimum = 0;
+
+            Category_textBox.ReadOnly = true;
+            Subcategory_textBox.ReadOnly = true;
+            Type_comboBox.Enabled = false;
+            Budget_textBox.ReadOnly = true;
+            StartMonth_comboBox.Enabled = false;
+            StartYear_numericBox.Enabled = false;
+            EndMonth_comboBox.Enabled = false;
+            EndYear_numericBox.Enabled = false;
+
             PopulateCategoriesListBox();
             PopulateComboBoxes();
 
@@ -42,7 +56,7 @@ namespace BlueBudget_DB
 
             // make comboBoxes white again
             StartMonth_comboBox.FlatStyle = FlatStyle.Popup;
-            EndMonth_comboBox.FlatStyle = FlatStyle.Popup;
+            EndMonth_comboBox.FlatStyle = FlatStyle.Popup; 
         }
 
         // -------------------------------------------------------------------
@@ -77,6 +91,18 @@ namespace BlueBudget_DB
             StartYear_numericBox.Enabled = false;
             EndMonth_comboBox.Enabled = false;
             EndYear_numericBox.Enabled = false;
+        }
+
+        private void NewBudget_btn_Click(object sender, EventArgs e)
+        {
+            Category_textBox.ReadOnly = true;
+            Subcategory_textBox.ReadOnly = true;
+            Type_comboBox.Enabled = false;
+            Budget_textBox.ReadOnly = false;
+            StartMonth_comboBox.Enabled = true;
+            StartYear_numericBox.Enabled = true;
+            EndMonth_comboBox.Enabled = true;
+            EndYear_numericBox.Enabled = true;
         }
 
         private void Save_btn_Click(object sender, EventArgs e)
@@ -115,49 +141,45 @@ namespace BlueBudget_DB
                 }
 
                 // add new category
-                try
-                {
-                    DB_API.AddSubCategoryToAccount(cat_id, account_id, sub_cat_name, type_id);
-                }
-                catch (SqlException ex)
-                {
-                    ErrorMessenger.Exception(ex);
-                }
+                DB_API.AddSubCategoryToAccount(cat_id, account_id, sub_cat_name, type_id);
             }
 
             // save new budget
             if (Category_textBox.ReadOnly && Subcategory_textBox.ReadOnly)
             {
+                if (Budget_textBox.Text.Equals(""))
+                {
+                    ErrorMessenger.EmptyField("Monthly Budget");
+                    return;
+                }
+
+                if (StartMonth_comboBox.SelectedIndex == 0 || EndMonth_comboBox.SelectedIndex == 0)
+                {
+                    ErrorMessenger.EmptyField("Start month and end month");
+                    return;
+                }
+
                 cat_id = this.categories[cat_name];
                 if (!sub_cat_name.Equals(""))
                 {
                     cat_id = this.categories[sub_cat_name];
                 }
 
-                double amount;
-                try
-                {
-                    amount = Double.Parse(Budget_textBox.Text);
-                }
-                catch
-                {
-                    ErrorMessenger.WrongFormat("Budget");
-                    return;
-                }
+                double amount = DB_API.UnMoneyfy(Budget_textBox.Text);
                 int startMonth = StartMonth_comboBox.SelectedIndex;
                 int startYear = (int)StartYear_numericBox.Value;
                 int endMonth = EndMonth_comboBox.SelectedIndex;
                 int endYear = (int)EndYear_numericBox.Value;
-                DateTime startDate = DateTime.Parse("01/" + startMonth + "/" + startYear);
+                DateTime startDate = DateTime.Parse(startYear + "/" + startMonth + "/01");
                 DateTime endDate;
                 
                 if (endMonth == 2)
                 {
-                    endDate = DateTime.Parse("28/" + endMonth + "/" + endYear);
+                    endDate = DateTime.Parse(endYear + "/" + endMonth + "/28");
                 }
                 else
                 {
-                    endDate = DateTime.Parse("30/" + endMonth + "/" + endYear);
+                    endDate = DateTime.Parse(endYear + "/"+ endMonth + "/30");
                 }
 
                 // verify that endaDate is bigger than startDate
@@ -168,25 +190,8 @@ namespace BlueBudget_DB
                 }
 
                 // insert new budget
-                try
-                {
-                    DB_API.InsertBudget(account_id, cat_id, amount, startDate, endDate);
-                }
-                catch (SqlException ex)
-                {
-                    ErrorMessenger.Exception(ex);
-                }
+                DB_API.InsertBudget(account_id, cat_id, amount, startDate, endDate);
             }
-
-            // block fields
-            Category_textBox.ReadOnly = true;
-            Subcategory_textBox.ReadOnly = true;
-            Type_comboBox.Enabled = false;
-            Budget_textBox.ReadOnly = false;
-            StartMonth_comboBox.Enabled = true;
-            StartYear_numericBox.Enabled = true;
-            EndMonth_comboBox.Enabled = true;
-            EndYear_numericBox.Enabled = true;
 
             PopulateCategoriesListBox();
         }
@@ -197,14 +202,6 @@ namespace BlueBudget_DB
 
         private void Categories_listbox_SelectedIndexChanged(object sender, EventArgs e)
         {
-            Category_textBox.ReadOnly = true;
-            Subcategory_textBox.ReadOnly = true;
-            Type_comboBox.Enabled = false;
-            Budget_textBox.ReadOnly = false;
-            StartMonth_comboBox.Enabled = true;
-            StartYear_numericBox.Enabled = true;
-            EndMonth_comboBox.Enabled = true;
-            EndYear_numericBox.Enabled = true;
 
             // get selected item value
             string selected = (string)Categories_listbox.SelectedItem;
@@ -262,15 +259,10 @@ namespace BlueBudget_DB
             while (rdr.Read())
             {
                 StartMonth_comboBox.Text = months[DateTime.Parse(rdr[DB_API.BudgetEnt.start_date.ToString()].ToString()).Month];
-                StartMonth_comboBox.ForeColor = Color.Black;
                 StartYear_numericBox.Value = DateTime.Parse(rdr[DB_API.BudgetEnt.start_date.ToString()].ToString()).Year;
-                StartYear_numericBox.ForeColor = Color.Black;
                 EndMonth_comboBox.Text = months[DateTime.Parse(rdr[DB_API.BudgetEnt.start_date.ToString()].ToString()).Month];
-                EndMonth_comboBox.ForeColor = Color.Black;
                 EndYear_numericBox.Value = DateTime.Parse(rdr[DB_API.BudgetEnt.start_date.ToString()].ToString()).Year;
-                EndYear_numericBox.ForeColor = Color.Black;
-                Budget_textBox.Text = rdr[DB_API.BudgetEnt.amount.ToString()].ToString();
-                Budget_textBox.ForeColor = Color.Black;
+                Budget_textBox.Text = DB_API.Moneyfy(rdr[DB_API.BudgetEnt.amount.ToString()].ToString());
             }
         }
 
@@ -314,8 +306,8 @@ namespace BlueBudget_DB
             {
                 string start_month = DateTime.Parse(rdr[DB_API.BudgetEnt.start_date.ToString()].ToString()).Month.ToString();
                 string start_year = DateTime.Parse(rdr[DB_API.BudgetEnt.start_date.ToString()].ToString()).Year.ToString();
-                string end_month = DateTime.Parse(rdr[DB_API.BudgetEnt.start_date.ToString()].ToString()).Month.ToString();
-                string end_year = DateTime.Parse(rdr[DB_API.BudgetEnt.start_date.ToString()].ToString()).Year.ToString();
+                string end_month = DateTime.Parse(rdr[DB_API.BudgetEnt.end_date.ToString()].ToString()).Month.ToString();
+                string end_year = DateTime.Parse(rdr[DB_API.BudgetEnt.end_date.ToString()].ToString()).Year.ToString();
                 string amount = rdr[DB_API.BudgetEnt.amount.ToString()].ToString();
                 res[start_month + "/" + start_year + "-" + end_month + "/" + end_year + " - " + amount + "$"] = (int)rdr[DB_API.BudgetEnt.budget_id.ToString()];
                 budgetsDict[start_month + "/" + start_year + "-" + end_month + "/" + end_year + " - " + amount + "$"] = (int)rdr[DB_API.BudgetEnt.budget_id.ToString()];
@@ -328,10 +320,6 @@ namespace BlueBudget_DB
         {
             StartMonth_comboBox.DataSource = months;
             EndMonth_comboBox.DataSource = new List<string>(months);
-            StartYear_numericBox.Maximum = 2500;
-            StartYear_numericBox.Value = 2019;
-            EndYear_numericBox.Maximum = 2500;
-            EndYear_numericBox.Value = 2019;
 
             var rdr = DB_API.SelectAllCategoryTypes();
             var res = new List<string>();
@@ -342,7 +330,14 @@ namespace BlueBudget_DB
             Type_comboBox.DataSource = res;
         }
 
-        
+        private void Budget_textBox_Enter(object sender, EventArgs e)
+        {
+            Budget_textBox.Text = "";
+        }
+        private void Budget_textBox_Leave(object sender, EventArgs e)
+        {
+            Budget_textBox.Text = DB_API.Moneyfy(Budget_textBox.Text);
+        }
 
         
     }

@@ -52,6 +52,7 @@
             this.EndYear_numericBox = new System.Windows.Forms.NumericUpDown();
             this.richTextBox1 = new System.Windows.Forms.RichTextBox();
             this.Budget_textBox = new System.Windows.Forms.TextBox();
+            this.NewBudget_btn = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.StartYear_numericBox)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.EndYear_numericBox)).BeginInit();
             this.SuspendLayout();
@@ -279,12 +280,26 @@
             this.Budget_textBox.Name = "Budget_textBox";
             this.Budget_textBox.Size = new System.Drawing.Size(121, 20);
             this.Budget_textBox.TabIndex = 67;
+            this.Budget_textBox.Enter += new System.EventHandler(this.Budget_textBox_Enter);
+            this.Budget_textBox.Leave += new System.EventHandler(this.Budget_textBox_Leave);
+            // 
+            // NewBudget_btn
+            // 
+            this.NewBudget_btn.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.NewBudget_btn.Location = new System.Drawing.Point(234, 290);
+            this.NewBudget_btn.Name = "NewBudget_btn";
+            this.NewBudget_btn.Size = new System.Drawing.Size(122, 47);
+            this.NewBudget_btn.TabIndex = 68;
+            this.NewBudget_btn.Text = "New Budget";
+            this.NewBudget_btn.UseVisualStyleBackColor = true;
+            this.NewBudget_btn.Click += new System.EventHandler(this.NewBudget_btn_Click);
             // 
             // BudgetsForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(600, 366);
+            this.Controls.Add(this.NewBudget_btn);
             this.Controls.Add(this.Budget_textBox);
             this.Controls.Add(this.richTextBox1);
             this.Controls.Add(this.EndYear_numericBox);
@@ -312,7 +327,7 @@
             this.Margin = new System.Windows.Forms.Padding(2);
             this.Name = "BudgetsForm";
             this.Text = "budget";
-            this.Load += new System.EventHandler(this.budget_Load);
+            this.Load += new System.EventHandler(this.Budget_Load);
             ((System.ComponentModel.ISupportInitialize)(this.StartYear_numericBox)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.EndYear_numericBox)).EndInit();
             this.ResumeLayout(false);
@@ -346,5 +361,6 @@
         private System.Windows.Forms.NumericUpDown EndYear_numericBox;
         private System.Windows.Forms.RichTextBox richTextBox1;
         private System.Windows.Forms.TextBox Budget_textBox;
+        private System.Windows.Forms.Button NewBudget_btn;
     }
 }
