@@ -42,8 +42,8 @@ namespace BlueBudget_DB
         private void Save_btn_Click(object sender, EventArgs e)
         {   //apaga este comentario
             string loan_name = Name_textBox.ForeColor == Color.Black ? Name_textBox.Text : "";
-            string initial_amount = InitialAmount_textBox.ForeColor == Color.Black ? InitialAmount_textBox.Text.Substring(1) : "";
-            string current_debt = CurrentDebt_textBox.ForeColor == Color.Black ? CurrentDebt_textBox.Text.Substring(1) : "";
+            string initial_amount = InitialAmount_textBox.ForeColor == Color.Black ? InitialAmount_textBox.Text : "";
+            string current_debt = CurrentDebt_textBox.ForeColor == Color.Black ? CurrentDebt_textBox.Text : "";
             string interest_str = Interest_textBox.ForeColor == Color.Black ? Interest_textBox.Text : "";
             DateTime term = DateTime.Parse(Enddate_dateTimePicker.Value.ToString());
 
@@ -55,13 +55,11 @@ namespace BlueBudget_DB
             }
 
             // process inserted values
-            double init_amt = 0.0;
-            double cur_debt = 0.0;
+            double init_amt = DB_API.UnMoneyfy(initial_amount);
+            double cur_debt = DB_API.UnMoneyfy(current_debt);
             double interest = 0.0;
             try
             {
-                init_amt = Double.Parse(initial_amount);
-                cur_debt = Double.Parse(current_debt);
                 if (interest_str.Equals(""))
                 {
                     interest = 0.0;

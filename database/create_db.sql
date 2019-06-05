@@ -663,7 +663,8 @@ CREATE PROC pr_insert_category (
 	@name VARCHAR(20)
 ) AS
 BEGIN
-	
+
+	SET XACT_ABORT ON
 	BEGIN TRANSACTION
 	SAVE TRANSACTION insert_category_savepoint
 	
@@ -675,7 +676,7 @@ BEGIN
 				FROM Project.categories
 				WHERE account_id=@account_id
 			);
-			SET @category_id = ((@category_id%100)+1)*100;
+			SET @category_id = ((@category_id/100)+1)*100;
 
 			INSERT INTO Project.categories (category_id, category_type_id, account_id, [name])
 			VALUES (@category_id, @category_type_id, @account_id, @name);
@@ -697,8 +698,10 @@ CREATE PROC pr_insert_subcategory (
 ) AS
 BEGIN
 	
+	SET XACT_ABORT ON
 	BEGIN TRANSACTION
 	SAVE TRANSACTION insert_subcategory_savepoint
+
 	BEGIN TRY
 		
 			-- calculate new category id
@@ -708,8 +711,10 @@ BEGIN
 				FROM Project.categories
 				WHERE
 						account_id=@account_id
-					AND category_id>(@category_id%100)*100
-					AND category_id<((@category_id%100)+1)*100
+					--AND category_id>(@category_id%100)*100
+					AND category_id>@category_id
+					--AND category_id<((@category_id%100)+1)*100
+					AND category_id<@category_id+100
 			);	
 			SET @category_id = @category_id + 1;
 
@@ -773,7 +778,6 @@ BEGIN
 	END
 END
 GO
-
 
 ---------------------------------------------------------------
 --- LOANS -----------------------------------------------------
@@ -1158,8 +1162,19 @@ CREATE PROC pr_delete_transaction (
 ) AS
 BEGIN
 	
+	DECLARE @transaction_type_id INT;
+	SELECT @transaction_type_id=transaction_type_id FROM Project.transactions WHERE transaction_id=@transaction_id;
+
+	IF @transaction_type_id=0
+	BEGIN
+		DELETE FROM Project.transfers
+		WHERE transaction_id=@transaction_id
+		;
+	END
+
 	DELETE FROM Project.transactions
-	WHERE transaction_id=@transaction_id;
+	WHERE transaction_id=@transaction_id
+	;
 END
 GO
 
@@ -1250,13 +1265,6 @@ BEGIN
 	EXEC pr_add_balance_to_wallet @amount=@purchase_price, @wallet_id=@wall_id;
 END
 GO
-
--- select * from Project.loans;
---select * from Project.purchased_stocks;
---select * from Project.wallets;
---select * from Project.money_accounts;
---exec pr_delete_purchased_stocks @account_id=1, @ticker=1, @ask_price=30;
-
 
 -- deletes one purchased stock
 -- in order to not lose the profit value, the wallet balnce must be updated
@@ -1797,14 +1805,45 @@ BEGIN
 
 	SET NOCOUNT ON
 
+	DECLARE @transaction_id INT;
 	DECLARE @value MONEY;
 	DECLARE @wallet_id INT;
-	SELECT @value=amount, @wallet_id=wallet_id FROM DELETED;
+	DECLARE @recipient_id INT;
+	DECLARE @transaction_type_id INT;
+	SELECT @transaction_id=transaction_id, @value=amount, @wallet_id=wallet_id, @transaction_type_id=transaction_type_id FROM DELETED;
 
-	UPDATE Project.wallets
-	SET balance=balance + COALESCE(@value, 0)
-	WHERE wallet_id=@wallet_id
-	;
+	IF @transaction_type_id=-1
+	BEGIN
+		UPDATE Project.wallets
+		SET balance=balance + COALESCE(@value, 0)
+		WHERE wallet_id=@wallet_id
+		;
+	END
+
+	IF @transaction_type_id=1
+	BEGIN
+		UPDATE Project.wallets
+		SET balance=balance - COALESCE(@value, 0)
+		WHERE wallet_id=@wallet_id
+		;
+	END
+
+	IF @transaction_type_id=0
+	BEGIN
+		UPDATE Project.wallets
+		SET balance=balance + COALESCE(@value, 0)
+		WHERE wallet_id=@wallet_id
+		;
+
+		SELECT @recipient_id=recipient_wallet_id FROM Project.transfers WHERE transaction_id=@transaction_id;
+
+		UPDATE Project.wallets
+		SET balance=balance - COALESCE(@value, 0)
+		WHERE wallet_id=@recipient_id
+		;
+	END
+
+
 END
 GO
 
@@ -1933,30 +1972,30 @@ EXEC pr_insert_transaction @account_id=1, @category_id=0, @from_wallet_id=1, @tr
 EXEC pr_insert_transaction @account_id=1, @category_id=0, @from_wallet_id=1, @transaction_type_id=1, @amount=1000, @date='11/01/2019';
 EXEC pr_insert_transaction @account_id=1, @category_id=0, @from_wallet_id=1, @transaction_type_id=1, @amount=1000, @date='12/01/2019';
 
-EXEC pr_insert_transaction @account_id=1, @category_id=100, @from_wallet_id=1, @transaction_type_id=-1, @amount=250, @date='01/01/2019';
-EXEC pr_insert_transaction @account_id=1, @category_id=100, @from_wallet_id=1, @transaction_type_id=-1, @amount=500, @date='01/01/2019';
-EXEC pr_insert_transaction @account_id=1, @category_id=100, @from_wallet_id=1, @transaction_type_id=-1, @amount=600, @date='02/01/2019';
-EXEC pr_insert_transaction @account_id=1, @category_id=100, @from_wallet_id=1, @transaction_type_id=-1, @amount=500, @date='02/01/2019';
-EXEC pr_insert_transaction @account_id=1, @category_id=100, @from_wallet_id=1, @transaction_type_id=-1, @amount=300, @date='03/01/2019';
-EXEC pr_insert_transaction @account_id=1, @category_id=100, @from_wallet_id=1, @transaction_type_id=-1, @amount=500, @date='03/01/2019';
-EXEC pr_insert_transaction @account_id=1, @category_id=100, @from_wallet_id=1, @transaction_type_id=-1, @amount=350, @date='04/01/2019';
-EXEC pr_insert_transaction @account_id=1, @category_id=100, @from_wallet_id=1, @transaction_type_id=-1, @amount=500, @date='04/01/2019';
-EXEC pr_insert_transaction @account_id=1, @category_id=100, @from_wallet_id=1, @transaction_type_id=-1, @amount=600, @date='05/01/2019';
-EXEC pr_insert_transaction @account_id=1, @category_id=100, @from_wallet_id=1, @transaction_type_id=-1, @amount=600, @date='05/01/2019';
-EXEC pr_insert_transaction @account_id=1, @category_id=100, @from_wallet_id=1, @transaction_type_id=-1, @amount=550, @date='06/01/2019';
-EXEC pr_insert_transaction @account_id=1, @category_id=100, @from_wallet_id=1, @transaction_type_id=-1, @amount=600, @date='06/01/2019';
-EXEC pr_insert_transaction @account_id=1, @category_id=100, @from_wallet_id=1, @transaction_type_id=-1, @amount=250, @date='07/01/2019';
-EXEC pr_insert_transaction @account_id=1, @category_id=100, @from_wallet_id=1, @transaction_type_id=-1, @amount=500, @date='07/01/2019';
-EXEC pr_insert_transaction @account_id=1, @category_id=100, @from_wallet_id=1, @transaction_type_id=-1, @amount=600, @date='08/01/2019';
-EXEC pr_insert_transaction @account_id=1, @category_id=100, @from_wallet_id=1, @transaction_type_id=-1, @amount=500, @date='08/01/2019';
-EXEC pr_insert_transaction @account_id=1, @category_id=100, @from_wallet_id=1, @transaction_type_id=-1, @amount=300, @date='09/01/2019';
-EXEC pr_insert_transaction @account_id=1, @category_id=100, @from_wallet_id=1, @transaction_type_id=-1, @amount=500, @date='09/01/2019';
-EXEC pr_insert_transaction @account_id=1, @category_id=100, @from_wallet_id=1, @transaction_type_id=-1, @amount=350, @date='10/01/2019';
-EXEC pr_insert_transaction @account_id=1, @category_id=100, @from_wallet_id=1, @transaction_type_id=-1, @amount=500, @date='10/01/2019';
-EXEC pr_insert_transaction @account_id=1, @category_id=100, @from_wallet_id=1, @transaction_type_id=-1, @amount=600, @date='11/01/2019';
-EXEC pr_insert_transaction @account_id=1, @category_id=100, @from_wallet_id=1, @transaction_type_id=-1, @amount=600, @date='11/01/2019';
-EXEC pr_insert_transaction @account_id=1, @category_id=100, @from_wallet_id=1, @transaction_type_id=-1, @amount=550, @date='12/01/2019';
-EXEC pr_insert_transaction @account_id=1, @category_id=100, @from_wallet_id=1, @transaction_type_id=-1, @amount=600, @date='12/01/2019';
+EXEC pr_insert_transaction @account_id=1, @category_id=101, @from_wallet_id=1, @transaction_type_id=-1, @amount=250, @date='01/01/2019';
+EXEC pr_insert_transaction @account_id=1, @category_id=102, @from_wallet_id=1, @transaction_type_id=-1, @amount=500, @date='01/01/2019';
+EXEC pr_insert_transaction @account_id=1, @category_id=101, @from_wallet_id=1, @transaction_type_id=-1, @amount=600, @date='02/01/2019';
+EXEC pr_insert_transaction @account_id=1, @category_id=102, @from_wallet_id=1, @transaction_type_id=-1, @amount=500, @date='02/01/2019';
+EXEC pr_insert_transaction @account_id=1, @category_id=101, @from_wallet_id=1, @transaction_type_id=-1, @amount=300, @date='03/01/2019';
+EXEC pr_insert_transaction @account_id=1, @category_id=102, @from_wallet_id=1, @transaction_type_id=-1, @amount=500, @date='03/01/2019';
+EXEC pr_insert_transaction @account_id=1, @category_id=101, @from_wallet_id=1, @transaction_type_id=-1, @amount=350, @date='04/01/2019';
+EXEC pr_insert_transaction @account_id=1, @category_id=102, @from_wallet_id=1, @transaction_type_id=-1, @amount=500, @date='04/01/2019';
+EXEC pr_insert_transaction @account_id=1, @category_id=101, @from_wallet_id=1, @transaction_type_id=-1, @amount=600, @date='05/01/2019';
+EXEC pr_insert_transaction @account_id=1, @category_id=102, @from_wallet_id=1, @transaction_type_id=-1, @amount=600, @date='05/01/2019';
+EXEC pr_insert_transaction @account_id=1, @category_id=101, @from_wallet_id=1, @transaction_type_id=-1, @amount=550, @date='06/01/2019';
+EXEC pr_insert_transaction @account_id=1, @category_id=102, @from_wallet_id=1, @transaction_type_id=-1, @amount=600, @date='06/01/2019';
+EXEC pr_insert_transaction @account_id=1, @category_id=101, @from_wallet_id=1, @transaction_type_id=-1, @amount=250, @date='07/01/2019';
+EXEC pr_insert_transaction @account_id=1, @category_id=102, @from_wallet_id=1, @transaction_type_id=-1, @amount=500, @date='07/01/2019';
+EXEC pr_insert_transaction @account_id=1, @category_id=101, @from_wallet_id=1, @transaction_type_id=-1, @amount=600, @date='08/01/2019';
+EXEC pr_insert_transaction @account_id=1, @category_id=102, @from_wallet_id=1, @transaction_type_id=-1, @amount=500, @date='08/01/2019';
+EXEC pr_insert_transaction @account_id=1, @category_id=101, @from_wallet_id=1, @transaction_type_id=-1, @amount=300, @date='09/01/2019';
+EXEC pr_insert_transaction @account_id=1, @category_id=102, @from_wallet_id=1, @transaction_type_id=-1, @amount=500, @date='09/01/2019';
+EXEC pr_insert_transaction @account_id=1, @category_id=101, @from_wallet_id=1, @transaction_type_id=-1, @amount=350, @date='10/01/2019';
+EXEC pr_insert_transaction @account_id=1, @category_id=102, @from_wallet_id=1, @transaction_type_id=-1, @amount=500, @date='10/01/2019';
+EXEC pr_insert_transaction @account_id=1, @category_id=101, @from_wallet_id=1, @transaction_type_id=-1, @amount=600, @date='11/01/2019';
+EXEC pr_insert_transaction @account_id=1, @category_id=102, @from_wallet_id=1, @transaction_type_id=-1, @amount=600, @date='11/01/2019';
+EXEC pr_insert_transaction @account_id=1, @category_id=101, @from_wallet_id=1, @transaction_type_id=-1, @amount=550, @date='12/01/2019';
+EXEC pr_insert_transaction @account_id=1, @category_id=102, @from_wallet_id=1, @transaction_type_id=-1, @amount=600, @date='12/01/2019';
 
 EXEC pr_insert_transaction @account_id=1, @category_id=0, @from_wallet_id=1, @transaction_type_id=1, @amount=900, @date='01/01/2018';
 EXEC pr_insert_transaction @account_id=1, @category_id=0, @from_wallet_id=1, @transaction_type_id=1, @amount=900, @date='02/01/2018';
@@ -1971,27 +2010,30 @@ EXEC pr_insert_transaction @account_id=1, @category_id=0, @from_wallet_id=1, @tr
 EXEC pr_insert_transaction @account_id=1, @category_id=0, @from_wallet_id=1, @transaction_type_id=1, @amount=900, @date='11/01/2018';
 EXEC pr_insert_transaction @account_id=1, @category_id=0, @from_wallet_id=1, @transaction_type_id=1, @amount=900, @date='12/01/2018';
 
-EXEC pr_insert_transaction @account_id=1, @category_id=100, @from_wallet_id=1, @transaction_type_id=-1, @amount=200, @date='01/01/2018';
-EXEC pr_insert_transaction @account_id=1, @category_id=100, @from_wallet_id=1, @transaction_type_id=-1, @amount=550, @date='01/01/2018';
-EXEC pr_insert_transaction @account_id=1, @category_id=100, @from_wallet_id=1, @transaction_type_id=-1, @amount=500, @date='02/01/2018';
-EXEC pr_insert_transaction @account_id=1, @category_id=100, @from_wallet_id=1, @transaction_type_id=-1, @amount=450, @date='02/01/2018';
-EXEC pr_insert_transaction @account_id=1, @category_id=100, @from_wallet_id=1, @transaction_type_id=-1, @amount=350, @date='03/01/2018';
-EXEC pr_insert_transaction @account_id=1, @category_id=100, @from_wallet_id=1, @transaction_type_id=-1, @amount=500, @date='03/01/2018';
-EXEC pr_insert_transaction @account_id=1, @category_id=100, @from_wallet_id=1, @transaction_type_id=-1, @amount=350, @date='04/01/2018';
-EXEC pr_insert_transaction @account_id=1, @category_id=100, @from_wallet_id=1, @transaction_type_id=-1, @amount=500, @date='04/01/2018';
-EXEC pr_insert_transaction @account_id=1, @category_id=100, @from_wallet_id=1, @transaction_type_id=-1, @amount=450, @date='05/01/2018';
-EXEC pr_insert_transaction @account_id=1, @category_id=100, @from_wallet_id=1, @transaction_type_id=-1, @amount=550, @date='05/01/2018';
-EXEC pr_insert_transaction @account_id=1, @category_id=100, @from_wallet_id=1, @transaction_type_id=-1, @amount=550, @date='06/01/2018';
-EXEC pr_insert_transaction @account_id=1, @category_id=100, @from_wallet_id=1, @transaction_type_id=-1, @amount=600, @date='06/01/2018';
-EXEC pr_insert_transaction @account_id=1, @category_id=100, @from_wallet_id=1, @transaction_type_id=-1, @amount=300, @date='07/01/2018';
-EXEC pr_insert_transaction @account_id=1, @category_id=100, @from_wallet_id=1, @transaction_type_id=-1, @amount=450, @date='07/01/2018';
-EXEC pr_insert_transaction @account_id=1, @category_id=100, @from_wallet_id=1, @transaction_type_id=-1, @amount=650, @date='08/01/2018';
-EXEC pr_insert_transaction @account_id=1, @category_id=100, @from_wallet_id=1, @transaction_type_id=-1, @amount=550, @date='08/01/2018';
-EXEC pr_insert_transaction @account_id=1, @category_id=100, @from_wallet_id=1, @transaction_type_id=-1, @amount=250, @date='09/01/2018';
-EXEC pr_insert_transaction @account_id=1, @category_id=100, @from_wallet_id=1, @transaction_type_id=-1, @amount=450, @date='09/01/2018';
-EXEC pr_insert_transaction @account_id=1, @category_id=100, @from_wallet_id=1, @transaction_type_id=-1, @amount=400, @date='10/01/2018';
-EXEC pr_insert_transaction @account_id=1, @category_id=100, @from_wallet_id=1, @transaction_type_id=-1, @amount=500, @date='10/01/2018';
-EXEC pr_insert_transaction @account_id=1, @category_id=100, @from_wallet_id=1, @transaction_type_id=-1, @amount=600, @date='11/01/2018';
-EXEC pr_insert_transaction @account_id=1, @category_id=100, @from_wallet_id=1, @transaction_type_id=-1, @amount=650, @date='11/01/2018';
-EXEC pr_insert_transaction @account_id=1, @category_id=100, @from_wallet_id=1, @transaction_type_id=-1, @amount=500, @date='12/01/2018';
-EXEC pr_insert_transaction @account_id=1, @category_id=100, @from_wallet_id=1, @transaction_type_id=-1, @amount=500, @date='12/01/2018';
+EXEC pr_insert_transaction @account_id=1, @category_id=101, @from_wallet_id=1, @transaction_type_id=-1, @amount=200, @date='01/01/2018';
+EXEC pr_insert_transaction @account_id=1, @category_id=102, @from_wallet_id=1, @transaction_type_id=-1, @amount=550, @date='01/01/2018';
+EXEC pr_insert_transaction @account_id=1, @category_id=101, @from_wallet_id=1, @transaction_type_id=-1, @amount=500, @date='02/01/2018';
+EXEC pr_insert_transaction @account_id=1, @category_id=102, @from_wallet_id=1, @transaction_type_id=-1, @amount=450, @date='02/01/2018';
+EXEC pr_insert_transaction @account_id=1, @category_id=101, @from_wallet_id=1, @transaction_type_id=-1, @amount=350, @date='03/01/2018';
+EXEC pr_insert_transaction @account_id=1, @category_id=102, @from_wallet_id=1, @transaction_type_id=-1, @amount=500, @date='03/01/2018';
+EXEC pr_insert_transaction @account_id=1, @category_id=101, @from_wallet_id=1, @transaction_type_id=-1, @amount=350, @date='04/01/2018';
+EXEC pr_insert_transaction @account_id=1, @category_id=102, @from_wallet_id=1, @transaction_type_id=-1, @amount=500, @date='04/01/2018';
+EXEC pr_insert_transaction @account_id=1, @category_id=101, @from_wallet_id=1, @transaction_type_id=-1, @amount=450, @date='05/01/2018';
+EXEC pr_insert_transaction @account_id=1, @category_id=102, @from_wallet_id=1, @transaction_type_id=-1, @amount=550, @date='05/01/2018';
+EXEC pr_insert_transaction @account_id=1, @category_id=101, @from_wallet_id=1, @transaction_type_id=-1, @amount=550, @date='06/01/2018';
+EXEC pr_insert_transaction @account_id=1, @category_id=102, @from_wallet_id=1, @transaction_type_id=-1, @amount=600, @date='06/01/2018';
+EXEC pr_insert_transaction @account_id=1, @category_id=101, @from_wallet_id=1, @transaction_type_id=-1, @amount=300, @date='07/01/2018';
+EXEC pr_insert_transaction @account_id=1, @category_id=102, @from_wallet_id=1, @transaction_type_id=-1, @amount=450, @date='07/01/2018';
+EXEC pr_insert_transaction @account_id=1, @category_id=101, @from_wallet_id=1, @transaction_type_id=-1, @amount=650, @date='08/01/2018';
+EXEC pr_insert_transaction @account_id=1, @category_id=102, @from_wallet_id=1, @transaction_type_id=-1, @amount=550, @date='08/01/2018';
+EXEC pr_insert_transaction @account_id=1, @category_id=101, @from_wallet_id=1, @transaction_type_id=-1, @amount=250, @date='09/01/2018';
+EXEC pr_insert_transaction @account_id=1, @category_id=102, @from_wallet_id=1, @transaction_type_id=-1, @amount=450, @date='09/01/2018';
+EXEC pr_insert_transaction @account_id=1, @category_id=101, @from_wallet_id=1, @transaction_type_id=-1, @amount=400, @date='10/01/2018';
+EXEC pr_insert_transaction @account_id=1, @category_id=102, @from_wallet_id=1, @transaction_type_id=-1, @amount=500, @date='10/01/2018';
+EXEC pr_insert_transaction @account_id=1, @category_id=101, @from_wallet_id=1, @transaction_type_id=-1, @amount=600, @date='11/01/2018';
+EXEC pr_insert_transaction @account_id=1, @category_id=102, @from_wallet_id=1, @transaction_type_id=-1, @amount=650, @date='11/01/2018';
+EXEC pr_insert_transaction @account_id=1, @category_id=101, @from_wallet_id=1, @transaction_type_id=-1, @amount=500, @date='12/01/2018';
+EXEC pr_insert_transaction @account_id=1, @category_id=102, @from_wallet_id=1, @transaction_type_id=-1, @amount=500, @date='12/01/2018';
+
+EXEC pr_insert_transaction @account_id=1, @category_id=0, @from_wallet_id=1, @transaction_type_id=1, @amount=1000, @date='06/02/2019';
+EXEC pr_insert_transaction @account_id=1, @category_id=100, @from_wallet_id=1, @transaction_type_id=-1, @amount=50, @date='06/02/2019';

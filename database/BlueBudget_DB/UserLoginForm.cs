@@ -111,8 +111,8 @@ namespace BlueBudget_DB
             var rdr = DB_API.SelectMoneyAccountById(account_id);
             while (rdr.Read())
             {
-                balance_textbox.Text = DB_API.Moneyfy(rdr[DB_API.MoneyAccountEnt.balance.ToString()].ToString());
-                patrimony_textbox.Text = DB_API.Moneyfy(rdr[DB_API.MoneyAccountEnt.patrimony.ToString()].ToString());
+                balance_textbox.Text = DB_API.Moneyfy(Double.Parse(rdr[DB_API.MoneyAccountEnt.balance.ToString()].ToString()));
+                patrimony_textbox.Text = DB_API.Moneyfy(Double.Parse(rdr[DB_API.MoneyAccountEnt.patrimony.ToString()].ToString()));
             }
 
             // get associated user of selected account
@@ -262,6 +262,16 @@ namespace BlueBudget_DB
             {
                 ErrorMessenger.Error("User does not exist!");
                 return;
+            }
+
+            // verify if user already is associated with account
+            var rdr = DB_API.SelectMoneyAccountUsers(account_id);
+            while (rdr.Read()) {
+                if (rdr[DB_API.MoneyAccountEnt.user_email.ToString()].Equals(new_user))
+                {
+                    ErrorMessenger.Error("User already participates in account");
+                    return;
+                }
             }
 
             // insert new account into 'users_money_accounts table

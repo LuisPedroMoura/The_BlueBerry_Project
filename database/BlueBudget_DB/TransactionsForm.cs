@@ -86,6 +86,7 @@ namespace BlueBudget_DB
             // get transaction type
             int transaction_type_id = -1;
             transaction_type_id = DB_API.SelectTransactionTypeIdByName(type_comboBox.SelectedItem.ToString());
+
             // get wallet
             string from_wallet_name = wallet_comboBox.SelectedItem.ToString();
             string to_wallet_name = wallet2_comboBox.SelectedItem.ToString();
@@ -177,18 +178,16 @@ namespace BlueBudget_DB
             }
 
             // min and max amount
-            string minamt = filterminamount_textBox.ForeColor == Color.Black ? filterminamount_textBox.Text.Substring(1) : "";
-            string maxamt = filtermaxamount_textBox.ForeColor == Color.Black ? filtermaxamount_textBox.Text.Substring(1) : "";
+            string minamt = filterminamount_textBox.ForeColor == Color.Black ? filterminamount_textBox.Text : "";
+            string maxamt = filtermaxamount_textBox.ForeColor == Color.Black ? filtermaxamount_textBox.Text : "";
             double? minamount = null; 
             double? maxamount = null;
             if (!minamt.Equals(""))
             {
-                Console.WriteLine(minamt);
                 minamount = DB_API.UnMoneyfy(minamt);
             }
             if (!maxamt.Equals(""))
             {
-                Console.WriteLine(maxamt);
                 maxamount = DB_API.UnMoneyfy(maxamt);
             }
 

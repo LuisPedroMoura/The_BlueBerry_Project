@@ -37,6 +37,8 @@ namespace BlueBudget_DB
             EndYear_numericBox.Maximum = 5000;
             StartYear_numericBox.Minimum = 0;
             EndYear_numericBox.Minimum = 0;
+            StartYear_numericBox.Value = 2019;
+            EndYear_numericBox.Value = 2019;
 
             Category_textBox.ReadOnly = true;
             Subcategory_textBox.ReadOnly = true;
@@ -116,12 +118,22 @@ namespace BlueBudget_DB
 
             // save new category
             if (!Category_textBox.ReadOnly)
-            {
+            {   
                 // verify if field is filled
-                if (Category_textBox.Text.Equals(""))
+                if (cat_name.Equals(""))
                 {
                     ErrorMessenger.EmptyField("Category");
                     return;
+                }
+
+                // verify if new name already exists
+                var rdr = DB_API.SelectAccountCategories(account_id);
+                while (rdr.Read())
+                {
+                    if (cat_name.Equals(rdr[DB_API.CategoryEnt.name.ToString()].ToString())) {
+                        ErrorMessenger.Error("Category name already exists");
+                        return;
+                    }
                 }
 
                 // add new category
@@ -134,10 +146,21 @@ namespace BlueBudget_DB
                 cat_id = this.categories[cat_name];
 
                 // verify if field is filled
-                if (Subcategory_textBox.Text.Equals(""))
+                if (sub_cat_name.Equals(""))
                 {
                     ErrorMessenger.EmptyField("Sub-category");
                     return;
+                }
+
+                // verify if new name already exists
+                var rdr = DB_API.SelectAccountCategories(account_id);
+                while (rdr.Read())
+                {
+                    if (sub_cat_name.Equals(rdr[DB_API.CategoryEnt.name.ToString()].ToString()))
+                    {
+                        ErrorMessenger.Error("Category name already exists");
+                        return;
+                    }
                 }
 
                 // add new category

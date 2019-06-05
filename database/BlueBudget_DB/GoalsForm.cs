@@ -57,7 +57,6 @@ namespace BlueBudget_DB
             // get values from textboxes
             string goal_name = goalname_textBox.ForeColor == Color.Black ? goalname_textBox.Text : "";
             string amount = goalamount_textBox.ForeColor == Color.Black ? goalamount_textBox.Text : "";
-            double goal_amount = DB_API.UnMoneyfy(amount);
             int cat_id = categories[Categories_comboBox.SelectedItem.ToString()];
             DateTime term = term_dateTimePicker.Value;
 
@@ -67,11 +66,13 @@ namespace BlueBudget_DB
                 ErrorMessenger.EmptyField("Goal name");
                 return;
             }
+            
             if (amount.Equals(""))
             {
                 ErrorMessenger.EmptyField("Goal amount");
                 return;
             }
+            double goal_amount = DB_API.UnMoneyfy(amount);
 
             // add new goal
             if (!Subcategories_comboBox.SelectedItem.ToString().Equals(this.none))
