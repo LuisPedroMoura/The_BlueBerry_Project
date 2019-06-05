@@ -17,19 +17,21 @@ namespace BlueBudget_DB
         public int? AccountID { get; }
         public int? TransactionTypeID { get; }
         public int? WalletID { get; }
+        public int? RecipientWalletID { get; }
 
         public Transaction(int? transactionID, double amount, DateTime? date, string notes, string location,
-            int? categoryID, int? accountID, int? transactionTypeID, int? WalletID)
+            int? categoryID, int? accountID, int? transactionTypeID, int? walletID, int? recipientWalletID)
         {
-            this.TransactionID = transactionID;
-            this.Amount = amount;
-            this.Date = date;
-            this.Notes = notes;
-            this.Location = location;
-            this.CategoryID = categoryID;
-            this.AccountID = accountID;
-            this.TransactionTypeID = transactionTypeID;
-            this.WalletID = WalletID;
+            TransactionID = transactionID;
+            Amount = amount;
+            Date = date;
+            Notes = notes;
+            Location = location;
+            CategoryID = categoryID;
+            AccountID = accountID;
+            TransactionTypeID = transactionTypeID;
+            WalletID = walletID;
+            RecipientWalletID = recipientWalletID;
         }
 
         public override string ToString()

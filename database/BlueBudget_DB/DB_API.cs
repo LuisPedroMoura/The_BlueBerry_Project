@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -103,7 +104,8 @@ namespace BlueBudget_DB
             start_date,
             end_date,
             notes,
-            location
+            location,
+            recipient_wallet_id
         }
         public enum TransactionTypeEnt
         {
@@ -136,38 +138,37 @@ namespace BlueBudget_DB
         // API METHODS ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
         // ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
+        private static CultureInfo Culture = new CultureInfo("fr-FR", false);
+        
         public static string Moneyfy(string value)
         {
             if (Double.TryParse(value, out double aux))
             {
-                return Moneyfy(aux);
+                if (aux >= 0)
+                {
+                    return Moneyfy(aux);
+                }
             }
             return String.Empty;
         }
 
         public static string Moneyfy(double value)
         {
-            return String.Format(System.Globalization.CultureInfo.CurrentCulture, "{0:C2}", value);
+            return String.Format(Culture, "{0:C2}", value);
         }
 
         public static double UnMoneyfy(string value)
         {
             double res;
-            try
+            res = Double.Parse(string.Join("", value.ToCharArray().Where(Char.IsDigit)));
+            res = res / 100;
+            Console.WriteLine(value + ", " + value[0] + ", " + Char.IsDigit(value[0]));
+            if (!Char.IsDigit(value[0]))
             {
-                res = Double.Parse(value.Substring(1));
+                return -res;
             }
-            catch
-            {
-                value = value.Substring(2);
-                value = value.Remove(value.Length-2);
-                res = -Double.Parse(value);
-            }
-
             return res;
-        }
-
-            
+        }      
 
 
 // ----------------------------------------------------------------------------------------------
@@ -569,11 +570,14 @@ namespace BlueBudget_DB
             int? wallet_id = null, int? transaction_id = null, int? transaction_type_id = null, double? min_amount = null,
             double? max_amount = null, DateTime? start_date = null, DateTime? end_date = null, string location = null)
         {
+            Console.WriteLine(account_id + ", " + category_id + ", " + wallet_id + ", " + transaction_id + ", " +
+                transaction_type_id + ", " + min_amount + ", " + max_amount + ", " + start_date + ", " + end_date + ", " +
+                location);
             var attrValue = new Dictionary<System.Enum, Object>
             {
                 { DB_API.TransactionEnt.account_id, account_id },
                 { DB_API.TransactionEnt.category_id, category_id },
-                { DB_API.TransactionEnt.from_wallet_id, wallet_id },
+                { DB_API.TransactionEnt.wallet_id, wallet_id },
                 { DB_API.TransactionEnt.transaction_id, transaction_id },
                 { DB_API.TransactionEnt.transaction_type_id, transaction_type_id },
                 { DB_API.TransactionEnt.min_amount, min_amount },

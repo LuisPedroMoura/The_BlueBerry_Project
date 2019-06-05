@@ -179,7 +179,7 @@ namespace BlueBudget_DB
                 goalname_textBox.Text = goal_name;
                 goalname_textBox.ForeColor = Color.Black;
                 double goal_amount = Double.Parse(rdr[DB_API.GoalEnt.amount.ToString()].ToString());
-                goalamount_textBox.Text = goal_amount.ToString();
+                goalamount_textBox.Text = DB_API.Moneyfy(goal_amount);
                 goalamount_textBox.ForeColor = Color.Black;
                 term_dateTimePicker.Value = DateTime.Parse(rdr[DB_API.GoalEnt.term.ToString()].ToString());
 

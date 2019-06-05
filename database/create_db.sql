@@ -243,13 +243,14 @@ BEGIN
 			DECLARE @subscribed BIT;
 			SET @subscribed = (SELECT active_subscription FROM Project.users WHERE email=@email);
 
-			-- update 'users' table
+			-- update users table
 			UPDATE Project.users
 			SET
 				[user_name]=ISNULL(@user_name, [user_name]),
 				active_subscription=ISNULL(@active_subscription, active_subscription)
 			WHERE email=@email;
 
+			-- update subscription table
 			IF @subscribed=1 AND (@active_subscription=1 OR @active_subscription IS NULL)
 			BEGIN
 
@@ -960,12 +961,14 @@ CREATE PROC pr_insert_goal (
 ) AS
 BEGIN
 	
+	BEGIN TRANSACTION
 	SAVE TRANSACTION insert_goal_savepoint -- stop rollback in case o trigger fail
 
 	BEGIN TRY
 		INSERT INTO Project.goals ([name], category_id, account_id, amount, term, accomplished)
 		VALUES (@name, @category_id, @account_id, @amount, @term, @accomplished)
 		;
+		COMMIT
 	END TRY
 	BEGIN CATCH
 		ROLLBACK TRANSACTION  insert_goal_savepoint
@@ -1022,12 +1025,14 @@ BEGIN
 	BEGIN
 	
 		SELECT *
-		FROM Project.transactions
+		FROM
+			Project.transactions AS TR LEFT JOIN Project.transfers AS TF
+			ON TR.transaction_id=TF.transaction_id
 		WHERE
 				(account_id=@account_id OR @account_id IS NULL)
 			AND (category_id=@category_id OR @category_id IS NULL)
 			AND (wallet_id=@wallet_id OR @wallet_id IS NULL)
-			AND (transaction_id=@transaction_id OR @transaction_id IS NULL)
+			AND (TR.transaction_id=@transaction_id OR @transaction_id IS NULL)
 			AND (transaction_type_id=@transaction_type_id OR @transaction_type_id IS NULL)
 			AND (amount>=@min_amount OR @min_amount IS NULL)
 			AND (amount<=@max_amount OR @max_amount IS NULL)
@@ -1045,12 +1050,14 @@ BEGIN
 		SET @cat_id = @category_id/100;
 				
 		SELECT *
-		FROM Project.transactions
+		FROM
+			Project.transactions AS TR LEFT JOIN Project.transfers AS TF
+			ON TR.transaction_id=TF.transaction_id
 		WHERE
 				(account_id=@account_id OR @account_id IS NULL)
 			AND (category_id/100=@cat_id OR @category_id IS NULL)
 			AND (wallet_id=@wallet_id OR @wallet_id IS NULL)
-			AND (transaction_id=@transaction_id OR @transaction_id IS NULL)
+			AND (TR.transaction_id=@transaction_id OR @transaction_id IS NULL)
 			AND (transaction_type_id=@transaction_type_id OR @transaction_type_id IS NULL)
 			AND (amount>=@min_amount OR @min_amount IS NULL)
 			AND (amount<=@max_amount OR @max_amount IS NULL)
@@ -1608,6 +1615,8 @@ BEGIN
 	VALUES (303, @account_id, -1, 'Night out');
 	INSERT INTO Project.categories(category_id, account_id, category_type_id, [name])
 	VALUES (400, @account_id, -1, 'Loans');
+	INSERT INTO Project.categories(category_id, account_id, category_type_id, [name])
+	VALUES (500, @account_id, 1, 'Goals');
 END
 GO
 
@@ -1817,26 +1826,22 @@ BEGIN
 	DECLARE @value MONEY;
 	SELECT @value=amount
 	FROM Project.transactions
-	WHERE transaction_id=@transaction_id
-	;
+	WHERE transaction_id=@transaction_id;
 	
 	UPDATE Project.wallets
 	SET balance = balance + COALESCE(@value, 0)
-	WHERE wallet_id=@recipient_wallet_id
-	;
+	WHERE wallet_id=@recipient_wallet_id;
 
 	DECLARE @from_wallet_id INT;
 	SELECT
 		@from_wallet_id=wallet_id,
 		@value=amount
 	FROM Project.transactions
-	WHERE transaction_id=@transaction_id
-	;
+	WHERE transaction_id=@transaction_id;
 
 	UPDATE Project.wallets
 	SET balance = balance - COALESCE(@value, 0)
-	WHERE wallet_id=@from_wallet_id
-	;
+	WHERE wallet_id=@from_wallet_id;
 END
 GO
 
@@ -1872,15 +1877,8 @@ CREATE FUNCTION udf_annual_statistics (
 	@account_id INT,
 	@year INT
 )
-RETURNS @table TABLE (
-	date_year INT,
-	date_month INT,
-	income MONEY,
-	expenses MONEY,
-	balance MONEY
-)
-AS
-BEGIN
+RETURNS @table TABLE (date_year INT, date_month INT, income MONEY, expenses MONEY, balance MONEY)
+AS BEGIN
 	
 	DECLARE @year_str VARCHAR(4);
 	SELECT @year_str=CAST(@year as varchar(10));
@@ -1891,9 +1889,7 @@ BEGIN
 		(SELECT MONTH([date]) AS mes, SUM(amount) AS inc
 		FROM Project.transactions
 		WHERE
-				transaction_type_id=1
-			AND YEAR([date])=@year_str
-			AND account_id=@account_id
+			transaction_type_id=1 AND YEAR([date])=@year_str AND account_id=@account_id
 		GROUP BY MONTH([date])
 		) AS I
 		
@@ -1902,31 +1898,16 @@ BEGIN
 		(SELECT MONTH([date]) AS mes, SUM(amount) AS expe
 		FROM Project.transactions
 		WHERE
-				transaction_type_id=-1
-				AND YEAR([date])=@year_str
-				AND account_id=@account_id
+			transaction_type_id=-1 AND YEAR([date])=@year_str AND account_id=@account_id
 		GROUP BY MONTH([date])
 		) AS E
 
 		ON I.mes=E.mes
 	);
-	
 	RETURN;
 END
 GO
 
--- SQL Server has a bug that creates an error 2809 when calling some
--- UDF from C#. The UDF above works in Management Studio. It is wrapped
--- in here to provided access for C# code.
-CREATE PROC pr_annual_statistics(
-	@account_id INT,
-	@year INT
-) AS
-BEGIN
-
-	SELECT * FROM udf_annual_statistics(@account_id, @year);
-END
-GO
 --------------------------------------------------------------------
 -- POPULATE DATABASE -----------------------------------------------
 --------------------------------------------------------------------
